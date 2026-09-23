@@ -1,0 +1,12 @@
+# Temporary files
+*.tmp
+*.log
+__pycache__/
+*.pyc
+
+# SQLite Journal files
+data/*.db-journal
+
+# OS files
+Thumbs.db
+.DS_Store
