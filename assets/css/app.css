@@ -669,56 +669,70 @@ body.sidebar-pinned .main-container {
 }
 
 /* Kanban Board */
-.kanban-grid {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 14px;
+.kanban-grid,
+.kanban-board-wrapper {
+  display: flex;
+  gap: 16px;
   overflow-x: auto;
-  padding-bottom: 16px;
+  overflow-y: hidden;
+  padding-bottom: 24px;
+  align-items: flex-start;
+  scrollbar-width: thin;
 }
 
 .kanban-col {
-  background-color: #EDF2F4;
+  background-color: #F8FAFC;
+  border: 1px solid var(--border-light);
   border-radius: var(--radius-md);
   padding: 12px;
-  min-width: 200px;
+  flex: 0 0 295px;
+  width: 295px;
+  min-width: 295px;
+  max-width: 295px;
   display: flex;
   flex-direction: column;
-  max-height: 80vh;
+  gap: 10px;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  overflow-x: hidden;
 }
 
 .kanban-col-header {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-  padding-bottom: 8px;
-  border-bottom: 2px solid rgba(0,0,0,0.06);
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  background: white;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-light);
 }
 
 .kanban-col-title {
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .kanban-count {
-  background-color: white;
-  padding: 2px 7px;
+  background-color: #F1F5F9;
+  padding: 2px 8px;
   border-radius: var(--radius-pill);
   font-size: 11px;
-  font-weight: 700;
-  color: var(--text-muted);
+  font-weight: 800;
+  color: #475569;
 }
 
 .kanban-cards {
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  flex-grow: 1;
+  overflow: hidden;
+  overflow-x: hidden;
 }
 
 .kanban-card {
@@ -917,8 +931,9 @@ body.sidebar-pinned .main-container {
     overflow-x: auto;
     padding-bottom: 6px;
   }
-  .kanban-grid {
-    grid-template-columns: repeat(6, 260px);
+  .kanban-grid,
+  .kanban-board-wrapper {
+    overflow-x: auto;
   }
   .form-row {
     grid-template-columns: 1fr;

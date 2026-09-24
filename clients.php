@@ -42,13 +42,13 @@ $columns = [
         'step_num' => 1,
         'step_name' => '1. Prospección',
         'step_desc' => 'Entrada y calificación de clínicas o mutuales.',
-        'step_action' => 'Verificar encargado de compras',
+        'step_action' => 'Validar encargado de compras',
         'badge' => 'badge-blue',
         'clients' => [],
         'total_monto' => 0
     ],
     'correo_1_enviado' => [
-        'title' => 'Correo 1 Enviado',
+        'title' => 'Correo 1 (Flex)',
         'icon' => '✉️',
         'color' => '#6366F1',
         'step_num' => 2,
@@ -78,7 +78,7 @@ $columns = [
         'step_num' => 4,
         'step_name' => '4. Tallaje en Terreno',
         'step_desc' => '¡Diferenciador Clave! Muestras y percheros in situ.',
-        'step_action' => 'Prueba en vivo de médicos (XS-3XL)',
+        'step_action' => 'Prueba en vivo médicos (XS-3XL)',
         'badge' => 'badge-amber',
         'clients' => [],
         'total_monto' => 0
@@ -90,7 +90,7 @@ $columns = [
         'step_num' => 5,
         'step_name' => '5. Cotización Formal',
         'step_desc' => 'Propuesta económica por volumen y bordados.',
-        'step_action' => 'Seguimiento de orden de compra',
+        'step_action' => 'Seguimiento orden de compra',
         'badge' => 'badge-teal',
         'clients' => [],
         'total_monto' => 0
@@ -171,7 +171,7 @@ foreach ($clients as $c) {
       border: 1px solid #E2E8F0;
       border-top: 4px solid var(--primary);
       border-radius: var(--radius-lg);
-      padding: 24px;
+      padding: 22px 24px;
       margin-bottom: 24px;
       box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
       position: relative;
@@ -183,7 +183,7 @@ foreach ($clients as $c) {
       justify-content: space-between;
       flex-wrap: wrap;
       gap: 16px;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
     .guide-tag {
@@ -205,7 +205,7 @@ foreach ($clients as $c) {
       font-size: 18px;
       font-weight: 800;
       color: #0F172A;
-      margin-bottom: 2px;
+      margin-bottom: 3px;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -234,14 +234,14 @@ foreach ($clients as $c) {
     }
 
     .guide-stat-val {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 800;
       color: #0F172A;
       line-height: 1.2;
     }
 
     .guide-stat-lbl {
-      font-size: 11px;
+      font-size: 10.5px;
       color: #64748B;
       font-weight: 600;
       text-transform: uppercase;
@@ -260,7 +260,7 @@ foreach ($clients as $c) {
       background: #F8FAFC;
       border: 1px solid #E2E8F0;
       border-radius: 10px;
-      padding: 14px 12px;
+      padding: 12px 10px;
       display: flex;
       flex-direction: column;
       height: 100%;
@@ -277,7 +277,7 @@ foreach ($clients as $c) {
     }
 
     .step-number-tag {
-      font-size: 10px;
+      font-size: 9.5px;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -289,37 +289,36 @@ foreach ($clients as $c) {
     }
 
     .step-box-title {
-      font-size: 13px;
-      font-weight: 700;
+      font-size: 12.5px;
+      font-weight: 800;
       color: #0F172A;
       margin-bottom: 4px;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
     }
 
     .step-box-desc {
       font-size: 11px;
       color: #475569;
-      line-height: 1.4;
+      line-height: 1.35;
       margin-bottom: 8px;
       flex-grow: 1;
     }
 
     .step-box-action {
-      font-size: 10.5px;
+      font-size: 10px;
       font-weight: 700;
       color: #0F766E;
       background: #F0FDFA;
       border: 1px solid #CCFBF1;
-      padding: 4px 6px;
-      border-radius: 5px;
+      padding: 3px 6px;
+      border-radius: 4px;
       display: flex;
       align-items: center;
       gap: 4px;
     }
 
-    /* Key step highlight */
     .step-key-highlight {
       border: 2px solid #F59E0B !important;
       background: #FFFBEB !important;
@@ -328,39 +327,57 @@ foreach ($clients as $c) {
 
     .step-badge-key {
       position: absolute;
-      top: -10px;
-      right: 10px;
+      top: -9px;
+      right: 8px;
       background: #F59E0B;
       color: #FFFFFF;
-      font-size: 9px;
+      font-size: 8.5px;
       font-weight: 800;
-      padding: 2px 7px;
-      border-radius: 12px;
+      padding: 2px 6px;
+      border-radius: 10px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      box-shadow: 0 2px 6px rgba(245, 158, 11, 0.35);
     }
 
-    /* Kanban Grid */
-    .kanban-grid {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 14px;
-      overflow-x: auto;
-      padding-bottom: 20px;
-      align-items: flex-start;
+    /* KANBAN MASTER WRAPPER & COLUMNS */
+    .kanban-board-wrapper {
+      display: flex !important;
+      gap: 16px !important;
+      overflow-x: auto !important;
+      overflow-y: hidden !important;
+      padding-bottom: 24px !important;
+      align-items: flex-start !important;
+      scrollbar-width: thin !important;
     }
 
+    .kanban-board-wrapper::-webkit-scrollbar {
+      height: 8px;
+    }
+    .kanban-board-wrapper::-webkit-scrollbar-track {
+      background: #E2E8F0;
+      border-radius: 4px;
+    }
+    .kanban-board-wrapper::-webkit-scrollbar-thumb {
+      background: #94A3B8;
+      border-radius: 4px;
+    }
+
+    /* KANBAN COLUMN - ABSOLUTELY NO INTERNAL HORIZONTAL SCROLLBAR */
     .kanban-col {
-      background-color: #F8FAFC;
-      border: 1px solid #E2E8F0;
-      border-radius: 12px;
-      padding: 12px;
-      min-width: 240px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      box-shadow: var(--shadow-sm);
+      flex: 0 0 295px !important;
+      width: 295px !important;
+      min-width: 295px !important;
+      max-width: 295px !important;
+      background-color: #F8FAFC !important;
+      border: 1px solid #E2E8F0 !important;
+      border-radius: 12px !important;
+      padding: 12px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 12px !important;
+      box-shadow: var(--shadow-sm) !important;
+      overflow: hidden !important;
+      overflow-x: hidden !important;
     }
 
     .kanban-col-header {
@@ -387,6 +404,9 @@ foreach ($clients as $c) {
       display: flex;
       align-items: center;
       gap: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .kanban-count {
@@ -396,6 +416,7 @@ foreach ($clients as $c) {
       border-radius: 12px;
       font-size: 11px;
       font-weight: 800;
+      flex-shrink: 0;
     }
 
     .kanban-col-amount {
@@ -405,27 +426,34 @@ foreach ($clients as $c) {
     }
 
     .kanban-cards {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 12px !important;
+      overflow: hidden !important;
+      overflow-x: hidden !important;
+      overflow-y: visible !important;
     }
 
-    /* Kanban Cards */
+    /* KANBAN CARDS - PERFECTLY CONSTRAINED */
     .kanban-card {
-      background-color: #FFFFFF;
-      border-radius: 10px;
-      padding: 14px;
-      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
-      border: 1px solid #E2E8F0;
-      cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
+      background-color: #FFFFFF !important;
+      border-radius: 10px !important;
+      padding: 14px !important;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04) !important;
+      border: 1px solid #E2E8F0 !important;
+      cursor: pointer !important;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      position: relative !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+      overflow: hidden !important;
+      overflow-x: hidden !important;
     }
 
     .kanban-card:hover {
-      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.09);
-      border-color: var(--primary);
-      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.09) !important;
+      border-color: var(--primary) !important;
+      transform: translateY(-2px) !important;
     }
 
     .card-clinic-title {
@@ -444,7 +472,7 @@ foreach ($clients as $c) {
       color: #475569;
       margin-bottom: 8px;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 6px;
     }
 
@@ -470,12 +498,12 @@ foreach ($clients as $c) {
       color: #7E22CE;
       font-size: 11px;
       font-weight: 700;
-      padding: 5px 8px;
+      padding: 6px 8px;
       border-radius: 6px;
       margin-bottom: 8px;
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 6px;
     }
 
     .card-monto-box {
@@ -484,73 +512,92 @@ foreach ($clients as $c) {
       color: #047857;
       font-size: 12px;
       font-weight: 800;
-      padding: 5px 8px;
+      padding: 6px 10px;
       border-radius: 6px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      white-space: nowrap;
     }
 
-    /* Actions Bar on Card */
+    /* CARD FOOTER - TWO CLEAN BALANCED ROWS */
     .kanban-card-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 6px;
       border-top: 1px solid #F1F5F9;
       padding-top: 10px;
-      margin-top: 6px;
+      margin-top: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .card-action-btns-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      width: 100%;
     }
 
     .btn-wa-pill {
+      flex: 1;
       background: #25D366;
       color: white !important;
       font-size: 11px;
       font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 14px;
+      padding: 6px 8px;
+      border-radius: 6px;
       text-decoration: none;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      justify-content: center;
+      gap: 5px;
       transition: all 0.15s ease;
-      box-shadow: 0 2px 5px rgba(37, 211, 102, 0.25);
+      white-space: nowrap;
+      box-shadow: 0 2px 4px rgba(37, 211, 102, 0.2);
     }
     .btn-wa-pill:hover {
       background: #1EBE5D;
-      transform: scale(1.03);
     }
 
     .btn-email-pill {
+      flex: 1;
       background: var(--primary);
       color: white !important;
       font-size: 11px;
       font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 14px;
+      padding: 6px 8px;
+      border-radius: 6px;
       text-decoration: none;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 4px;
       transition: all 0.15s ease;
-      box-shadow: 0 2px 5px rgba(30, 136, 136, 0.25);
+      white-space: nowrap;
+      box-shadow: 0 2px 4px rgba(30, 136, 136, 0.2);
     }
     .btn-email-pill:hover {
       background: var(--primary-hover);
-      transform: scale(1.03);
+    }
+
+    .card-stage-move-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      width: 100%;
     }
 
     .quick-stage-select {
+      flex: 1;
       font-size: 11px;
-      padding: 3px 6px;
+      padding: 4px 6px;
       border-radius: 6px;
       border: 1px solid #CBD5E1;
       background: #FFFFFF;
       color: #475569;
       font-weight: 600;
       cursor: pointer;
-      max-width: 110px;
+      width: 100%;
     }
 
     @media (max-width: 1200px) {
@@ -607,7 +654,7 @@ foreach ($clients as $c) {
             <span>Ruta del Embudo de Ventas: ¿Qué se hace en cada etapa?</span>
           </div>
           <p class="guide-subtitle">
-            Cada prospecto médico avanza en 6 pasos estratégicos: desde el impacto inicial hasta la prueba presencial de tallas y la orden corporativa.
+            Cada prospecto médico avanza en 6 pasos estratégicos: desde el primer correo hasta la prueba presencial de tallas y la orden corporativa.
           </p>
         </div>
 
@@ -731,14 +778,15 @@ foreach ($clients as $c) {
     </div>
 
     <?php if ($view_mode === 'kanban'): ?>
-      <!-- KANBAN BOARD -->
-      <div class="kanban-grid">
+      <!-- KANBAN BOARD CONTAINER -->
+      <div class="kanban-board-wrapper">
         <?php foreach ($columns as $status_key => $col): ?>
           <div class="kanban-col" id="col-<?= $status_key ?>" style="--col-color: <?= $col['color'] ?>;">
             
+            <!-- COLUMN HEADER -->
             <div class="kanban-col-header">
               <div class="kanban-col-header-top">
-                <span class="kanban-col-title">
+                <span class="kanban-col-title" title="<?= htmlspecialchars($col['title']) ?>">
                   <span><?= $col['icon'] ?></span>
                   <span><?= $col['title'] ?></span>
                 </span>
@@ -748,9 +796,14 @@ foreach ($clients as $c) {
                 <div class="kanban-col-amount">
                   💰 $<?= number_format($col['total_monto'], 0, ',', '.') ?> CLP
                 </div>
+              <?php else: ?>
+                <div style="font-size: 10.5px; color: var(--text-muted);">
+                  0 cotizaciones
+                </div>
               <?php endif; ?>
             </div>
 
+            <!-- CARDS CONTAINER -->
             <div class="kanban-cards">
               <?php if (empty($col['clients'])): ?>
                 <div style="font-size: 12px; color: var(--text-subtle); text-align: center; padding: 28px 10px; background: #FFFFFF; border-radius: 8px; border: 1px dashed #CBD5E1;">
@@ -774,7 +827,7 @@ foreach ($clients as $c) {
                       <div>
                         <strong><?= htmlspecialchars($cli['contacto_nombre']) ?></strong>
                         <?php if ($cli['cargo']): ?>
-                          <span style="font-size: 11px; color: var(--text-muted); display: block;"><?= htmlspecialchars($cli['cargo']) ?></span>
+                          <span style="font-size: 11px; color: var(--text-muted); display: block; line-height: 1.2;"><?= htmlspecialchars($cli['cargo']) ?></span>
                         <?php endif; ?>
                       </div>
                     </div>
@@ -801,11 +854,11 @@ foreach ($clients as $c) {
                       </div>
                     <?php endif; ?>
 
-                    <!-- CARD ACTION BAR -->
+                    <!-- CARD ACTIONS: 2 CLEAN ROWS -->
                     <div class="kanban-card-footer" onclick="event.stopPropagation();">
                       
-                      <div style="display: flex; gap: 5px; align-items: center;">
-                        <!-- WHATSAPP BUTTON -->
+                      <!-- ROW 1: WHATSAPP + EMAIL -->
+                      <div class="card-action-btns-row">
                         <?php if ($phone_clean): ?>
                           <a href="https://wa.me/<?= $phone_clean ?>?text=Hola%20<?= urlencode($cli['contacto_nombre']) ?>,%20le%20escribo%20de%20Suitable%20Uniformes%20Cl%C3%ADnicos" target="_blank" class="btn-wa-pill" title="Conversar por WhatsApp">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
@@ -813,22 +866,23 @@ foreach ($clients as $c) {
                           </a>
                         <?php endif; ?>
 
-                        <!-- EMAIL OUTREACH BUTTON -->
                         <a href="send_outreach.php?client_id=<?= $cli['id'] ?>" class="btn-email-pill" title="Impactar con Campaña o Correo Brevo">
                           ✉️ Correo
                         </a>
                       </div>
 
-                      <!-- QUICK MOVE STAGE SELECT -->
-                      <select class="quick-stage-select" title="Mover rápidamente de etapa" onchange="quickMoveStage(<?= $cli['id'] ?>, this.value)">
-                        <option value="" disabled selected>Mover a...</option>
-                        <option value="nuevo">1. Nuevos</option>
-                        <option value="correo_1_enviado">2. Correo 1</option>
-                        <option value="correo_2_enviado">3. Correo 2</option>
-                        <option value="tallaje_agendado">4. Tallaje</option>
-                        <option value="cotizacion_enviada">5. Cotización</option>
-                        <option value="ganado">6. Venta Ganada</option>
-                      </select>
+                      <!-- ROW 2: CLEAN QUICK MOVE STAGE -->
+                      <div class="card-stage-move-row">
+                        <select class="quick-stage-select" title="Mover rápidamente de etapa" onchange="quickMoveStage(<?= $cli['id'] ?>, this.value)">
+                          <option value="" disabled selected>Avanzar etapa... ▾</option>
+                          <option value="nuevo">1. Nuevos Leads</option>
+                          <option value="correo_1_enviado">2. Correo 1 (Flex)</option>
+                          <option value="correo_2_enviado">3. Correo 2 (B2B)</option>
+                          <option value="tallaje_agendado">4. Tallaje en Terreno</option>
+                          <option value="cotizacion_enviada">5. Cotización Enviada</option>
+                          <option value="ganado">6. Venta Ganada</option>
+                        </select>
+                      </div>
 
                     </div>
 
@@ -872,7 +926,7 @@ foreach ($clients as $c) {
                 </td>
                 <td>
                   <?php if ($phone_clean): ?>
-                    <a href="https://wa.me/<?= $phone_clean ?>?text=Hola%20<?= urlencode($cli['contacto_nombre']) ?>,%20le%20escribo%20de%20Suitable" target="_blank" class="btn-wa-pill">
+                    <a href="https://wa.me/<?= $phone_clean ?>?text=Hola%20<?= urlencode($cli['contacto_nombre']) ?>,%20le%20escribo%20de%20Suitable" target="_blank" class="btn-wa-pill" style="display: inline-flex;">
                       💬 <?= htmlspecialchars($cli['telefono']) ?>
                     </a>
                   <?php else: ?>
