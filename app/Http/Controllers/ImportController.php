@@ -274,22 +274,16 @@ class ImportController extends Controller
     public function downloadTemplate()
     {
         $filename = 'Plantilla_Maestra_Contactos_Suitable.csv';
+        $downloadsDir = public_path('downloads');
+        if (!file_exists($downloadsDir)) {
+            mkdir($downloadsDir, 0777, true);
+        }
+        $filePath = $downloadsDir . '/' . $filename;
 
-        $headers = [
-            'Content-Type' => 'text/csv; charset=UTF-8',
-            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
-            'Pragma' => 'no-cache',
-            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
-            'Expires' => '0',
-        ];
-
-        $callback = function () {
-            $handle = fopen('php://output', 'w');
-            
-            // BOM UTF-8 para que Microsoft Excel en Windows abra con tildes y ñ impecables
+        // Asegurar que el archivo existe con BOM UTF-8 y ejemplos
+        if (!file_exists($filePath) || filesize($filePath) < 100) {
+            $handle = fopen($filePath, 'w');
             fprintf($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
-
-            // Encabezados Maestros del CRM Suitable
             fputcsv($handle, [
                 'Empresa',
                 'Contacto',
@@ -301,7 +295,6 @@ class ImportController extends Controller
                 'Notas'
             ], ';');
 
-            // Ejemplos representativos de instituciones de salud chilenas
             $rows = [
                 [
                     'Clínica RedSalud Providencia',
@@ -348,11 +341,13 @@ class ImportController extends Controller
             foreach ($rows as $row) {
                 fputcsv($handle, $row, ';');
             }
-
             fclose($handle);
-        };
+        }
 
-        return response()->stream($callback, 200, $headers);
+        return response()->download($filePath, $filename, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Encoding' => 'none',
+        ]);
     }
 
     /**
@@ -360,57 +355,54 @@ class ImportController extends Controller
      */
     public function exportClients()
     {
-        $filename = 'Base_Contactos_Suitable_' . date('Y-m-d') . '.csv';
+        $filename = 'Base_Contactos_Suitable_Completa.csv';
+        $downloadsDir = public_path('downloads');
+        if (!file_exists($downloadsDir)) {
+            mkdir($downloadsDir, 0777, true);
+        }
+        $filePath = $downloadsDir . '/' . $filename;
 
-        $headers = [
+        $handle = fopen($filePath, 'w');
+        // BOM UTF-8 para Excel
+        fprintf($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+        fputcsv($handle, [
+            'ID',
+            'Empresa',
+            'Contacto',
+            'Email',
+            'Telefono',
+            'Cargo',
+            'Comuna',
+            'Tamano_Equipo',
+            'Estado',
+            'Notas',
+            'Grupos'
+        ], ';');
+
+        Client::with('groups')->orderBy('id')->chunk(200, function ($clients) use ($handle) {
+            foreach ($clients as $c) {
+                fputcsv($handle, [
+                    $c->id,
+                    $c->empresa,
+                    $c->contacto_nombre,
+                    $c->email,
+                    $c->telefono,
+                    $c->cargo,
+                    $c->region_comuna,
+                    $c->tamano_equipo,
+                    $c->estado,
+                    $c->notas,
+                    $c->groups->pluck('name')->implode(', ')
+                ], ';');
+            }
+        });
+
+        fclose($handle);
+
+        return response()->download($filePath, $filename, [
             'Content-Type' => 'text/csv; charset=UTF-8',
-            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
-            'Pragma' => 'no-cache',
-            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
-            'Expires' => '0',
-        ];
-
-        $callback = function () {
-            $handle = fopen('php://output', 'w');
-            
-            // BOM UTF-8
-            fprintf($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
-
-            fputcsv($handle, [
-                'ID',
-                'Empresa',
-                'Contacto',
-                'Email',
-                'Telefono',
-                'Cargo',
-                'Comuna',
-                'Tamano_Equipo',
-                'Estado',
-                'Notas',
-                'Grupos'
-            ], ';');
-
-            Client::with('groups')->orderBy('id')->chunk(200, function ($clients) use ($handle) {
-                foreach ($clients as $c) {
-                    fputcsv($handle, [
-                        $c->id,
-                        $c->empresa,
-                        $c->contacto_nombre,
-                        $c->email,
-                        $c->telefono,
-                        $c->cargo,
-                        $c->region_comuna,
-                        $c->tamano_equipo,
-                        $c->estado,
-                        $c->notas,
-                        $c->groups->pluck('name')->implode(', ')
-                    ], ';');
-                }
-            });
-
-            fclose($handle);
-        };
-
-        return response()->stream($callback, 200, $headers);
+            'Content-Encoding' => 'none',
+        ]);
     }
 }

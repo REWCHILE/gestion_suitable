@@ -9,13 +9,13 @@
     <p class="page-subtitle">Suba archivos CSV de salud, descargue plantillas maestras o pegue tablas desde Brevo</p>
   </div>
   <div class="header-actions" style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-    <a href="{{ route('import.template') }}" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 600; padding: 10px 18px; box-shadow: 0 2px 4px rgba(30,136,136,0.2);">
+    <a href="{{ route('import.template') }}" download="Plantilla_Maestra_Contactos_Suitable.csv" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 600; padding: 10px 18px; box-shadow: 0 2px 4px rgba(30,136,136,0.2);">
       <span>📥</span>
       <span>Descargar Excel Maestro (.csv)</span>
     </a>
-    <a href="{{ route('import.export') }}" class="btn btn-secondary" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 600; padding: 10px 18px;">
+    <a href="{{ route('import.export') }}" download="Base_Contactos_Suitable_Completa.csv" class="btn btn-secondary" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 600; padding: 10px 18px;">
       <span>📊</span>
-      <span>Exportar Base Actual</span>
+      <span>Exportar Base Completa (540 Contactos)</span>
     </a>
   </div>
 </div>
@@ -124,10 +124,13 @@
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 8px;">
-        <a href="{{ route('import.template') }}" class="btn" style="background: #1E8888; color: white; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 12.5px; font-weight: 700; padding: 10px; border-radius: 6px; text-decoration: none;">
+        <a href="{{ route('import.template') }}" download="Plantilla_Maestra_Contactos_Suitable.csv" class="btn" style="background: #1E8888; color: white; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 12.5px; font-weight: 700; padding: 10px; border-radius: 6px; text-decoration: none;">
           <span>📥</span> Descargar Plantilla Maestra (.csv)
         </a>
-        <div style="font-size: 11px; color: #0F766E; text-align: center;">
+        <a href="{{ route('import.export') }}" download="Base_Contactos_Suitable_Completa.csv" class="btn" style="background: #0284C7; color: white; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 12.5px; font-weight: 700; padding: 10px; border-radius: 6px; text-decoration: none;">
+          <span>📊</span> Exportar BD Completa (540 Clínicas)
+        </a>
+        <div style="font-size: 11px; color: #0F766E; text-align: center; margin-top: 4px;">
           ✓ Compatible con Excel (BOM UTF-8, tildes y caracteres chilenos)
         </div>
       </div>

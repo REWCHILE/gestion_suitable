@@ -1,0 +1,541 @@
+﻿ID;Empresa;Contacto;Email;Telefono;Cargo;Comuna;Tamano_Equipo;Estado;Notas;Grupos
+1;"Clínica Las Condes";"Dra. Marcela Contreras";mcontreras@clc.cl;+56991234567;"Jefa de Enfermería y Pabellón";"Las Condes, RM";45;tallaje_agendado;"Interesados en dotación de 45 equipos color Caribbean y Azul Marino con bordado institucional. Se coordinó visita con muestrario y tallero completo en piso 3.";"Clínicas & Hospitales RM"
+2;"RedSalud Santiago Centro";"Cristián Valenzuela";cvalenzuela@redsalud.cl;+56987654321;"Jefe de Adquisiciones y Convenios";"Santiago Centro, RM";80;cotizacion_enviada;"Tallaje realizado exitosamente la semana pasada. Se envió cotización corporativa por 80 sets con 6 meses de garantía y reposición semestral.";"Clínicas & Hospitales RM"
+3;"Clínica Dental OdontoSalud";"Dr. Felipe Morales";fmorales@odontosalud.cl;+56976543210;"Director Clínico";"Providencia, RM";18;correo_2_enviado;"Se envió correo B2B con foto de antifluidos y servicio de tallaje. Respondió con interés por tallas mujer y hombre en tela Flex verde y celeste.";"Centros Odontológicos"
+4;"Hospital del Trabajador ACHS";"Rodrigo Espinoza";respinoza@achs.cl;+56965432109;"Encargado de Compras Médicas";"Providencia, RM";120;correo_1_enviado;"Se envió presentación general de la marca Suitable. Pendiente seguimiento para ofrecer servicio de tallaje en terreno.";"Clínicas & Hospitales RM"
+5;"Centro Médico y Estético Vitacura";"Camila Silva";csilva@esteticavitacura.cl;+56954321098;"Administradora General";"Vitacura, RM";12;ganado;"Venta cerrada y entregada. 12 sets completos mujer color lila y negro con bordado dorado de marca. 6 meses de garantía activados.";"Centros Estéticos & Dermatología"
+6;"Clínica San Carlos UC CHRISTUS";"Dra. Andrea Munita";amunita@ucchristus.cl;+56943210987;"Subdirectora de Gestión Hospitalaria";"Las Condes, RM";60;nuevo;"Nuevo prospecto identificado. Se recomienda enviar Plantilla 2 (B2B Fabricantes & Tallaje).";"Clínicas & Hospitales RM"
+7;"Consulta / Bcifuentesg";Bcifuentesg;bcifuentesg@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 682)";encuesta
+8;"Consulta / Loretoimperatore";Loretoimperatore;loretoimperatore@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 681)";encuesta
+9;"Consulta / Ssocialcri";Ssocialcri;ssocialcri@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 680)";encuesta
+10;"Consulta / Constanzandreaa";Constanzandreaa;constanzandreaa7@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 679)";encuesta
+11;"Consulta / Carloscamposanog";Carloscamposanog;carloscamposanog@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 678)";encuesta
+12;"Consulta / Marcela Kuscevic";"Marcela Kuscevic";marcela.kuscevic@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 677)";encuesta
+13;"Universidad de Chile (Salud)";"Daniela Chureo";daniela.chureo@ug.uchile.cl;;"Profesional de Salud";Santiago;15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 676)";encuesta
+14;"Consulta / Aracellif";Aracellif;aracellif73@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 675)";encuesta
+15;"Consulta / Sofired";Sofired;sofired@live.cl;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 674)";encuesta
+16;"Consulta / Hovalle E";"Hovalle E";hovalle.e@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 673)";encuesta
+17;"Centro de Kinesiología y Rehabilitación";Fcoarroyo;fcoarroyokinesiologo@gmail.com;;Kinesiólogo/a;"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 672)";encuesta
+18;"Consulta / Dani";Dani;dani@gmk.cl;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 671)";encuesta
+19;"Consulta / M Berjerie";"M Berjerie";m.berjerie@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 670)";encuesta
+20;"Consulta / Esedrule";Esedrule;esedrule7@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 669)";encuesta
+21;"Consulta / Fabiannahuelpan C";"Fabiannahuelpan C";fabiannahuelpan.c@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 668)";encuesta
+22;"Consulta / Ortiz G";"Ortiz G";ortiz_g43@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 667)";encuesta
+23;"Consulta / Camila Floresbarrios";"Camila Floresbarrios";camila.floresbarrios@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 666)";encuesta
+24;"Universidad del Desarrollo (Salud)";Lasems;lasems@udd.cl;;"Profesional de Salud";"Las Condes";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 665)";encuesta
+25;"Consulta / Ivanapachecob";Ivanapachecob;ivanapachecob@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 664)";encuesta
+26;"Consulta / Mjdediosj";Mjdediosj;mjdediosj@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 663)";encuesta
+27;"Clínica Veterinaria Kuyen";Veterinariakuyen;veterinariakuyen2@gmail.com;;"Médico Veterinario / Directora";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 662)";encuesta
+28;"Consulta / Javierat";Javierat;javierat56@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 661)";encuesta
+29;"Estudio de Estética & Belleza";Kimberli;estilistakimberli@gmail.com;;"Estilista / Estética";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 660)";encuesta
+30;"Corporación Municipal de Salud Renca";"Carolina Olivares";carolina.olivares@renca.cl;;"Profesional de Salud";Renca;15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 659)";encuesta
+31;"Consulta / Concan Leiva";"Concan Leiva";concan.leiva@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 658)";encuesta
+32;"Consulta / Cverdugoq";Cverdugoq;cverdugoq804@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 657)";encuesta
+33;"Consulta / Gabrielignaciodiaz";Gabrielignaciodiaz;gabrielignaciodiaz@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 656)";encuesta
+34;"Consulta / Stephygutierrez";Stephygutierrez;stephygutierrez1999@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 655)";encuesta
+35;"Universidad de Chile (Salud)";"Camila Pizarro D";camila.pizarro.d@ug.uchile.cl;;"Profesional de Salud";Santiago;15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 654)";encuesta
+36;"Consulta / Nicolestraji";Nicolestraji;nicolestraji@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 653)";encuesta
+37;"Consulta / Nacho Salinas Gil";"Nacho Salinas Gil";nacho.salinas.gil@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 652)";encuesta
+38;"Consulta / Josemellalira";Josemellalira;josemellalira@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 651)";encuesta
+39;"Consulta / Nata Inogoe";"Nata Inogoe";nata.inogoe@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 650)";encuesta
+40;"Consulta / Valerianavarroquiroga";Valerianavarroquiroga;valerianavarroquiroga@gmail.comq;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 649)";encuesta
+41;"Consulta / Sofia Urzua Rod";"Sofia Urzua Rod";sofia.urzua.rod@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 648)";encuesta
+42;"Consulta / Sashamilenka";Sashamilenka;sashamilenka13@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 647)";encuesta
+43;"Consulta / Candiamariano";Candiamariano;candiamariano20@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 646)";encuesta
+44;"Consulta / Sil";Sil;sil_234@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 645)";encuesta
+45;"Consulta / Camilaormenogalvez";Camilaormenogalvez;camilaormenogalvez@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 644)";encuesta
+46;"Consulta / Danielaccarvacho";Danielaccarvacho;danielaccarvacho@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 643)";encuesta
+47;"Consulta / Silvia Urzua";"Silvia Urzua";silvia_urzua@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 642)";encuesta
+48;"Universidad Mayor / Red Salud";"Maria Lopezva";maria.lopezva@mayor.cl;;"Profesional de Salud";Huechuraba;15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 641)";encuesta
+49;"Consulta / Francitaliset";Francitaliset;francitaliset@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 640)";encuesta
+50;"Consulta / Vannefran";Vannefran;vannefran.03@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 639)";encuesta
+51;"Consulta / Marianmontero";Marianmontero;marianmontero01@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 638)";encuesta
+52;"Consulta / Fernandaperedach";Fernandaperedach;fernandaperedach@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 637)";encuesta
+53;"Consulta / Antoniabustosh";Antoniabustosh;antoniabustosh@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 636)";encuesta
+54;"Consulta / Carocastrojorda";Carocastrojorda;carocastrojorda@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 635)";encuesta
+55;"Consulta / Carodiazch";Carodiazch;carodiazch@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 634)";encuesta
+56;"Consulta / Conycaceresgalvez";Conycaceresgalvez;conycaceresgalvez@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 633)";encuesta
+57;"Consulta / Bustamantekarina";Bustamantekarina;bustamantekarina680@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 632)";encuesta
+58;"Consulta / Marianadparraz";Marianadparraz;marianadparraz@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 631)";encuesta
+59;"Consulta / Diego Andres";"Diego Andres";diego.andres.17@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 630)";encuesta
+60;"Consulta / Vretamalesespinoza";Vretamalesespinoza;vretamalesespinoza@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 629)";encuesta
+61;"Consulta / Tamaragonzalezz";Tamaragonzalezz;tamaragonzalezz27@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 628)";encuesta
+62;"Consulta / Mfmladinic";Mfmladinic;mfmladinic@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 627)";encuesta
+63;"Consulta / Fran Aliaga";"Fran Aliaga";fran.aliaga1@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 626)";encuesta
+64;"Consulta / Samyp";Samyp;samyp286@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 625)";encuesta
+65;"Consulta / Diego Caceres Rucal";"Diego Caceres Rucal";diego.caceres.rucal@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 624)";encuesta
+66;"Consulta / Eliazar Lich";"Eliazar Lich";eliazar_lich@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 623)";encuesta
+67;"Consulta / Cristian Flores";"Cristian Flores";cristian1982flores@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 622)";encuesta
+68;"Consulta / Carlacornejoc";Carlacornejoc;carlacornejoc@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 621)";encuesta
+69;"Consulta / Ivan Sanmartin";"Ivan Sanmartin";ivan0sanmartin@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 620)";encuesta
+70;"Consulta / Andreaibacache";Andreaibacache;andreaibacache14@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 619)";encuesta
+71;"Consulta / Cecy Hermosilla";"Cecy Hermosilla";cecy.hermosilla.5@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 618)";encuesta
+72;"Consulta / Anita Figueroa";"Anita Figueroa";anita-figueroa@outlook.es;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 617)";encuesta
+73;"Consulta / Zepeda Joaquin";"Zepeda Joaquin";zepeda.joaquin.1994@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 616)";encuesta
+74;"Consulta / Rahumleigh";Rahumleigh;rahumleigh@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 615)";encuesta
+75;"Consulta / Mayra Contreras";"Mayra Contreras";mayra.contreras08102003@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 614)";encuesta
+76;"Consulta / Catalina Bello R";"Catalina Bello R";catalina.bello.r.2612@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 613)";encuesta
+77;"Consulta / Kevinestradacortes";Kevinestradacortes;kevinestradacortes.21@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 612)";encuesta
+78;"Consulta / Josefabarra";Josefabarra;josefabarra00@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 611)";encuesta
+79;"Consulta / Catalinadonoso Bravo";"Catalinadonoso Bravo";catalinadonoso.bravo@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 610)";encuesta
+80;"Consulta / Danipachecomiranda";Danipachecomiranda;danipachecomiranda@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 609)";encuesta
+81;"Consulta / Krishnacruz";Krishnacruz;krishnacruz67@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 608)";encuesta
+82;"Consulta / J Guerrero Valenzuela";"J Guerrero Valenzuela";j.guerrero.valenzuela@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 607)";encuesta
+83;"Universidad del Alba";Samaluenda;samaluenda@udalba.cl;;"Profesional de Salud";Santiago;15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 606)";encuesta
+84;"Consulta / Rominabarrueto";Rominabarrueto;rominabarrueto@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 605)";encuesta
+85;"Consulta / Nicolecastillocortez";Nicolecastillocortez;nicolecastillocortez@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 604)";encuesta
+86;"Consulta / Nancypa";Nancypa;nancypa7657@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 603)";encuesta
+87;"Consulta / Noriherbus";Noriherbus;noriherbus@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 602)";encuesta
+88;"Consulta / Catalina Igord";"Catalina Igord";catalina.igord@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 601)";encuesta
+89;"Consulta / Brosas";Brosas;brosas@live.cl;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 600)";encuesta
+90;"Consulta / Emiliovarelacorona";Emiliovarelacorona;emiliovarelacorona@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 599)";encuesta
+91;"Red de Salud UC CHRISTUS";Ffmunoz;ffmunoz2@uc.cl;;"Profesional de Salud";Santiago;15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 598)";encuesta
+92;"Consulta / Manecastilloc";Manecastilloc;manecastilloc@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 597)";encuesta
+93;"Consulta / Patita Madrid";"Patita Madrid";patita.madrid71@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 596)";encuesta
+94;"Consulta / Veronicacardenasmora";Veronicacardenasmora;veronicacardenasmora@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 595)";encuesta
+95;"Consulta / Cristinabelen";Cristinabelen;cristinabelen2401@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 594)";encuesta
+96;"Consulta / Carolinandrea Castillo";"Carolinandrea Castillo";carolinandrea.castillo@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 593)";encuesta
+97;"Consulta / Constanzadun";Constanzadun;constanzadun02@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 592)";encuesta
+98;"Consulta / Constanza Cerna Messina";"Constanza Cerna Messina";constanza.cerna.messina@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 591)";encuesta
+99;"Consulta / Angiecdiaz";Angiecdiaz;angiecdiaz14@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 590)";encuesta
+100;"Consulta / Mateo Moyanoa";"Mateo Moyanoa";mateo.moyanoa@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 589)";encuesta
+101;"Consulta / Dxmaribxlen";Dxmaribxlen;dxmaribxlen69@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 588)";encuesta
+102;"Consulta / Ariadna Rojas";"Ariadna Rojas";ariadna.rojas.799@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 587)";encuesta
+103;"Consulta / Martinafvb";Martinafvb;martinafvb@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 586)";encuesta
+104;"Consulta / Fdp";Fdp;fdp0706@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 585)";encuesta
+105;"Consulta / Sanhuezaalvarezingrid";Sanhuezaalvarezingrid;sanhuezaalvarezingrid@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 584)";encuesta
+106;"Consulta / Aysha Rojas";"Aysha Rojas";aysha.rojas.15@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 583)";encuesta
+107;"Consulta / Mmaximiliano";Mmaximiliano;mmaximiliano090@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 582)";encuesta
+108;"Consulta / Ivette Gomez Q";"Ivette Gomez Q";ivette.gomez.q53@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 581)";encuesta
+109;"Consulta / Nisotoc";Nisotoc;nisotoc@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 580)";encuesta
+110;"Consulta / Maidagalvezduff";Maidagalvezduff;maidagalvezduff@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 579)";encuesta
+111;"Consulta / Moraleseadela";Moraleseadela;moraleseadela@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 578)";encuesta
+112;"Consulta / Kcornejorios";Kcornejorios;kcornejorios@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 577)";encuesta
+113;"Consulta / Jasmineolivos";Jasmineolivos;jasmineolivos172002@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 576)";encuesta
+114;"Consulta / Fsotoyaksic";Fsotoyaksic;fsotoyaksic@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 575)";encuesta
+115;"Consulta / Vmgalarce";Vmgalarce;vmgalarce1@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 574)";encuesta
+116;"Consulta / Fran Figueroa K";"Fran Figueroa K";fran.figueroa.k@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 573)";encuesta
+117;"Consulta / Vaneantonietti";Vaneantonietti;vaneantonietti@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 572)";encuesta
+118;"Consulta / Milena Orellana R";"Milena Orellana R";milena.orellana.r@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 571)";encuesta
+119;"Consulta / Florecarolina";Florecarolina;florecarolina@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 570)";encuesta
+120;"Consulta / Anais Bravo H";"Anais Bravo H";anais.bravo.h@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 569)";encuesta
+121;"Consulta / Consueloelisa";Consueloelisa;consueloelisa3@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 568)";encuesta
+122;"Consulta / Abarzuamariajose";Abarzuamariajose;abarzuamariajose@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 567)";encuesta
+123;"Consulta / Rocioasteteh";Rocioasteteh;rocioasteteh@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 566)";encuesta
+124;"Consulta / Katerinamillan";Katerinamillan;katerinamillan@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 565)";encuesta
+125;"Consulta / Amarumunoz";Amarumunoz;amarumunoz7@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 564)";encuesta
+126;"Consulta / Franardub";Franardub;franardub@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 563)";encuesta
+127;"Consulta / Nataliarivabarr";Nataliarivabarr;nataliarivabarr@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 562)";encuesta
+128;"Consulta / Vanepj";Vanepj;vanepj99@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 561)";encuesta
+129;"Universidad de Magallanes (Salud)";Pasanhue;pasanhue@umag.cl;;"Profesional de Salud";"Punta Arenas";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 560)";encuesta
+130;"Consulta / Ara Cely";"Ara Cely";ara2002cely@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 559)";encuesta
+131;"Consulta / Orfiliacarolina";Orfiliacarolina;orfiliacarolina@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 558)";encuesta
+132;"Consulta / Barbara Pv";"Barbara Pv";barbara.pv1999@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 557)";encuesta
+133;"Universidad Andrés Bello (Salud)";"M Herrerapinto";m.herrerapinto@uandresbello.edu;;"Profesional de Salud";Santiago;15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 556)";encuesta
+134;"Consulta / Oscarca";Oscarca;oscarca3@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 555)";encuesta
+135;"Consulta / Mel Acostasalazar";"Mel Acostasalazar";mel.acostasalazar@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 554)";encuesta
+136;"Consulta / Dulloaw";Dulloaw;dulloaw@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 553)";encuesta
+137;"Consulta / Blanquialcalde";Blanquialcalde;blanquialcalde@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 552)";encuesta
+138;"Consulta / Franmantinetti";Franmantinetti;franmantinetti@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 551)";encuesta
+139;"Consulta / Cristobal G S";"Cristobal G S";cristobal.g.s@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 550)";encuesta
+140;"Consulta / Guineobarrialolajessica";Guineobarrialolajessica;guineobarrialolajessica@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 549)";encuesta
+141;"Consulta / Descon";Descon;descon1313@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 548)";encuesta
+142;"Consulta / Fb Gonzalezmiranda";"Fb Gonzalezmiranda";fb.gonzalezmiranda@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 547)";encuesta
+143;"Consulta / Luciagabriela Lgms";"Luciagabriela Lgms";luciagabriela.lgms@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 546)";encuesta
+144;"Consulta / Catalinahuenuman";Catalinahuenuman;catalinahuenuman@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 545)";encuesta
+145;"Consulta / Isi Vennik";"Isi Vennik";isi.vennik@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 544)";encuesta
+146;"Consulta / Cgloria Arias";"Cgloria Arias";cgloria.arias@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 543)";encuesta
+147;"Consulta / Javieran";Javieran;javieran016@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 542)";encuesta
+148;"Consulta / Daniela Mmeliqueo";"Daniela Mmeliqueo";daniela.mmeliqueo@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 541)";encuesta
+149;"Consulta / Catalina Fernandavl";"Catalina Fernandavl";catalina.fernandavl@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 540)";encuesta
+150;"Consulta / Barbara Rodriguez";"Barbara Rodriguez";barbara98rodriguez@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 539)";encuesta
+151;"Consulta / Sebalanda";Sebalanda;sebalanda14@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 538)";encuesta
+152;"Consulta / Tobalobboy";Tobalobboy;tobalobboy@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 537)";encuesta
+153;"Consulta / Catalina Ralde";"Catalina Ralde";catalina.ralde@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 536)";encuesta
+154;"Consulta / Javibustosgarcia";Javibustosgarcia;javibustosgarcia@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 535)";encuesta
+155;"Consulta / Flo Aguiarimutis";"Flo Aguiarimutis";flo.aguiarimutis@outlook.cl;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 534)";encuesta
+156;"Red de Salud UC CHRISTUS";"Catalina B Hernandez";catalina.b.hernandez@uc.cl;;"Profesional de Salud";Santiago;15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 533)";encuesta
+157;"Consulta / Jeseniabadilla Jb";"Jeseniabadilla Jb";jeseniabadilla.jb@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 532)";encuesta
+158;"Consulta / Pastelesmaria";Pastelesmaria;pastelesmaria@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 531)";encuesta
+159;"Consulta / Rocio Cararoortiz";"Rocio Cararoortiz";rocio.cararoortiz@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 530)";encuesta
+160;"Consulta / Ingridlopezrojas";Ingridlopezrojas;ingridlopezrojas75@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 529)";encuesta
+161;"Consulta / Isabellavfernandez";Isabellavfernandez;isabellavfernandez@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 528)";encuesta
+162;"Consulta / Kuntiespinoza";Kuntiespinoza;kuntiespinoza@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 527)";encuesta
+163;"Consulta / Alejandrafmb";Alejandrafmb;alejandrafmb@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 526)";encuesta
+164;"Consulta / Jaelmontt";Jaelmontt;jaelmontt@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 525)";encuesta
+165;"Consulta / Cata Godoy Al";"Cata Godoy Al";cata.godoy.al@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 524)";encuesta
+166;"Consulta / Sofiafuenteshernandez";Sofiafuenteshernandez;sofiafuenteshernandez1993@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 523)";encuesta
+167;"Universidad de Playa Ancha";"Maria Mondaca";maria.mondaca@alumnos.upla.cl;;"Profesional de Salud";Valparaíso;15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 522)";encuesta
+168;"Consulta / Camiloariel Gp";"Camiloariel Gp";camiloariel.gp@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 521)";encuesta
+169;"Consulta / Ignacio Cruz Torres";"Ignacio Cruz Torres";ignacio.cruz.torres@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 520)";encuesta
+170;"Consulta / Carlosgtapia";Carlosgtapia;carlosgtapia@hotmail.cl;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 519)";encuesta
+171;"Consulta / Marielle Castillos";"Marielle Castillos";marielle.castillos@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 518)";encuesta
+172;"Consulta / Veroferreirajimenez";Veroferreirajimenez;veroferreirajimenez@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 517)";encuesta
+173;"Consulta / Daniela Ravello";"Daniela Ravello";daniela.ravello84@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 516)";encuesta
+174;"La Fábrica de Churros (Dotación)";Marcela;marcela@lafabricadechurros.cl;;"Profesional de Salud";Santiago;15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 515)";encuesta
+175;"Consulta / Barbaraaurora";Barbaraaurora;barbaraaurora@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 514)";encuesta
+176;"Consulta / Silvabarrioscamila";Silvabarrioscamila;silvabarrioscamila@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 513)";encuesta
+177;"Consulta / Marcossaavedramatamala";Marcossaavedramatamala;marcossaavedramatamala@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 512)";encuesta
+178;"Consulta / Danielacarrillor";Danielacarrillor;danielacarrillor@outlook.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 511)";encuesta
+179;"Consulta / Elisaa Analia";"Elisaa Analia";elisaa.analia@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 510)";encuesta
+180;"Consulta / Francanalesz";Francanalesz;francanalesz@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 509)";encuesta
+181;"Consulta / Valentina Albornoz";"Valentina Albornoz";valentina.albornoz5457@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 508)";encuesta
+182;"Consulta / Cponceo";Cponceo;cponceo@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 507)";encuesta
+183;"Consulta / Josefabelen";Josefabelen;josefabelen2000@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 506)";encuesta
+184;"Consulta / Constanzagallegosch";Constanzagallegosch;constanzagallegosch@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 505)";encuesta
+185;"Consulta / Jesu Navarrosuau";"Jesu Navarrosuau";jesu.navarrosuau@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 504)";encuesta
+186;"Consulta / Franciscoxavierm";Franciscoxavierm;franciscoxavierm@live.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 503)";encuesta
+187;"Consulta / Pablabluas";Pablabluas;pablabluas@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 502)";encuesta
+188;"Consulta / Germansoto";Germansoto;germansoto_18@live.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 501)";encuesta
+189;"Consulta / Vanesavendanor";Vanesavendanor;vanesavendanor@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 500)";encuesta
+190;"Consulta / Sandra Lara";"Sandra Lara";sandra.lara1@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 499)";encuesta
+191;"Consulta / Bastidiazz";Bastidiazz;bastidiazz10@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 498)";encuesta
+192;"Consulta / Valentina Daniela";"Valentina Daniela";valentina-daniela@live.cl;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 497)";encuesta
+193;"Consulta / Mayorycarolina Pavez";"Mayorycarolina Pavez";mayorycarolina.pavez@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 496)";encuesta
+194;"Red de Salud UC CHRISTUS";Afernandec;afernandec@uc.cl;;"Profesional de Salud";Santiago;15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 495)";encuesta
+195;"Consulta / Javiera";Javiera;javiera3001@outlook.cl;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 494)";encuesta
+196;"Consulta / Ricardogalleguillos";Ricardogalleguillos;ricardogalleguillos99@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 493)";encuesta
+197;"Consulta / Alejandraigalvezq";Alejandraigalvezq;alejandraigalvezq@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 492)";encuesta
+198;"Consulta / Fannybmarin";Fannybmarin;fannybmarin36@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 491)";encuesta
+199;"Consulta / Danigalaz";Danigalaz;danigalaz73@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 490)";encuesta
+200;"Consulta / Javitha";Javitha;javitha165@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 489)";encuesta
+201;"Consulta / V Galazmoreno";"V Galazmoreno";v.galazmoreno@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 488)";encuesta
+202;"Consulta / Tiareniguez";Tiareniguez;tiareniguez@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 487)";encuesta
+203;"Consulta / Constanzaardiles";Constanzaardiles;constanzaardiles1@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 486)";encuesta
+204;"Consulta / Riverareveco";Riverareveco;riverareveco@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 485)";encuesta
+205;"Consulta / Pridfonseca";Pridfonseca;pridfonseca1405@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 484)";encuesta
+206;"Consulta / Yasna Care";"Yasna Care";yasna.care@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 483)";encuesta
+207;"Consulta / Vero Herrera";"Vero Herrera";vero99herrera@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 482)";encuesta
+208;"Consulta / Fairuzaarriagada";Fairuzaarriagada;fairuzaarriagada@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 481)";encuesta
+209;"Consulta / Jacob Barqui";"Jacob Barqui";jacob.barqui@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 480)";encuesta
+210;"Consulta / Pezopaula";Pezopaula;pezopaula@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 479)";encuesta
+211;"Consulta / P Caceres";"P Caceres";p.caceres.2023@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 478)";encuesta
+212;"Consulta / Barbaritamity";Barbaritamity;barbaritamity@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 477)";encuesta
+213;"Universidad de Valparaíso";"Luciano Jeraldino";luciano.jeraldino@alumnos.uv.cl;;"Profesional de Salud";Valparaíso;15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 476)";encuesta
+214;"Consulta / Jharolmco";Jharolmco;jharolmco@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 475)";encuesta
+215;"Consulta / Lucreciabq";Lucreciabq;lucreciabq@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 474)";encuesta
+216;"Consulta / V Vbrant";"V Vbrant";v.vbrant@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 473)";encuesta
+217;"Consulta / Antoniopalaciosuribe";Antoniopalaciosuribe;antoniopalaciosuribe@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 472)";encuesta
+218;"Consulta / Francilepe";Francilepe;francilepe.1997@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 471)";encuesta
+219;"Consulta / Karlie Lanas";"Karlie Lanas";karlie.lanas.18@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 470)";encuesta
+220;"Consulta / Anisus";Anisus;anisus5574@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 469)";encuesta
+221;"Consulta / Antoniafbanados";Antoniafbanados;antoniafbanados@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 468)";encuesta
+222;"Consulta / Maru Suazoc";"Maru Suazoc";maru.suazoc55@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 467)";encuesta
+223;"Consulta / Benjaminpanatt";Benjaminpanatt;benjaminpanatt@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 466)";encuesta
+224;"Consulta / Lizethiguaro";Lizethiguaro;lizethiguaro@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 465)";encuesta
+225;"Consulta / Maria Sanhueza";"Maria Sanhueza";maria.sanhueza@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 464)";encuesta
+226;"Consulta / Tofeliperoblero";Tofeliperoblero;tofeliperoblero.1998@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 463)";encuesta
+227;"Consulta / Carcosaravena";Carcosaravena;carcosaravena@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 462)";encuesta
+228;"Consulta / Massiel Danae";"Massiel Danae";massiel.danae17@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 461)";encuesta
+229;"Consulta / Camila Barrerab";"Camila Barrerab";camila.barrerab.6@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 460)";encuesta
+230;"Institución de Salud";"Dr. Juanhuentecural";dr.juanhuentecural@gmail.com;;"Médico Cirujano / Especialista";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 459)";encuesta
+231;"Consulta / Emiliomonjes Stu";"Emiliomonjes Stu";emiliomonjes.stu@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 458)";encuesta
+232;"Consulta / C Valdesromero";"C Valdesromero";c.valdesromero11@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 457)";encuesta
+233;"Consulta / Tiarejimenezbrandt";Tiarejimenezbrandt;tiarejimenezbrandt4@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 456)";encuesta
+234;"Consulta / Benjaminbravobibs";Benjaminbravobibs;benjaminbravobibs@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 455)";encuesta
+235;"Consulta / Veryto Pizarro";"Veryto Pizarro";veryto.pizarro@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 454)";encuesta
+236;"Consulta / Eandradcaceres";Eandradcaceres;eandradcaceres@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 453)";encuesta
+237;"Consulta / Mackita";Mackita;mackita12@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 452)";encuesta
+238;"Universidad Diego Portales";"Cristobal Poblete";cristobal.poblete@mail.udp.cl;;"Profesional de Salud";Santiago;15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 451)";encuesta
+239;"Consulta / Marleenliliya";Marleenliliya;marleenliliya@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 450)";encuesta
+240;"Consulta / Ghabyta";Ghabyta;ghabyta.8@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 449)";encuesta
+241;"Consulta / Anita Rivadeneira";"Anita Rivadeneira";anita.rivadeneira98@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 448)";encuesta
+242;"Consulta / Vero Leo";"Vero Leo";vero.2022leo@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 447)";encuesta
+243;"Consulta / Mespinozap";Mespinozap;mespinozap2017@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 446)";encuesta
+244;"Consulta / Martina Schneider Romo";"Martina Schneider Romo";martina.schneider.romo@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 445)";encuesta
+245;"Consulta / Mayda Espinoza";"Mayda Espinoza";mayda.espinoza20@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 444)";encuesta
+246;"Consulta / Rodrigo Garciamir";"Rodrigo Garciamir";rodrigo.garciamir@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 443)";encuesta
+247;"Consulta / Kath Jara R";"Kath Jara R";kath.jara.r@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 442)";encuesta
+248;"Consulta / Cintya Font";"Cintya Font";cintya.font@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 441)";encuesta
+249;"Consulta / Gabrielaaguayochandia";Gabrielaaguayochandia;gabrielaaguayochandia1@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 440)";encuesta
+250;"Consulta / Ameliaarretx";Ameliaarretx;ameliaarretx@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 439)";encuesta
+251;"Consulta / Lorena Jaque";"Lorena Jaque";lorena.jaque6783@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 438)";encuesta
+252;"Consulta / Carlita Pame";"Carlita Pame";carlita.pame@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 437)";encuesta
+253;"Consulta / Myriam Olivo";"Myriam Olivo";myriam.olivo@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 436)";encuesta
+254;"Consulta / Martin Hafemann";"Martin Hafemann";martin.hafemann@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 435)";encuesta
+255;"Consulta / Yaquelin Miranda H";"Yaquelin Miranda H";yaquelin.miranda.h@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 434)";encuesta
+256;"Consulta / Piam Aravena C";"Piam Aravena C";piam.aravena.c@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 433)";encuesta
+257;"Consulta / German Marin O";"German Marin O";german.marin.o@outlook.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 432)";encuesta
+258;"Consulta / Ansalcas";Ansalcas;ansalcas@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 431)";encuesta
+259;"Consulta / Fjopazog";Fjopazog;fjopazog@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 430)";encuesta
+260;"Consulta / Gonzamu";Gonzamu;gonzamu@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 429)";encuesta
+261;"Red de Salud UC CHRISTUS";Telara;telara@uc.cl;;"Profesional de Salud";Santiago;15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 428)";encuesta
+262;"Consulta / Bryan Alvarez G";"Bryan Alvarez G";bryan.alvarez.g@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 427)";encuesta
+263;"Consulta / Fontalbasebastian";Fontalbasebastian;fontalbasebastian@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 426)";encuesta
+264;"Consulta / Anta Eee Anta";"Anta Eee Anta";anta.eee.anta@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 425)";encuesta
+265;"Consulta / Valentina Escanilla";"Valentina Escanilla";valentina.escanilla@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 424)";encuesta
+266;"Consulta / Claretdiaz";Claretdiaz;claretdiaz92@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 423)";encuesta
+267;"Consulta / Carla Espinozamr";"Carla Espinozamr";carla.espinozamr@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 422)";encuesta
+268;"Consulta / Berni Alliende";"Berni Alliende";berni.alliende2@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 421)";encuesta
+269;"Consulta / D Marinlartigo";"D Marinlartigo";d.marinlartigo@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 420)";encuesta
+270;"Consulta / Richialiasandres";Richialiasandres;richialiasandres@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 419)";encuesta
+271;"Consulta / Ciherrerasoto";Ciherrerasoto;ciherrerasoto@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 418)";encuesta
+272;"Consulta / Cooty";Cooty;cooty.6@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 417)";encuesta
+273;"Consulta / Bcaragui";Bcaragui;bcaragui@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 416)";encuesta
+274;"Universidad de Chile (Salud)";Matiasonate;matiasonate@ug.uchile.cl;;"Profesional de Salud";Santiago;15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 415)";encuesta
+275;"Institución de Salud";"Ps. Daniela F";ps.daniela.f@gmail.com;;"Psicólogo/a Clínico/a";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 414)";encuesta
+276;"Consulta / Cristinarubionash";Cristinarubionash;cristinarubionash@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 413)";encuesta
+277;"Consulta / Naty Portocarrero";"Naty Portocarrero";naty.portocarrero@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 412)";encuesta
+278;"Consulta / Scimena";Scimena;scimena@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 411)";encuesta
+279;"Consulta / Karourrar";Karourrar;karourrar@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 410)";encuesta
+280;"Consulta / Pasclaro";Pasclaro;pasclaro2@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 409)";encuesta
+281;"Consulta / Valentina Sepulveda";"Valentina Sepulveda";valentina.sepulveda1@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 408)";encuesta
+282;"Consulta / Dracrodriguezg";Dracrodriguezg;dracrodriguezg@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 407)";encuesta
+283;"Consulta / Andreaolivares E";"Andreaolivares E";andreaolivares.e@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 406)";encuesta
+284;"Consulta / Claudiacreyesb";Claudiacreyesb;claudiacreyesb@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 405)";encuesta
+285;"Consulta / Duguethernandez";Duguethernandez;duguethernandez2012@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 404)";encuesta
+286;"Consulta / Vickibeltran";Vickibeltran;vickibeltran02@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 403)";encuesta
+287;"Consulta / Camilorojassc";Camilorojassc;camilorojassc@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 402)";encuesta
+288;"Consulta / Maritamiranda";Maritamiranda;maritamiranda@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 401)";encuesta
+289;"Consulta / Msolevergara";Msolevergara;msolevergara@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 400)";encuesta
+290;"Consulta / Vicenteguzmanc";Vicenteguzmanc;vicenteguzmanc99@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 399)";encuesta
+291;"Consulta / Graff Dosocho";"Graff Dosocho";graff_dosocho@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 398)";encuesta
+292;"Consulta / Macasamhan";Macasamhan;macasamhan@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 397)";encuesta
+293;"Consulta / Javiera Pinaresmoreno";"Javiera Pinaresmoreno";javiera.pinaresmoreno@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 396)";encuesta
+294;"Consulta / Alvarez Natty";"Alvarez Natty";alvarez.natty@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 395)";encuesta
+295;"Consulta / Edo Avilao";"Edo Avilao";edo.avilao@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 394)";encuesta
+296;"Consulta / Krisler Aracely";"Krisler Aracely";krisler.aracely20@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 393)";encuesta
+297;"Consulta / Es Moragarcia";"Es Moragarcia";es.moragarcia@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 392)";encuesta
+298;"Consulta / Mayramo";Mayramo;mayramo777@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 391)";encuesta
+299;"Universidad Diego Portales";"Bastian Nahuelpan Q";bastian.nahuelpan_q@mail.udp.cl;;"Profesional de Salud";Santiago;15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 390)";encuesta
+300;"Consulta / Crigottigres";Crigottigres;crigottigres@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 389)";encuesta
+301;"Consulta / Joaquin Aravena";"Joaquin Aravena";joaquin.aravena.96@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 388)";encuesta
+302;"Consulta / Lucas Delrio O";"Lucas Delrio O";lucas.delrio.o@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 387)";encuesta
+303;"Consulta / Goxabah";Goxabah;goxabah2001@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 386)";encuesta
+304;"Consulta / Josevillegash";Josevillegash;josevillegash99@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 385)";encuesta
+305;"Consulta / Natalia Aguilera Marin";"Natalia Aguilera Marin";natalia.aguilera.marin@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 384)";encuesta
+306;"Consulta / Valeskabustamantemz";Valeskabustamantemz;valeskabustamantemz@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 383)";encuesta
+307;"Consulta / J Mauriciomondacac";"J Mauriciomondacac";j.mauriciomondacac@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 382)";encuesta
+308;"Consulta / Bebasilva";Bebasilva;bebasilva@live.cl;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 381)";encuesta
+309;"Consulta / Emciduc";Emciduc;emciduc@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 380)";encuesta
+310;"Red de Salud UC CHRISTUS";Virubio;virubio@uc.cl;;"Profesional de Salud";Santiago;15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 379)";encuesta
+311;"Consulta / Cata Rodriguezkrause";"Cata Rodriguezkrause";cata.rodriguezkrause@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 378)";encuesta
+312;"Consulta / Idansutin";Idansutin;idansutin@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 377)";encuesta
+313;"Consulta / Feerjesus Madrid";"Feerjesus Madrid";feerjesus.madrid@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 376)";encuesta
+314;"Consulta / Conii Melo Cm";"Conii Melo Cm";conii.melo.cm@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 375)";encuesta
+315;"Consulta / Earthquakemaker";Earthquakemaker;earthquakemaker@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 374)";encuesta
+316;"Consulta / Barbaramendezmendez";Barbaramendezmendez;barbaramendezmendez@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 373)";encuesta
+317;"Consulta / Myriam Riveros";"Myriam Riveros";myriam.riveros@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 372)";encuesta
+318;"Consulta / Katalina Araya";"Katalina Araya";katalina.araya2000@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 371)";encuesta
+319;"Consulta / Monsesemu";Monsesemu;monsesemu6@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 370)";encuesta
+320;"Consulta / Aviles Valdiviac";"Aviles Valdiviac";aviles.valdiviac@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 369)";encuesta
+321;"Universidad de Chile (Salud)";Rubenveas;rubenveas@ug.uchile.cl;;"Profesional de Salud";Santiago;15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 368)";encuesta
+322;"Consulta / Ro Pulgar";"Ro Pulgar";ro.pulgar99@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 367)";encuesta
+323;"Consulta / Kathy Vm";"Kathy Vm";kathy.vm@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 366)";encuesta
+324;"Consulta / Felipedmr";Felipedmr;felipedmr694@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 365)";encuesta
+325;"Consulta / Belenm Fuentesb";"Belenm Fuentesb";belenm.fuentesb@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 364)";encuesta
+326;"Consulta / Rolarogersm";Rolarogersm;rolarogersm@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 363)";encuesta
+327;"Consulta / Ruizmar";Ruizmar;ruizmar03@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 362)";encuesta
+328;"Consulta / Leonellu";Leonellu;leonellu7@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 361)";encuesta
+329;"Consulta / Fmunozro";Fmunozro;fmunozro24@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 360)";encuesta
+330;"Consulta / Gsferrazzam";Gsferrazzam;gsferrazzam@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 359)";encuesta
+331;"Universidad Mayor / Red Salud";"Josefa Aguilera";josefa.aguilera@mayor.cl;;"Profesional de Salud";Huechuraba;15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 358)";encuesta
+332;"Consulta / Franvoigt";Franvoigt;franvoigt@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 357)";encuesta
+333;"Consulta / Antoniaavendanoc";Antoniaavendanoc;antoniaavendanoc@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 356)";encuesta
+334;"Universidad de Chile (Salud)";"Camila Vasquez M";camila.vasquez.m@ug.uchile.cl;;"Profesional de Salud";Santiago;15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 355)";encuesta
+335;"Consulta / Sashy Totolate";"Sashy Totolate";sashy_totolate@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 354)";encuesta
+336;"Consulta / Catalinacaqueo";Catalinacaqueo;catalinacaqueo97@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 353)";encuesta
+337;"Consulta / Isi";Isi;isi_2403@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 352)";encuesta
+338;"Consulta / C Canalesbordillo";"C Canalesbordillo";c.canalesbordillo@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 351)";encuesta
+339;"Consulta / Jg Trabajosocial";"Jg Trabajosocial";jg.trabajosocial@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 350)";encuesta
+340;"Consulta / Mdelgadoop";Mdelgadoop;mdelgadoop@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 349)";encuesta
+341;"Consulta / Katherinliss";Katherinliss;katherinliss@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 348)";encuesta
+342;"Consulta / Rosario Spreng";"Rosario Spreng";rosario.spreng@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 347)";encuesta
+343;"Consulta / Pauorellana O";"Pauorellana O";pauorellana.o@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 346)";encuesta
+344;"Consulta / Rjosedominguez";Rjosedominguez;rjosedominguez@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 345)";encuesta
+345;"Consulta / Mgarridoa";Mgarridoa;mgarridoa3@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 344)";encuesta
+346;"Consulta / Dalilasc";Dalilasc;dalilasc01@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 343)";encuesta
+347;"Consulta / Maritebbs";Maritebbs;maritebbs@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 342)";encuesta
+348;"Consulta / Karla Olguin Ko";"Karla Olguin Ko";karla.olguin.ko@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 341)";encuesta
+349;"Consulta / Matiblanco";Matiblanco;matiblanco@live.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 340)";encuesta
+350;"Consulta / Cfermandois";Cfermandois;cfermandois97@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 339)";encuesta
+351;"Consulta / Anita Correa";"Anita Correa";anita.correa2001@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 338)";encuesta
+352;"Consulta / Paulina Barrera B";"Paulina Barrera B";paulina.barrera.b@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 337)";encuesta
+353;"Consulta / Amariagonzare";Amariagonzare;amariagonzare@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 336)";encuesta
+354;"Consulta / Michelleurzua";Michelleurzua;michelleurzua1@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 335)";encuesta
+355;"Consulta / Tduranandrade";Tduranandrade;tduranandrade21@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 334)";encuesta
+356;"Consulta / Belen Vera";"Belen Vera";belen.vera26@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 333)";encuesta
+357;"Consulta / Marcela Jorsa";"Marcela Jorsa";marcela.jorsa@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 332)";encuesta
+358;"Consulta / Bernirencoret";Bernirencoret;bernirencoret@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 331)";encuesta
+359;"Consulta / Va Romero";"Va Romero";va.romero98@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 330)";encuesta
+360;"Consulta / Ntcalde";Ntcalde;ntcalde@gmai.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 329)";encuesta
+361;"Consulta / Danim Sasco";"Danim Sasco";danim.sasco@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 328)";encuesta
+362;"Consulta / Kmontiel";Kmontiel;kmontiel039@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 327)";encuesta
+363;"Consulta / Matiacosta";Matiacosta;matiacosta07@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 326)";encuesta
+364;"Consulta / Ivanlutsko";Ivanlutsko;ivanlutsko@aol.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 325)";encuesta
+365;"Consulta / Nico Valdivia Rubilar";"Nico Valdivia Rubilar";nico.valdivia.rubilar@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 324)";encuesta
+366;"Universidad de Chile (Salud)";"Cesar Campos C";cesar.campos.c@ug.uchile.cl;;"Profesional de Salud";Santiago;15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 323)";encuesta
+367;"Consulta / Tamarasilvareyes";Tamarasilvareyes;tamarasilvareyes1@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 322)";encuesta
+368;"Consulta / Patriciandreavcastillo";Patriciandreavcastillo;patriciandreavcastillo@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 321)";encuesta
+369;"Consulta / Nicol Sagredo";"Nicol Sagredo";nicol.sagredo@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 320)";encuesta
+370;"Universidad Diego Portales";"Carlos Romero";carlos.romero@mail.udp.cl;;"Profesional de Salud";Santiago;15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 319)";encuesta
+371;"Consulta / Ernestogodoyg";Ernestogodoyg;ernestogodoyg@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 318)";encuesta
+372;"Consulta / Gustavo Labbe";"Gustavo Labbe";gustavo.labbe10@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 317)";encuesta
+373;"Consulta / Menavarro";Menavarro;menavarro@miuandes.cl;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 316)";encuesta
+374;"Consulta / Juank K";"Juank K";juank_12_k@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 315)";encuesta
+375;"Consulta / Camilalisspeg";Camilalisspeg;camilalisspeg@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 314)";encuesta
+376;"Consulta / Joseserranoredes";Joseserranoredes;joseserranoredes@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 313)";encuesta
+377;"Consulta / Marygen Vergaral";"Marygen Vergaral";marygen.vergaral@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 312)";encuesta
+378;"Consulta / Antorojasromero";Antorojasromero;antorojasromero@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 311)";encuesta
+379;"Consulta / Andreaa Cristinaa";"Andreaa Cristinaa";andreaa.cristinaa@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 310)";encuesta
+380;"Consulta / Kiimyramos";Kiimyramos;kiimyramos@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 309)";encuesta
+381;"Consulta / Dcesek";Dcesek;dcesek@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 308)";encuesta
+382;"Consulta / Maribelsepulvedam";Maribelsepulvedam;maribelsepulvedam@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 307)";encuesta
+383;"Consulta / Sofiam";Sofiam;sofiam956@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 306)";encuesta
+384;"Consulta / Jomacive";Jomacive;jomacive08@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 305)";encuesta
+385;"Consulta / Ajugob";Ajugob;ajugob@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 304)";encuesta
+386;"Consulta / Jpfuentesb";Jpfuentesb;jpfuentesb97@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 303)";encuesta
+387;"Consulta / Olguitams";Olguitams;olguitams1985@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 302)";encuesta
+388;"Facultad de Medicina UCSC";Vjaras;vjaras@medicina.ucsc.cl;;"Profesional de Salud";Concepción;15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 301)";encuesta
+389;"Consulta / Paulaisabellajaragallegos";Paulaisabellajaragallegos;paulaisabellajaragallegos13@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 300)";encuesta
+390;"Consulta / Mati Martinez";"Mati Martinez";mati.martinez10@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 299)";encuesta
+391;"Consulta / Beitamarint";Beitamarint;beitamarint@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 298)";encuesta
+392;"Consulta / Mairaa";Mairaa;mairaa1251@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 297)";encuesta
+393;"Consulta / Santy Araneda";"Santy Araneda";santy.araneda@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 296)";encuesta
+394;"Consulta / Ignovacre";Ignovacre;ignovacre@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 295)";encuesta
+395;"Consulta / Sofi Loyola";"Sofi Loyola";sofi1219.loyola@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 294)";encuesta
+396;"Consulta / Pao Zuninog";"Pao Zuninog";pao_zuninog@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 293)";encuesta
+397;"Consulta / Anaisclaveria C";"Anaisclaveria C";anaisclaveria.c@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 292)";encuesta
+398;"Consulta / Hredel";Hredel;hredel@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 291)";encuesta
+399;"Consulta / Isthatcaarlos";Isthatcaarlos;isthatcaarlos@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 290)";encuesta
+400;"Consulta / Ari Bernales";"Ari Bernales";ari.bernales@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 289)";encuesta
+401;"Consulta / Rocio Maka";"Rocio Maka";rocio_maka@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 288)";encuesta
+402;"Consulta / Belennc Araya";"Belennc Araya";belennc.araya@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 287)";encuesta
+403;"Consulta / Cami";Cami;cami94@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 286)";encuesta
+404;"Consulta / Sofiamirandabarrientos";Sofiamirandabarrientos;sofiamirandabarrientos16@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 285)";encuesta
+405;"Universidad Mayor / Red Salud";"Claudia Orozco";claudia.orozco@mayor.cl;;"Profesional de Salud";Huechuraba;15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 284)";encuesta
+406;"Consulta / Sofypaz";Sofypaz;sofypaz7@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 283)";encuesta
+407;"Consulta / Martinafro";Martinafro;martinafro28@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 282)";encuesta
+408;"Universidad de Chile (Salud)";"Catalina Letelier";catalina.letelier@ug.uchile.cl;;"Profesional de Salud";Santiago;15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 281)";encuesta
+409;"Consulta / Victoriagallegoscaceres";Victoriagallegoscaceres;victoriagallegoscaceres26@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 280)";encuesta
+410;"Consulta / Jriberas";Jriberas;jriberas@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 279)";encuesta
+411;"Consulta / Zafiropg";Zafiropg;zafiropg@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 278)";encuesta
+412;"Consulta / Pamep";Pamep;pamep_31@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 277)";encuesta
+413;"Universidad de Chile (Salud)";Alexandersilva;alexandersilva@ug.uchile.cl;;"Profesional de Salud";Santiago;15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 276)";encuesta
+414;"Universidad de Santiago de Chile";"Macarena Osorio";macarena.osorio@usach.cl;;"Profesional de Salud";"Estación Central";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 275)";encuesta
+415;"Consulta / Matias Contrerase";"Matias Contrerase";matias.contrerase.2395@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 274)";encuesta
+416;"Consulta / Geraldinbarrio";Geraldinbarrio;geraldinbarrio@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 273)";encuesta
+417;"Consulta / O Jara Neira";"O Jara Neira";o.jara.neira@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 272)";encuesta
+418;"Consulta / Caroline Gomez";"Caroline Gomez";caroline-gomez@hotmail.es;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 271)";encuesta
+419;"Consulta / Nora Jwafflesjovi";"Nora Jwafflesjovi";nora.jwafflesjovi@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 270)";encuesta
+420;"Consulta / Joselin Aravena";"Joselin Aravena";joselin.aravena@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 269)";encuesta
+421;"Consulta / Rodriguez Romina";"Rodriguez Romina";rodriguez.romina2508@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 268)";encuesta
+422;"Consulta / Jonathan Rb";"Jonathan Rb";jonathan.rb87@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 267)";encuesta
+423;"Consulta / Jbenjaminsc";Jbenjaminsc;jbenjaminsc@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 266)";encuesta
+424;"Consulta / Refluimos Marinante";"Refluimos Marinante";refluimos.marinante_03@icloud.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 265)";encuesta
+425;"Consulta / Franciscaacortes";Franciscaacortes;franciscaacortes24@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 264)";encuesta
+426;"Consulta / Priscilla Jeriaa";"Priscilla Jeriaa";priscilla.jeriaa2007@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 263)";encuesta
+427;"Consulta / Bayronmz";Bayronmz;bayronmz2000@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 262)";encuesta
+428;"Consulta / Abocazleon";Abocazleon;abocazleon@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 261)";encuesta
+429;"Consulta / Aylinccaviedes";Aylinccaviedes;aylinccaviedes@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 260)";encuesta
+430;"Consulta / Constanza Va";"Constanza Va";constanza.va24@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 259)";encuesta
+431;"Consulta / Catahhermosilla";Catahhermosilla;catahhermosilla@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 258)";encuesta
+432;"Universidad de Chile (Salud)";Fannymartinez;fannymartinez@ug.uchile.cl;;"Profesional de Salud";Santiago;15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 257)";encuesta
+433;"Consulta / Sabinasalazarp";Sabinasalazarp;sabinasalazarp@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 256)";encuesta
+434;"Institución de Salud";"Ps. Catalinapobletec";ps.catalinapobletec@gmail.com;;"Psicólogo/a Clínico/a";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 255)";encuesta
+435;"Consulta / Robe Gonzalezb";"Robe Gonzalezb";robe.gonzalezb@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 254)";encuesta
+436;"Consulta / Javiieracatalan";Javiieracatalan;javiieracatalan@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 253)";encuesta
+437;"Consulta / Emilio Posada";"Emilio Posada";emilio.posada99@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 252)";encuesta
+438;"Consulta / Isagomezz";Isagomezz;isagomezz410@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 251)";encuesta
+439;"Consulta / Maria Jesus Garrido Miranda";"Maria Jesus Garrido Miranda";maria.jesus.garrido.miranda@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 250)";encuesta
+440;"Consulta / Barbaralizanav";Barbaralizanav;barbaralizanav@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 249)";encuesta
+441;"Consulta / Pattysanchez";Pattysanchez;pattysanchez6@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 248)";encuesta
+442;"Consulta / Juliocuevascortes";Juliocuevascortes;juliocuevascortes@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 247)";encuesta
+443;"Consulta / Carolina Cgt";"Carolina Cgt";carolina.2001.cgt@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 246)";encuesta
+444;"Consulta / Carolinaaandreaormeno";Carolinaaandreaormeno;carolinaaandreaormeno28@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 245)";encuesta
+445;"Consulta / E Nicolas Lemunao";"E Nicolas Lemunao";e.nicolas.lemunao@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 244)";encuesta
+446;"Consulta / Carolina Solarg";"Carolina Solarg";carolina.solarg@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 243)";encuesta
+447;"Consulta / Tanialehk";Tanialehk;tanialehk@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 242)";encuesta
+448;"Universidad Finis Terrae";Vkrumenaker;vkrumenaker@uft.edu;;"Profesional de Salud";Providencia;15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 241)";encuesta
+449;"Centro de Fonoaudiología & Terapias";Lumesias;fonoaudiologalumesias@gmail.com;;Fonoaudiólogo/a;"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 240)";encuesta
+450;"Consulta / Severin Carrasco";"Severin Carrasco";severin.carrasco@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 239)";encuesta
+451;"Consulta / Damianviltres";Damianviltres;damianviltres@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 238)";encuesta
+452;"Consulta / Modena";Modena;modena1976@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 237)";encuesta
+453;"Consulta / Claudiaandrew";Claudiaandrew;claudiaandrew3@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 236)";encuesta
+454;"Consulta / Tennysonleiva";Tennysonleiva;tennysonleiva@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 235)";encuesta
+455;"Consulta / Yehissim";Yehissim;yehissim@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 234)";encuesta
+456;"Consulta / Stuardoleonor";Stuardoleonor;stuardoleonor639@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 233)";encuesta
+457;"Consulta / Anavicencioleon";Anavicencioleon;anavicencioleon@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 232)";encuesta
+458;"Consulta / Vero Mdubles";"Vero Mdubles";vero.mdubles@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 231)";encuesta
+459;"Consulta / Nayadethag";Nayadethag;nayadethag@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 230)";encuesta
+460;"Universidad de Chile (Salud)";Nataliataha;nataliataha@ug.uchile.cl;;"Profesional de Salud";Santiago;15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 229)";encuesta
+461;"Consulta / Diegosmr";Diegosmr;diegosmr343@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 228)";encuesta
+462;"Consulta / Kathiadoctoraruiz";Kathiadoctoraruiz;kathiadoctoraruiz@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 227)";encuesta
+463;"Consulta / C Araceli Sv";"C Araceli Sv";c.araceli.sv@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 226)";encuesta
+464;"Universidad de Santiago de Chile";"Constanza Palma R";constanza.palma.r@usach.cl;;"Profesional de Salud";"Estación Central";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 225)";encuesta
+465;"Consulta / Andresaxel";Andresaxel;andresaxel299@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 224)";encuesta
+466;"Consulta / Edgardavid";Edgardavid;edgardavid2416@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 223)";encuesta
+467;"Consulta / Mariianmenesesbra";Mariianmenesesbra;mariianmenesesbra@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 222)";encuesta
+468;"Consulta / Riquelme Ar Mariapaz";"Riquelme Ar Mariapaz";riquelme.ar.mariapaz@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 221)";encuesta
+469;"Consulta / Matias Silvazapata";"Matias Silvazapata";matias.silvazapata@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 220)";encuesta
+470;"Consulta / Javi Cofre";"Javi Cofre";javi.cofre@hotmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 219)";encuesta
+471;"Consulta / Escobaromj";Escobaromj;escobaromj@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 218)";encuesta
+472;"Consulta / Dani E Aspee";"Dani E Aspee";dani.e.aspee@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 217)";encuesta
+473;"Consulta / Rayen";Rayen;rayen1605@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 216)";encuesta
+474;"Consulta / Paulinaalejandra";Paulinaalejandra;paulinaalejandra2001@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 215)";encuesta
+475;"Consulta / Laurahirtezarellano";Laurahirtezarellano;laurahirtezarellano@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 214)";encuesta
+476;"Consulta / Marjoriemenesespino";Marjoriemenesespino;marjoriemenesespino@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 213)";encuesta
+477;"Consulta / Stefiriverach";Stefiriverach;stefiriverach@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 212)";encuesta
+478;"Consulta / Agustingabrielochoa";Agustingabrielochoa;agustingabrielochoa21@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 211)";encuesta
+479;"Consulta / Nayoreth Yufla Ayavire";"Nayoreth Yufla Ayavire";nayoreth.yufla.ayavire@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 210)";encuesta
+480;"Consulta / Ximenaolmostapia";Ximenaolmostapia;ximenaolmostapia@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 209)";encuesta
+481;"Consulta / Lucylac";Lucylac;lucylac39@yahoo.es;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 208)";encuesta
+482;"Consulta / Hellenleiva Bembow";"Hellenleiva Bembow";hellenleiva.bembow@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 207)";encuesta
+483;"Consulta / Anto Muzzio";"Anto Muzzio";anto.muzzio01@gmail.com;;"Profesional de Salud";"Santiago, RM";15;nuevo;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 206)";encuesta
+484;"Clínica Obesidad y Estética";"Macarena Pizarro";macarena.pizarro@obesidadyestetica.cl;;"Coordinación Clínica / Estética";"Las Condes, RM";15;ganado;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 205) | Cliente Antiguo Brevo #205";"encuesta, Clientes Antiguos, BD 2026 (B2B)"
+485;"Universidad Mayor / Red Salud";"Catalina Ford";catalina.ford@mayor.cl;;"Área Salud / Red Clínica";"Huechuraba, RM";15;ganado;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 204) | Cliente Antiguo Brevo #204";"encuesta, Clientes Antiguos, BD 2026 (B2B)"
+486;"Institución Gmail";Barbaranasiff;barbaranasiff@gmail.com;;"Jefatura de Adquisiciones";"Santiago, RM";15;ganado;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 203) | Cliente Antiguo Brevo #203";"encuesta, Clientes Antiguos, BD 2026 (B2B)"
+487;"Institución Gmail";Javiera.sd97;javiera.sd97@gmail.com;;"Jefatura de Adquisiciones";"Santiago, RM";15;ganado;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 202) | Cliente Antiguo Brevo #202";"encuesta, Clientes Antiguos, BD 2026 (B2B)"
+488;"Institución Yahoo";Hectorgine;hectorgine@yahoo.com;;"Jefatura de Adquisiciones";"Santiago, RM";15;ganado;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 201) | Cliente Antiguo Brevo #201";"encuesta, Clientes Antiguos, BD 2026 (B2B)"
+489;"Max-Plus Medical";"Contacto Adquisiciones";contacto@max-plus.org;;"Encargado de Dotación";"Santiago, RM";15;ganado;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 200) | Cliente Antiguo Brevo #200";"encuesta, Clientes Antiguos, BD 2026 (B2B)"
+490;"Policomp Salud & Servicios";"K. Rodríguez";krodriguez@policomp.com;;"Adquisiciones y Servicios";"Santiago, RM";15;ganado;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 199) | Cliente Antiguo Brevo #199";"encuesta, Clientes Antiguos, BD 2026 (B2B)"
+491;"Anatomy RX Dental";"Equipo Clínico Anatomy RX";anatomy.rxdental@gmail.com;;"Radiología Dental Especializada";"Santiago, RM";15;ganado;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 198) | Cliente Antiguo Brevo #198";"encuesta, Clientes Antiguos, BD 2026 (B2B)"
+492;"Institución Hotmail";Steban_84;steban_84@hotmail.com;;"Jefatura de Adquisiciones";"Santiago, RM";15;ganado;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 197) | Cliente Antiguo Brevo #197";"encuesta, Clientes Antiguos, BD 2026 (B2B)"
+493;"LabTech Equipamiento";Catalina;catalina@somoslabtech.com;;"Ventas & Dotación LabTech";"Santiago, RM";15;ganado;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 195) | Cliente Antiguo Brevo #195";"encuesta, Clientes Antiguos, BD 2026 (B2B)"
+494;"Botanical Solutions Chile";"Departamento de Compras";compras@botanicalsoluttions.cl;;"Jefatura de Adquisiciones";"Santiago, RM";15;ganado;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 194) | Cliente Antiguo Brevo #194";"encuesta, Clientes Antiguos, BD 2026 (B2B)"
+495;"NS Global Medical";"Contacto Adquisiciones";contacto@nsglobal.cl;;"Equipamiento y Salud";"Santiago, RM";15;ganado;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 193) | Cliente Antiguo Brevo #193";"encuesta, Clientes Antiguos, BD 2026 (B2B)"
+496;"LabTech Diagnóstica";Ian;ian@somoslabtech.cl;;"Área Técnica & Dotación";"Santiago, RM";15;ganado;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 191) | Cliente Antiguo Brevo #191";"encuesta, Clientes Antiguos, BD 2026 (B2B)"
+497;"Benefit Health Chile";Administración;admin@benefithealth.cl;;"Gerencia / Compras Salud";"Providencia, RM";15;ganado;"Importado de Brevo LISTA ENCUESTA #15 (Brevo ID: 190) | Cliente Antiguo Brevo #190";"encuesta, Clientes Antiguos, BD 2026 (B2B)"
+498;"3 Odontología Chile";"Dra. Encargada / 3 Odontología";3odontologiachile@gmail.com;;"Cirujano Dentista / Odontología";"Santiago, RM";15;ganado;"Cliente Antiguo importado desde Brevo #196";"Clientes Antiguos, BD 2026 (B2B)"
+499;"Novorad San Felipe";"Centro Radiológico Novorad";novoradsanfelipe@gmail.com;;"Dirección Médica / Imagenología";"San Felipe, Valparaíso";15;ganado;"Cliente Antiguo importado desde Brevo #192";"Clientes Antiguos, BD 2026 (B2B)"
+500;"Clínica Aurora Estética";"Equipo Clínico Aurora";contacto@auroraestetica.cl;;"Dirección / Medicina Estética";"Santiago, RM";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 189)";"BD 2026 (B2B)"
+501;Dentista.cl;"Equipo Odontológico Dentista.cl";info@dentista.cl;;"Cirujano Dentista / Odontología";"Santiago, RM";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 188)";"BD 2026 (B2B)"
+502;"AM Aesthetic Clinic";"Dra. Encargada AM Aesthetic";contacto@amaesthetic.cl;;"Medicina Estética & Salud";"Las Condes, RM";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 187)";"BD 2026 (B2B)"
+503;"Clínica NW";"Recepción & Adquisiciones Clínica NW";recepcion@clinicanw.cl;;"Coordinación Clínica";"Providencia, RM";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 186)";"BD 2026 (B2B)"
+504;"Laboratorio Dental Odontotecnia";"Administración Odontotecnia";administracion@odontotecnia.cl;;"Jefatura de Laboratorio / Adquisiciones";"Santiago Centro, RM";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 185)";"BD 2026 (B2B)"
+505;"Clínica Dental Bucalis";"Equipo Odontológico Bucalis";contacto@bucalis.cl;;"Odontología Integral";"Las Condes, RM";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 184)";"BD 2026 (B2B)"
+506;"Centro Médico Ecuamedic Maipú";"Dirección Médica Ecuamedic";ecuamedicmaipu@gmail.com;;"Administración y Salud";"Maipú, RM";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 183)";"BD 2026 (B2B)"
+507;"OdontoPrime Urgencia Dental";"Dra. Encargada OdontoPrime";odontoprimeurgenciadental@gmail.com;;"Urgencia Odontológica / Dentista";"Santiago, RM";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 182)";"BD 2026 (B2B)"
+508;"MR Clínica Dental";"Dr. Director MR Clínica";contacto@mrclinicadental.com;;"Cirujano Dentista";"Santiago, RM";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 181)";"BD 2026 (B2B)"
+509;"Clínica Nace";"Equipo Clínico Nace";hola@clinicanace.cl;;"Salud Integral & Estética";"Vitacura, RM";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 180)";"BD 2026 (B2B)"
+510;"Clínica Dentalike";"Equipo Dentalike";contacto@dentalike.cl;;"Odontología / Dentistas";"Providencia, RM";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 179)";"BD 2026 (B2B)"
+511;"Vera Fondi Clinic";"Dra. Directora Vera Fondi";contacto@verafondiclinic.cl;;"Medicina y Estética Facial";"Las Condes, RM";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 178)";"BD 2026 (B2B)"
+512;"Clínica Renacent";"Equipo Médico Renacent";contacto@clinicarenacent.cl;;"Estética y Salud Clínica";"Santiago, RM";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 177)";"BD 2026 (B2B)"
+513;"Clínica Bellese";"Dirección Clínica Bellese";clinicabellese@gmail.com;;"Estética & Cosmiatría";"Santiago, RM";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 176)";"BD 2026 (B2B)"
+514;"Centro Médico Las Quilas";"Dirección Médica Las Quilas";centromedicolasquilas@hotmail.com;;"Centro de Salud Ambulatorio";"Temuco / Región";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 175)";"BD 2026 (B2B)"
+515;"Clínica Akali";"Equipo Clínico Akali";contacto@akali.cl;;"Salud & Bienestar";"Santiago, RM";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 174)";"BD 2026 (B2B)"
+516;"Clínica Carmona";"Dr. Carmona / Dirección";clinicacarmona@hotmail.com;;"Atención Médica y Dental";"La Serena / Santiago";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 173)";"BD 2026 (B2B)"
+517;"Clínica Dermédica";"Dermatología Dermédica";contacto@dermedica.cl;;"Dermatología y Estética Médica";"Las Condes, RM";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 172)";"BD 2026 (B2B)"
+518;"Laboratorio Dental DentArt";"DentArt Lab Adquisiciones";info@dentartlab.cl;;"Laboratorio Dental & Prótesis";"Santiago, RM";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 171)";"BD 2026 (B2B)"
+519;"Radiología Holley Providencia";"Centro Radiológico Holley";contacto@radiologiaholley.cl;;"Imagenología y Radiología Dental";"Providencia, RM";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 170)";"BD 2026 (B2B)"
+520;"SVG Clínica Dental";"Dr. SVG Clínica";contacto@svgclinicadental.cl;;"Odontología Especializada";"Santiago, RM";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 169)";"BD 2026 (B2B)"
+521;"Centro Odontológico CEOS";"Recepción CEOS";recepcion@ceos.cl;;"Odontología y Ortodoncia";"Santiago, RM";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 168)";"BD 2026 (B2B)"
+522;"Bodylab Centro Kinésico & Estético";"Equipo Bodylab";atencion@bodylab.cl;;"Kinesiología y Estética Corporal";"Providencia, RM";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 167)";"BD 2026 (B2B)"
+523;"Clínica V-Dent";"Equipo Dental V-Dent";contacto@vdent.cl;;"Cirujano Dentista";"Santiago, RM";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 166)";"BD 2026 (B2B)"
+524;"Clínica B-Dental";"Equipo Clínico B-Dental";contacto@bdental.cl;;"Odontología General";"Santiago, RM";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 165)";"BD 2026 (B2B)"
+525;"Centro Franvide";"Dirección Franvide";contacto@franvide.cl;;"Servicios de Salud";"Santiago, RM";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 164)";"BD 2026 (B2B)"
+526;"Perfect Pie Podología Clínica";"Podología Perfect Pie";contacto@perfectpie.cl;;"Podología Médica y Clínica";"Providencia, RM";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 163)";"BD 2026 (B2B)"
+527;"Oasi Estética Médica";"Equipo Estético Oasi";estetica@oasi.cl;;"Medicina Estética";"Las Condes, RM";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 162)";"BD 2026 (B2B)"
+528;"Clínica Renova Providencia";"Equipo Renova";renovaprovidencia@gmail.com;;"Medicina Estética & Dental";"Providencia, RM";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 161)";"BD 2026 (B2B)"
+529;"Centro Dental Oralteck";"Administración Oralteck";administracion@oralteck.cl;;"Odontología y Cirugía Bucal";"Santiago, RM";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 130)";"BD 2026 (B2B)"
+530;"Colbremen Odontología";"Equipo Colbremen";info@colbremen.com;;"Especialidades Odontológicas";"Santiago, RM";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 129)";"BD 2026 (B2B)"
+531;"Clínica Pío X";"Dirección Clínica Pío X";contacto@clinicapiox.cl;;"Centro de Salud Providencia";"Providencia, RM";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 128)";"BD 2026 (B2B)"
+532;"Dentistas por Chile";"Red Dentistas por Chile";info@dentistasporchile.cl;;"Red Odontológica Corporativa";"Santiago, RM";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 127)";"BD 2026 (B2B)"
+533;"Clínica Da Vinci";"Equipo Médico Da Vinci";contacto@clinicadavinci.cl;;"Cirugía y Medicina Estética";"Las Condes, RM";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 126)";"BD 2026 (B2B)"
+534;"Clínica Odontológica Zahnen";"Dra. Directora Zahnen";info@zahnen.cl;;"Odontología de Alta Complejidad";"Santiago, RM";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 125)";"BD 2026 (B2B)"
+535;"Beauty Dental Clinic";"Equipo Beauty Dental";contacto@beautydental.cl;;"Estética Dental & Aclaramiento";"Santiago, RM";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 124)";"BD 2026 (B2B)"
+536;"CeroLab Dental";"Laboratorio CeroLab";contacto@cerolab.cl;;"Laboratorio y Fresado Dental";"Santiago, RM";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 123)";"BD 2026 (B2B)"
+537;"Clínica Pío X";"Dirección Clínica Pío X";contacto@piox.cl;;"Centro de Salud Providencia";"Providencia, RM";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 122)";"BD 2026 (B2B)"
+538;"DenteLite Clínica Odontológica";"Dra. Directora DenteLite";contacto@dentelite.cl;;"Rehabilitación Oral y Odontología";"Las Condes, RM";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 80)";"BD 2026 (B2B)"
+539;"Estética Maricel";"Maricel / Dirección";contacto@esteticamaricel.cl;;"Cosmetología y Estética Médica";"Santiago, RM";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 40)";"BD 2026 (B2B)"
+540;"Clínica Arrayán";"Dirección Clínica Arrayán";clinicaarrayan@clinicaarrayan.cl;;"Centro Médico Quirúrgico / Dental";"Lo Barnechea, RM";20;nuevo;"Importado de Brevo BD 2026 #13 B2B (Brevo ID: 14)";"BD 2026 (B2B)"
