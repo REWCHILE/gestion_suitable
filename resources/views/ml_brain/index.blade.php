@@ -56,7 +56,7 @@
   /* ESTILOS DE CHAT / PENSAMIENTOS */
   .thoughts-container {
     display: grid;
-    grid-template-columns: 310px 1fr;
+    grid-template-columns: 320px 1fr;
     gap: 20px;
     min-height: 650px;
     align-items: stretch;
@@ -119,7 +119,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    padding-right: 20px;
+    padding-right: 28px;
   }
   .thought-item.active .thought-item-title {
     color: #115E59;
@@ -135,22 +135,24 @@
     position: absolute;
     top: 10px;
     right: 8px;
-    opacity: 0;
-    background: transparent;
-    border: none;
-    color: #94A3B8;
+    opacity: 0.6;
+    background: #F1F5F9;
+    border: 1px solid #E2E8F0;
+    color: #64748B;
     cursor: pointer;
-    font-size: 13px;
-    padding: 2px 4px;
+    font-size: 12px;
+    padding: 3px 6px;
     border-radius: 4px;
     transition: all 0.15s ease;
+    z-index: 5;
   }
   .thought-item:hover .thought-item-delete {
     opacity: 1;
   }
   .thought-item-delete:hover {
-    color: #EF4444;
-    background: #FEE2E2;
+    color: #FFFFFF;
+    background: #EF4444;
+    border-color: #DC2626;
   }
 
   /* CHAT MAIN WORKSPACE */
@@ -970,6 +972,14 @@
 
 <!-- JAVASCRIPT REACTIVO & CONTROLADORES DE CEREBRO SUITABLE -->
 <script>
+  // RUTAS ABSOLUTAS DINÁMICAS BASADAS EN LARAVEL
+  const BRAIN_ROUTES = {
+    conversations: "{{ url('ml-brain/conversations') }}",
+    createConversation: "{{ route('ml_brain.create_conversation') }}",
+    diagnostic: "{{ route('ml_brain.diagnostic') }}",
+    sync: "{{ route('woocommerce.sync') }}",
+  };
+
   let currentConversationId = {{ $activeConversation ? $activeConversation->id : 'null' }};
   let lastDiagnosticText = '';
 
@@ -1062,7 +1072,7 @@
 
     try {
       const token = document.querySelector('meta[name="csrf-token"]').content;
-      const res = await fetch("{{ route('woocommerce.sync') }}", {
+      const res = await fetch(BRAIN_ROUTES.sync, {
         method: 'POST',
         headers: { 'X-CSRF-TOKEN': token, 'Accept': 'application/json' }
       });
@@ -1091,14 +1101,13 @@
     `;
     badgeEl.innerText = 'Razonando...';
 
-    // Desplazar vista hacia el box
     box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
     try {
       const token = document.querySelector('meta[name="csrf-token"]').content;
       const provider = document.getElementById('chat_provider_select') ? document.getElementById('chat_provider_select').value : 'groq';
 
-      const res = await fetch("{{ route('ml_brain.diagnostic') }}", {
+      const res = await fetch(BRAIN_ROUTES.diagnostic, {
         method: 'POST',
         headers: { 
           'X-CSRF-TOKEN': token, 
@@ -1128,14 +1137,8 @@
 
   // INICIAR DIÁLOGO DESDE EL DIAGNÓSTICO
   async function startDialogFromDiagnostic() {
-    if (!lastDiagnosticText) {
-      showToast('Generando o abriendo diálogo...', 'info');
-    }
-    
-    // Cambiar a la pestaña de pensamientos
     switchBrainTab('thoughts');
 
-    // Crear un nuevo pensamiento inicializado con el diagnóstico
     const initialPrompt = lastDiagnosticText 
       ? "He generado el siguiente Diagnóstico Ejecutivo de Suitable:\n\n" + lastDiagnosticText + "\n\n¿Por cuál de estas recomendaciones estratégicas me sugieres comenzar primero y cuál es el plan de acción para esta semana?"
       : "¿Cuáles son las 3 acciones comerciales más urgentes para captar convenios clínicos con Suitable este mes?";
@@ -1160,21 +1163,17 @@
     const timeline = document.getElementById('chat_messages_timeline');
     const statusEl = document.getElementById('chat_status_indicator');
 
-    // Deshabilitar botón
     btn.disabled = true;
     input.disabled = true;
     statusEl.innerHTML = '<span style="color:#1E8888;">🧠 Razonando respuesta...</span>';
 
-    // Si había un empty hero, removerlo
     const emptyHero = document.getElementById('chat_empty_hero');
     if (emptyHero) emptyHero.remove();
 
-    // Renderizar mensaje del usuario de inmediato en la interfaz
     appendMessageToTimeline('user', text, 'Tú', new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
     input.value = '';
     scrollChatToBottom();
 
-    // Indicador temporal de "Pensando..."
     const loadingId = 'loading_bubble_' + Date.now();
     appendLoadingBubble(loadingId);
     scrollChatToBottom();
@@ -1184,7 +1183,7 @@
 
       // Si no hay conversación activa, primero la creamos
       if (!currentConversationId) {
-        const createRes = await fetch("{{ route('ml_brain.create_conversation') }}", {
+        const createRes = await fetch(BRAIN_ROUTES.createConversation, {
           method: 'POST',
           headers: { 
             'X-CSRF-TOKEN': token, 
@@ -1202,8 +1201,8 @@
         }
       }
 
-      // Enviar mensaje al backend
-      const sendRes = await fetch(`/ml-brain/conversations/${currentConversationId}/messages`, {
+      // Enviar mensaje al endpoint con URL completa
+      const sendRes = await fetch(`${BRAIN_ROUTES.conversations}/${currentConversationId}/messages`, {
         method: 'POST',
         headers: { 
           'X-CSRF-TOKEN': token, 
@@ -1403,7 +1402,7 @@
     scrollChatToBottom();
 
     try {
-      const res = await fetch("{{ route('ml_brain.create_conversation') }}", {
+      const res = await fetch(BRAIN_ROUTES.createConversation, {
         method: 'POST',
         headers: { 
           'X-CSRF-TOKEN': token, 
@@ -1425,7 +1424,6 @@
         document.getElementById('current_thought_title').innerText = data.conversation.title;
         document.getElementById('current_thought_subtitle').innerText = 'Pensamiento guardado en memoria • Justo ahora';
 
-        // Renderizar mensajes creados
         timeline.innerHTML = '';
         data.conversation.messages.forEach(m => {
           appendMessageToTimeline(
@@ -1461,7 +1459,9 @@
     `;
 
     try {
-      const res = await fetch(`/ml-brain/conversations/${id}`);
+      const res = await fetch(`${BRAIN_ROUTES.conversations}/${id}`, {
+        headers: { 'Accept': 'application/json' }
+      });
       const data = await res.json();
 
       if (data.success && data.conversation) {
@@ -1488,8 +1488,11 @@
 
         scrollChatToBottom();
         document.getElementById('chat_user_input').focus();
+      } else {
+        timeline.innerHTML = `<div style="color: #DC2626; padding: 20px;">Error al cargar la conversación: ${data.error || 'No encontrada'}</div>`;
       }
     } catch (e) {
+      console.error('Error cargando conversacion:', e);
       timeline.innerHTML = '<div style="color: #DC2626; padding: 20px;">Error al cargar la conversación.</div>';
     }
   }
@@ -1500,27 +1503,41 @@
 
     try {
       const token = document.querySelector('meta[name="csrf-token"]').content;
-      const res = await fetch(`/ml-brain/conversations/${id}`, {
+      const res = await fetch(`${BRAIN_ROUTES.conversations}/${id}`, {
         method: 'DELETE',
-        headers: { 'X-CSRF-TOKEN': token, 'Accept': 'application/json' }
+        headers: { 
+          'X-CSRF-TOKEN': token, 
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
       });
       const data = await res.json();
       if (data.success) {
         showToast('Pensamiento eliminado con éxito', 'info');
-        if (currentConversationId === id) {
+        
+        // Quitar de inmediato el elemento del DOM
+        const el = document.getElementById('thought_item_' + id);
+        if (el) el.remove();
+
+        if (currentConversationId == id) {
           startNewThought();
         }
         refreshConversationsSidebar();
+      } else {
+        showToast('No se pudo eliminar el pensamiento', 'error');
       }
     } catch (e) {
-      showToast('Error al eliminar pensamiento', 'error');
+      console.error('Error eliminando pensamiento:', e);
+      showToast('Error de conexión al eliminar pensamiento', 'error');
     }
   }
 
   // ACTUALIZAR SIDEBAR DE CONVERSACIONES
   async function refreshConversationsSidebar() {
     try {
-      const res = await fetch("{{ route('ml_brain.conversations') }}");
+      const res = await fetch(BRAIN_ROUTES.conversations, {
+        headers: { 'Accept': 'application/json' }
+      });
       const data = await res.json();
       if (data.success && data.conversations) {
         const container = document.getElementById('thoughts_list_container');
@@ -1530,7 +1547,7 @@
 
         if (data.conversations.length === 0) {
           container.innerHTML = `
-            <div style="text-align: center; padding: 40px 16px; color: #94A3B8;">
+            <div style="text-align: center; padding: 40px 16px; color: #94A3B8;" id="no_thoughts_placeholder">
               <div style="font-size: 28px; margin-bottom: 8px;">🧠</div>
               <div style="font-size: 12.5px; font-weight: 600; color: #64748B;">No hay pensamientos aún</div>
               <div style="font-size: 11px; margin-top: 4px;">Inicia un diálogo para razonar con el Cerebro Suitable.</div>
@@ -1540,7 +1557,7 @@
         }
 
         container.innerHTML = data.conversations.map(c => `
-          <div class="thought-item ${currentConversationId === c.id ? 'active' : ''}" 
+          <div class="thought-item ${currentConversationId == c.id ? 'active' : ''}" 
                id="thought_item_${c.id}" 
                onclick="loadThought(${c.id})">
             <div class="thought-item-title" title="${escapeHtml(c.title)}">${escapeHtml(c.title)}</div>

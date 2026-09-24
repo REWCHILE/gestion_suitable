@@ -27,9 +27,19 @@ Route::delete('/groups/{group}', [GroupController::class, 'destroy'])->name('gro
 
 // Campaigns & AI Studio
 Route::get('/campaigns', [CampaignController::class, 'index'])->name('campaigns.index');
+Route::get('/campaigns/preview', [CampaignController::class, 'preview'])->name('campaigns.preview');
+Route::get('/campaigns/preview/html', [CampaignController::class, 'previewHtml'])->name('campaigns.preview_html');
+Route::get('/campaigns/{campaign}/preview', [CampaignController::class, 'previewCampaign'])->name('campaigns.preview_campaign');
+Route::get('/campaigns/{campaign}/html', [CampaignController::class, 'campaignHtml'])->name('campaigns.html');
 Route::get('/campaigns/create', [CampaignController::class, 'create'])->name('campaigns.create');
+Route::get('/campaigns/{campaign}/edit', [CampaignController::class, 'edit'])->name('campaigns.edit');
+Route::put('/campaigns/{campaign}', [CampaignController::class, 'update'])->name('campaigns.update');
+Route::post('/campaigns/{campaign}/update', [CampaignController::class, 'update']);
 Route::post('/campaigns', [CampaignController::class, 'store'])->name('campaigns.store');
 Route::post('/campaigns/ai-generate', [CampaignController::class, 'generateAi'])->name('campaigns.ai_generate');
+Route::post('/campaigns/{campaign}/send', [CampaignController::class, 'send'])->name('campaigns.send');
+Route::post('/campaigns/{campaign}/test-email', [CampaignController::class, 'sendTestEmail'])->name('campaigns.test_email');
+Route::delete('/campaigns/{campaign}', [CampaignController::class, 'destroy'])->name('campaigns.destroy');
 
 // CSV & Brevo Importer
 Route::get('/import', [ImportController::class, 'index'])->name('import.index');

@@ -1,19 +1,27 @@
 @extends('layouts.app')
 
-@section('title', 'Estudio Creador de Campañas con IA | Suitable')
+@section('title', 'Editar Campaña #' . $campaign->id . ' | Suitable')
 
 @section('content')
 <div class="page-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
   <div class="page-title-group">
     <div style="display: inline-flex; align-items: center; gap: 8px; margin-bottom: 4px;">
-      <span style="font-size: 22px;">✨</span>
-      <h1 style="margin: 0; font-size: 24px; font-weight: 800; color: #0F172A;">Estudio Creador de Campañas con IA</h1>
+      <span style="font-size: 22px;">✏️</span>
+      <h1 style="margin: 0; font-size: 24px; font-weight: 800; color: #0F172A;">
+        Editar Campaña: <span style="color: #1E8888;">{{ $campaign->name }}</span>
+      </h1>
+      <span class="badge {{ $campaign->status === 'enviada' ? 'badge-emerald' : 'badge-blue' }}" style="font-size: 11px;">
+        {{ ucfirst($campaign->status) }}
+      </span>
     </div>
     <p class="page-subtitle" style="margin: 0; color: #64748B; font-size: 13.5px;">
-      Diseñe propuestas B2B dinámicas y coherentes con Gemini, seleccione imágenes de portada y previsualice en vivo
+      Modifique los textos, el asunto, la imagen de portada y los pilares estratégicos con previsualización en vivo
     </p>
   </div>
-  <div class="header-actions">
+  <div class="header-actions" style="display: flex; gap: 10px;">
+    <a href="{{ route('campaigns.preview_campaign', $campaign->id) }}" class="btn btn-secondary btn-sm" style="font-weight: 700;">
+      👁️ Ver Renderizado Completo
+    </a>
     <a href="{{ route('campaigns.index') }}" class="btn btn-secondary btn-sm" style="font-weight: 700;">
       ← Volver a Campañas
     </a>
@@ -22,7 +30,7 @@
 
 <div style="display: grid; grid-template-columns: 1.15fr 1fr; gap: 24px; align-items: start;">
   
-  <!-- LEFT COLUMN: CONTROLS & AI GENERATOR -->
+  <!-- LEFT COLUMN: CONTROLS & EDIT FORM -->
   <div class="table-card" style="padding: 24px;">
     
     <!-- 1. TARGET GROUP -->
@@ -31,22 +39,24 @@
         <span>👥</span> 1. Segmento de Destinatarios (CRM)
       </label>
       <select id="group_id" class="form-control" onchange="updateTargetCount(this)" style="font-size: 13.5px;">
-        <option value="0" data-count="{{ \App\Models\Client::count() }}">-- Toda la base institucional ({{ \App\Models\Client::count() }} contactos) --</option>
+        <option value="0" data-count="{{ \App\Models\Client::count() }}" {{ empty($campaign->group_id) ? 'selected' : '' }}>
+          -- Toda la base institucional ({{ \App\Models\Client::count() }} contactos) --
+        </option>
         @foreach($groups as $g)
-          <option value="{{ $g->id }}" data-count="{{ $g->clients_count }}" {{ $selectedGroupId == $g->id ? 'selected' : '' }}>
+          <option value="{{ $g->id }}" data-count="{{ $g->clients_count }}" {{ $campaign->group_id == $g->id ? 'selected' : '' }}>
             {{ $g->name }} ({{ $g->clients_count }} contactos)
           </option>
         @endforeach
       </select>
       <div style="margin-top: 6px; font-size: 12px; color: #1E8888; font-weight: 700;">
-        🎯 Audiencia proyectada: <span id="target_display">{{ $targetCount }}</span> instituciones de salud
+        🎯 Audiencia actual: <span id="target_display">{{ $targetCount }}</span> instituciones de salud
       </div>
     </div>
 
     <!-- 2. AI PROVIDER SELECTOR -->
     <div class="form-group" style="margin-bottom: 20px;">
       <label class="form-label" style="font-weight: 800; color: #0F172A; display: flex; align-items: center; gap: 6px;">
-        <span>🧠</span> 2. Motor de Inteligencia Artificial
+        <span>🧠</span> 2. Motor de Inteligencia Artificial para Asistencia
       </label>
       <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
         @foreach($aiProviders as $key => $prov)
@@ -61,22 +71,25 @@
     </div>
 
     <!-- 3. HERO IMAGE SELECTOR DRAWER -->
+    @php
+      $currentHero = $campaign->hero_image ?: 'hero-grupo-clinico.jpg';
+    @endphp
     <div class="form-group" style="margin-bottom: 22px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px; padding: 16px;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
         <label class="form-label" style="font-weight: 800; color: #0F172A; margin: 0; display: flex; align-items: center; gap: 6px;">
           <span>📸</span> 3. Imagen de Cabecera (Hero Banner)
         </label>
         <span id="selected_img_label" style="font-size: 11px; font-weight: 700; color: #1E8888; background: #E6F4F4; padding: 2px 8px; border-radius: 10px;">
-          hero-grupo-clinico.jpg
+          {{ $currentHero }}
         </span>
       </div>
 
       <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;" id="hero_image_cards">
         <!-- CARD 1: EQUIPO CLÍNICO -->
-        <div class="hero-img-card active" id="card_img_equipo" onclick="selectHeroImage('hero-grupo-clinico.jpg', 'card_img_equipo')" style="border: 2px solid #1E8888; border-radius: 8px; overflow: hidden; cursor: pointer; background: white; box-shadow: 0 2px 6px rgba(30,136,136,0.2); transition: all 0.2s ease;">
+        <div class="hero-img-card {{ $currentHero === 'hero-grupo-clinico.jpg' ? 'active' : '' }}" id="card_img_equipo" onclick="selectHeroImage('hero-grupo-clinico.jpg', 'card_img_equipo')" style="border: 2px solid {{ $currentHero === 'hero-grupo-clinico.jpg' ? '#1E8888' : '#E2E8F0' }}; border-radius: 8px; overflow: hidden; cursor: pointer; background: white; box-shadow: {{ $currentHero === 'hero-grupo-clinico.jpg' ? '0 2px 6px rgba(30,136,136,0.2)' : 'none' }}; transition: all 0.2s ease;">
           <div style="height: 72px; overflow: hidden; background: #0F172A; position: relative;">
             <img src="{{ asset('images/hero-grupo-clinico.jpg') }}" alt="Equipo Clínico" style="width: 100%; height: 100%; object-fit: cover;">
-            <span class="img-badge" style="position: absolute; top: 4px; right: 4px; background: #1E8888; color: white; font-size: 9px; font-weight: 800; padding: 1px 5px; border-radius: 4px;">✓ ACTIVO</span>
+            <span class="img-badge" style="display: {{ $currentHero === 'hero-grupo-clinico.jpg' ? 'block' : 'none' }}; position: absolute; top: 4px; right: 4px; background: #1E8888; color: white; font-size: 9px; font-weight: 800; padding: 1px 5px; border-radius: 4px;">✓ ACTIVO</span>
           </div>
           <div style="padding: 6px; text-align: center; font-size: 11px; font-weight: 700; color: #0F172A;">
             👨‍⚕️ Equipo Clínico
@@ -84,10 +97,10 @@
         </div>
 
         <!-- CARD 2: TELA ANTIFLUIDO -->
-        <div class="hero-img-card" id="card_img_tela" onclick="selectHeroImage('tela-antifluidos-macro.jpg', 'card_img_tela')" style="border: 2px solid #E2E8F0; border-radius: 8px; overflow: hidden; cursor: pointer; background: white; transition: all 0.2s ease;">
+        <div class="hero-img-card {{ $currentHero === 'tela-antifluidos-macro.jpg' ? 'active' : '' }}" id="card_img_tela" onclick="selectHeroImage('tela-antifluidos-macro.jpg', 'card_img_tela')" style="border: 2px solid {{ $currentHero === 'tela-antifluidos-macro.jpg' ? '#1E8888' : '#E2E8F0' }}; border-radius: 8px; overflow: hidden; cursor: pointer; background: white; box-shadow: {{ $currentHero === 'tela-antifluidos-macro.jpg' ? '0 2px 6px rgba(30,136,136,0.2)' : 'none' }}; transition: all 0.2s ease;">
           <div style="height: 72px; overflow: hidden; background: #0F172A; position: relative;">
             <img src="{{ asset('images/tela-antifluidos-macro.jpg') }}" alt="Tela Antifluido" style="width: 100%; height: 100%; object-fit: cover;">
-            <span class="img-badge" style="display: none; position: absolute; top: 4px; right: 4px; background: #1E8888; color: white; font-size: 9px; font-weight: 800; padding: 1px 5px; border-radius: 4px;">✓ ACTIVO</span>
+            <span class="img-badge" style="display: {{ $currentHero === 'tela-antifluidos-macro.jpg' ? 'block' : 'none' }}; position: absolute; top: 4px; right: 4px; background: #1E8888; color: white; font-size: 9px; font-weight: 800; padding: 1px 5px; border-radius: 4px;">✓ ACTIVO</span>
           </div>
           <div style="padding: 6px; text-align: center; font-size: 11px; font-weight: 700; color: #0F172A;">
             🛡️ Tela Antifluido
@@ -95,10 +108,10 @@
         </div>
 
         <!-- CARD 3: TALLAJE EN TERRENO -->
-        <div class="hero-img-card" id="card_img_tallaje" onclick="selectHeroImage('servicio-tallaje-terreno.jpg', 'card_img_tallaje')" style="border: 2px solid #E2E8F0; border-radius: 8px; overflow: hidden; cursor: pointer; background: white; transition: all 0.2s ease;">
+        <div class="hero-img-card {{ $currentHero === 'servicio-tallaje-terreno.jpg' ? 'active' : '' }}" id="card_img_tallaje" onclick="selectHeroImage('servicio-tallaje-terreno.jpg', 'card_img_tallaje')" style="border: 2px solid {{ $currentHero === 'servicio-tallaje-terreno.jpg' ? '#1E8888' : '#E2E8F0' }}; border-radius: 8px; overflow: hidden; cursor: pointer; background: white; box-shadow: {{ $currentHero === 'servicio-tallaje-terreno.jpg' ? '0 2px 6px rgba(30,136,136,0.2)' : 'none' }}; transition: all 0.2s ease;">
           <div style="height: 72px; overflow: hidden; background: #0F172A; position: relative;">
             <img src="{{ asset('images/servicio-tallaje-terreno.jpg') }}" alt="Tallaje en Terreno" style="width: 100%; height: 100%; object-fit: cover;">
-            <span class="img-badge" style="display: none; position: absolute; top: 4px; right: 4px; background: #1E8888; color: white; font-size: 9px; font-weight: 800; padding: 1px 5px; border-radius: 4px;">✓ ACTIVO</span>
+            <span class="img-badge" style="display: {{ $currentHero === 'servicio-tallaje-terreno.jpg' ? 'block' : 'none' }}; position: absolute; top: 4px; right: 4px; background: #1E8888; color: white; font-size: 9px; font-weight: 800; padding: 1px 5px; border-radius: 4px;">✓ ACTIVO</span>
           </div>
           <div style="padding: 6px; text-align: center; font-size: 11px; font-weight: 700; color: #0F172A;">
             📏 Tallaje en Terreno
@@ -108,41 +121,41 @@
 
       <!-- GEMINI ALIGNMENT ACTION -->
       <div style="margin-top: 12px; display: flex; gap: 8px;">
-        <input type="text" id="ai_custom_focus" class="form-control" placeholder="Instrucción adicional opcional (ej: Clínicas dentales, invierno térmico...)" style="font-size: 12px;">
+        <input type="text" id="ai_custom_focus" class="form-control" placeholder="Instrucción adicional para rediseñar (ej: Más formal, enfoque en directores...)" style="font-size: 12px;">
         <button type="button" class="btn btn-primary btn-sm" id="btn_ai_align" onclick="requestAiProposal()" style="font-weight: 700; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: linear-gradient(135deg, #1E8888 0%, #0F5E68 100%);">
           <span>✨</span>
-          <span>Pedir a IA propuesta coherente</span>
+          <span>Pedir a IA propuesta para esta imagen</span>
         </button>
       </div>
     </div>
 
     <!-- 4. CAMPAIGN DETAILS FORM -->
-    <form id="campaign_form" onsubmit="saveCampaign(event)">
-      <input type="hidden" id="hero_image" name="hero_image" value="hero-grupo-clinico.jpg">
+    <form id="edit_campaign_form" onsubmit="updateCampaign(event)">
+      <input type="hidden" id="hero_image" name="hero_image" value="{{ $currentHero }}">
 
       <div class="form-group" style="margin-bottom: 14px;">
         <label class="form-label" style="font-weight: 700; font-size: 12.5px;">Nombre Interno de la Campaña *</label>
-        <input type="text" id="campaign_name" name="name" class="form-control" value="Campaña Clínicas B2B - {{ date('d/m/Y') }}" required>
+        <input type="text" id="campaign_name" name="name" class="form-control" value="{{ $campaign->name }}" required>
       </div>
 
       <div class="form-group" style="margin-bottom: 14px;">
         <label class="form-label" style="font-weight: 700; font-size: 12.5px;">Asunto del Correo (Subject) *</label>
-        <input type="text" id="campaign_subject" name="subject" class="form-control" value="[Convenio Clínico] Uniformes médicos con 6 meses de garantía directa de fábrica y servicio de tallaje" required oninput="updatePreview()">
+        <input type="text" id="campaign_subject" name="subject" class="form-control" value="{{ $campaign->subject }}" required oninput="updatePreview()">
       </div>
 
       <div class="form-group" style="margin-bottom: 14px;">
         <label class="form-label" style="font-weight: 700; font-size: 12.5px;">Preheader (Texto visible en la bandeja de entrada) *</label>
-        <input type="text" id="campaign_preheader" name="preheader" class="form-control" value="Somos fabricantes chilenos de uniformes clínicos antifluidos. Servicio exclusivo de tallaje en su clínica y 6 meses de garantía." oninput="updatePreview()">
+        <input type="text" id="campaign_preheader" name="preheader" class="form-control" value="{{ $campaign->preheader }}" oninput="updatePreview()">
       </div>
 
       <div class="form-group" style="margin-bottom: 14px;">
         <label class="form-label" style="font-weight: 700; font-size: 12.5px;">Titular Principal del Correo (Hero Title)</label>
-        <input type="text" id="hero_title" name="hero_title" class="form-control" value="Equipe a su personal de salud con la confianza de fabricantes directos" oninput="updatePreview()">
+        <input type="text" id="hero_title" name="hero_title" class="form-control" value="{{ $campaign->hero_title ?: 'Equipe a su personal de salud con la confianza de fabricantes directos' }}" oninput="updatePreview()">
       </div>
 
       <div class="form-group" style="margin-bottom: 16px;">
         <label class="form-label" style="font-weight: 700; font-size: 12.5px;">Cuerpo de la Propuesta Comercial</label>
-        <textarea id="hero_desc" name="hero_desc" class="form-control" rows="4" oninput="updatePreview()">En Suitable confeccionamos uniformes clínicos de alto rendimiento con telas antifluidos de última generación y respaldo integral de fábrica. Llevamos muestras en vivo a su clínica para que su equipo pruebe tallas antes de comprar.</textarea>
+        <textarea id="hero_desc" name="hero_desc" class="form-control" rows="4" oninput="updatePreview()">{{ $campaign->hero_desc ?: 'En Suitable confeccionamos uniformes clínicos de alto rendimiento con telas antifluidos de última generación y respaldo integral de fábrica. Llevamos muestras en vivo a su clínica para que su equipo pruebe tallas antes de comprar.' }}</textarea>
       </div>
 
       <!-- 3 VALUE PILLARS -->
@@ -153,26 +166,26 @@
         <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
           <div>
             <label style="font-size: 11px; font-weight: 700; color: #0F172A;">Pilar 1 (Fábrica)</label>
-            <input type="text" id="pilar1_title" name="pilar1_title" class="form-control" value="Fabricación 100% Chilena" style="font-size: 11.5px; margin-bottom: 4px;" oninput="updatePreview()">
-            <textarea id="pilar1_desc" name="pilar1_desc" class="form-control" rows="2" style="font-size: 11px;" oninput="updatePreview()">Confección directa sin intermediarios con garantía de fábrica.</textarea>
+            <input type="text" id="pilar1_title" name="pilar1_title" class="form-control" value="{{ $campaign->pilar1_title ?: 'Fabricación 100% Chilena' }}" style="font-size: 11.5px; margin-bottom: 4px;" oninput="updatePreview()">
+            <textarea id="pilar1_desc" name="pilar1_desc" class="form-control" rows="2" style="font-size: 11px;" oninput="updatePreview()">{{ $campaign->pilar1_desc ?: 'Confección directa sin intermediarios con garantía de fábrica.' }}</textarea>
           </div>
           <div>
             <label style="font-size: 11px; font-weight: 700; color: #0F172A;">Pilar 2 (Tela Flex)</label>
-            <input type="text" id="pilar2_title" name="pilar2_title" class="form-control" value="Telas Flex Antifluidos" style="font-size: 11.5px; margin-bottom: 4px;" oninput="updatePreview()">
-            <textarea id="pilar2_desc" name="pilar2_desc" class="form-control" rows="2" style="font-size: 11px;" oninput="updatePreview()">Elasticidad multidireccional 4-Way y bioseguridad contra fluidos.</textarea>
+            <input type="text" id="pilar2_title" name="pilar2_title" class="form-control" value="{{ $campaign->pilar2_title ?: 'Telas Flex Antifluidos' }}" style="font-size: 11.5px; margin-bottom: 4px;" oninput="updatePreview()">
+            <textarea id="pilar2_desc" name="pilar2_desc" class="form-control" rows="2" style="font-size: 11px;" oninput="updatePreview()">{{ $campaign->pilar2_desc ?: 'Elasticidad multidireccional 4-Way y bioseguridad contra fluidos.' }}</textarea>
           </div>
           <div>
             <label style="font-size: 11px; font-weight: 700; color: #0F172A;">Pilar 3 (Garantía &amp; Tallas)</label>
-            <input type="text" id="pilar3_title" name="pilar3_title" class="form-control" value="Garantía 6 Meses y Tallaje" style="font-size: 11.5px; margin-bottom: 4px;" oninput="updatePreview()">
-            <textarea id="pilar3_desc" name="pilar3_desc" class="form-control" rows="2" style="font-size: 11px;" oninput="updatePreview()">Percheros en la clínica para probar tallas antes de ordenar.</textarea>
+            <input type="text" id="pilar3_title" name="pilar3_title" class="form-control" value="{{ $campaign->pilar3_title ?: 'Garantía 6 Meses y Tallaje' }}" style="font-size: 11.5px; margin-bottom: 4px;" oninput="updatePreview()">
+            <textarea id="pilar3_desc" name="pilar3_desc" class="form-control" rows="2" style="font-size: 11px;" oninput="updatePreview()">{{ $campaign->pilar3_desc ?: 'Percheros en la clínica para probar tallas antes de ordenar.' }}</textarea>
           </div>
         </div>
       </div>
 
       <div style="display: flex; gap: 12px;">
-        <button type="submit" id="btn_save_campaign" class="btn btn-primary" style="flex: 1; padding: 12px; font-size: 14px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+        <button type="submit" id="btn_save_changes" class="btn btn-primary" style="flex: 1; padding: 12px; font-size: 14px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
           <span>💾</span>
-          <span>Guardar Campaña en Laravel</span>
+          <span>Actualizar Cambios en Campaña</span>
         </button>
       </div>
     </form>
@@ -185,7 +198,7 @@
     <!-- PREVIEW TOOLBAR -->
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
       <div>
-        <h3 style="font-size: 15px; font-weight: 800; margin: 0; color: #0F172A;">Vista Previa en Vivo del Correo</h3>
+        <h3 style="font-size: 15px; font-weight: 800; margin: 0; color: #0F172A;">Vista Previa en Vivo</h3>
         <p style="margin: 2px 0 0 0; font-size: 11.5px; color: #64748B;">Renderizado en tiempo real</p>
       </div>
       
@@ -204,10 +217,10 @@
     <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 6px; padding: 8px 12px; margin-bottom: 12px; font-size: 12px;">
       <div style="color: #64748B; font-size: 10.5px; text-transform: uppercase; font-weight: 700; margin-bottom: 2px;">Bandeja de entrada:</div>
       <div style="font-weight: 800; color: #0F172A;" id="prev_subject_text">
-        [Convenio Clínico] Uniformes médicos con 6 meses de garantía directa de fábrica y servicio de tallaje
+        {{ $campaign->subject }}
       </div>
       <div style="color: #64748B; font-size: 11px;" id="prev_preheader_text">
-        Somos fabricantes chilenos de uniformes clínicos antifluidos. Servicio exclusivo de tallaje en su clínica y 6 meses de garantía.
+        {{ $campaign->preheader }}
       </div>
     </div>
 
@@ -230,7 +243,7 @@
 
       <!-- HERO PHOTO -->
       <div style="background: #0F172A; line-height: 0; text-align: center; max-height: 220px; overflow: hidden;">
-        <img id="prev_hero_img" src="{{ asset('images/hero-grupo-clinico.jpg') }}" alt="Hero Banner" style="width: 100%; height: auto; display: block; object-fit: cover;">
+        <img id="prev_hero_img" src="{{ asset('images/' . $currentHero) }}" alt="Hero Banner" style="width: 100%; height: auto; display: block; object-fit: cover;">
       </div>
 
       <!-- HERO CONTENT -->
@@ -239,10 +252,10 @@
           ✦ PROPUESTA CORPORATIVA INSTITUCIONAL
         </div>
         <h2 id="prev_hero_title" style="font-size: 20px; font-weight: 800; color: #FFFFFF; margin: 0 0 12px 0; line-height: 1.3;">
-          Equipe a su personal de salud con la confianza de fabricantes directos
+          {{ $campaign->hero_title ?: 'Equipe a su personal de salud con la confianza de fabricantes directos' }}
         </h2>
         <p id="prev_hero_desc" style="font-size: 13px; color: #E6F7F7; line-height: 1.6; margin: 0 auto 20px auto; max-width: 480px;">
-          En Suitable confeccionamos uniformes clínicos de alto rendimiento con telas antifluidos de última generación y respaldo integral de fábrica. Llevamos muestras en vivo a su clínica para que su equipo pruebe tallas antes de comprar.
+          {{ $campaign->hero_desc ?: 'En Suitable confeccionamos uniformes clínicos de alto rendimiento con telas antifluidos de última generación y respaldo integral de fábrica. Llevamos muestras en vivo a su clínica para que su equipo pruebe tallas antes de comprar.' }}
         </p>
         <a href="https://suitable.cl/clinicas-y-centros/" target="_blank" style="background: #FFFFFF; color: #146161; padding: 12px 24px; border-radius: 6px; font-size: 12.5px; font-weight: 800; text-decoration: none; display: inline-block; text-transform: uppercase; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
           Solicitar Visita de Muestras y Tallaje →
@@ -253,18 +266,18 @@
       <div style="padding: 20px; background: #F8FAFC; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; border-top: 1px solid #E2E8F0;">
         <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 6px; padding: 10px; text-align: center;">
           <div style="font-size: 18px; margin-bottom: 2px;">🇨🇱</div>
-          <strong id="prev_pilar1_title" style="font-size: 11.5px; color: #0F172A; display: block;">Fabricación 100% Chilena</strong>
-          <span id="prev_pilar1_desc" style="font-size: 10.5px; color: #64748B; display: block; line-height: 1.3; margin-top: 2px;">Confección directa sin intermediarios con garantía.</span>
+          <strong id="prev_pilar1_title" style="font-size: 11.5px; color: #0F172A; display: block;">{{ $campaign->pilar1_title ?: 'Fabricación 100% Chilena' }}</strong>
+          <span id="prev_pilar1_desc" style="font-size: 10.5px; color: #64748B; display: block; line-height: 1.3; margin-top: 2px;">{{ $campaign->pilar1_desc ?: 'Confección directa sin intermediarios con garantía.' }}</span>
         </div>
         <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 6px; padding: 10px; text-align: center;">
           <div style="font-size: 18px; margin-bottom: 2px;">🛡️</div>
-          <strong id="prev_pilar2_title" style="font-size: 11.5px; color: #0F172A; display: block;">Telas Flex Antifluidos</strong>
-          <span id="prev_pilar2_desc" style="font-size: 10.5px; color: #64748B; display: block; line-height: 1.3; margin-top: 2px;">Elasticidad 4-Way y bioseguridad contra fluidos.</span>
+          <strong id="prev_pilar2_title" style="font-size: 11.5px; color: #0F172A; display: block;">{{ $campaign->pilar2_title ?: 'Telas Flex Antifluidos' }}</strong>
+          <span id="prev_pilar2_desc" style="font-size: 10.5px; color: #64748B; display: block; line-height: 1.3; margin-top: 2px;">{{ $campaign->pilar2_desc ?: 'Elasticidad 4-Way y bioseguridad contra fluidos.' }}</span>
         </div>
         <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 6px; padding: 10px; text-align: center;">
           <div style="font-size: 18px; margin-bottom: 2px;">📏</div>
-          <strong id="prev_pilar3_title" style="font-size: 11.5px; color: #0F172A; display: block;">Garantía 6 Meses y Tallaje</strong>
-          <span id="prev_pilar3_desc" style="font-size: 10.5px; color: #64748B; display: block; line-height: 1.3; margin-top: 2px;">Percheros en la clínica para probar tallas.</span>
+          <strong id="prev_pilar3_title" style="font-size: 11.5px; color: #0F172A; display: block;">{{ $campaign->pilar3_title ?: 'Garantía 6 Meses y Tallaje' }}</strong>
+          <span id="prev_pilar3_desc" style="font-size: 10.5px; color: #64748B; display: block; line-height: 1.3; margin-top: 2px;">{{ $campaign->pilar3_desc ?: 'Percheros en la clínica para probar tallas.' }}</span>
         </div>
       </div>
 
@@ -424,15 +437,15 @@
       showToast('Error al conectar con el servicio de IA', 'error');
     } finally {
       btn.disabled = false;
-      btn.innerHTML = '<span>✨</span> <span>Pedir a IA propuesta coherente</span>';
+      btn.innerHTML = '<span>✨</span> <span>Pedir a IA propuesta para esta imagen</span>';
     }
   }
 
-  async function saveCampaign(e) {
+  async function updateCampaign(e) {
     e.preventDefault();
-    const btn = document.getElementById('btn_save_campaign');
+    const btn = document.getElementById('btn_save_changes');
     btn.disabled = true;
-    btn.innerText = 'Guardando campaña...';
+    btn.innerText = 'Actualizando campaña...';
 
     const token = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').content : '';
     const provInput = document.querySelector('input[name="ai_provider"]:checked');
@@ -451,14 +464,14 @@
       pilar2_desc: document.getElementById('pilar2_desc').value,
       pilar3_title: document.getElementById('pilar3_title').value,
       pilar3_desc: document.getElementById('pilar3_desc').value,
-      ai_provider: provInput ? provInput.value : 'groq',
-      ai_prompt: document.getElementById('ai_custom_focus').value || 'Generada en estudio',
-      status: 'borrador'
+      ai_provider: provInput ? provInput.value : '{{ $campaign->ai_provider ?: 'groq' }}',
+      ai_prompt: document.getElementById('ai_custom_focus').value || 'Actualizada en estudio',
+      status: '{{ $campaign->status }}'
     };
 
     try {
-      const res = await fetch("{{ route('campaigns.store') }}", {
-        method: 'POST',
+      const res = await fetch("{{ route('campaigns.update', $campaign->id) }}", {
+        method: 'PUT',
         headers: { 
           'Content-Type': 'application/json', 
           'X-CSRF-TOKEN': token, 
@@ -468,16 +481,16 @@
       });
       const data = await res.json();
       if (data.success) {
-        showToast('✓ Campaña guardada exitosamente en Laravel', 'success');
+        showToast('✓ Campaña actualizada exitosamente', 'success');
         setTimeout(() => location.href = "{{ route('campaigns.index') }}", 700);
       } else {
-        showToast(data.error || 'Error al guardar la campaña', 'error');
+        showToast(data.error || 'Error al actualizar campaña', 'error');
       }
     } catch (e) {
-      showToast('Error de comunicación al guardar campaña', 'error');
+      showToast('Error de comunicación al actualizar campaña', 'error');
     } finally {
       btn.disabled = false;
-      btn.innerHTML = '<span>💾</span> <span>Guardar Campaña en Laravel</span>';
+      btn.innerHTML = '<span>💾</span> <span>Actualizar Cambios en Campaña</span>';
     }
   }
 </script>
