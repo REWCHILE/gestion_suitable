@@ -1,8 +1,23 @@
-/**
- * Suitable CRM & Outreach Orchestrator - Vanilla JS
- */
+// Sidebar Pin / Unpin Toggle & Persistence
+function initSidebar() {
+  const isPinned = localStorage.getItem('suitable_sidebar_pinned') === 'true';
+  if (isPinned) {
+    document.body.classList.add('sidebar-pinned');
+  }
+}
 
-function showToast(message, type = 'success') {
+function toggleSidebarPin() {
+  const isPinned = document.body.classList.toggle('sidebar-pinned');
+  localStorage.setItem('suitable_sidebar_pinned', isPinned ? 'true' : 'false');
+  showToast(isPinned ? '📌 Menú lateral anclado' : '🔓 Menú lateral desanclado (modo flotante con hover)', 'success');
+}
+
+// Initialize on DOM ready
+document.addEventListener('DOMContentLoaded', () => {
+  initSidebar();
+});
+
+function showToast(message, type = 'info') {
   let container = document.getElementById('toast-container');
   if (!container) {
     container = document.createElement('div');

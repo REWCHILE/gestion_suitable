@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_settings'])) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ajustes de IA &amp; Plataforma | Suitable</title>
-  <link rel="stylesheet" href="assets/css/app.css">
+  <link rel="stylesheet" href="assets/css/app.css?v=<?= time() ?>">
   <style>
     .settings-section {
       background: white;
@@ -50,43 +50,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_settings'])) {
 </head>
 <body>
 
-  <!-- NAVBAR -->
-  <header class="app-navbar">
-    <div class="navbar-container">
-      <div class="brand-section">
-        <a href="index.php">
-          <img src="https://suitable.cl/wp-content/uploads/2025/04/logo_verde-350x128.png" alt="Suitable" class="brand-logo-img">
-        </a>
-        <span class="brand-division-tag">B2B Outreach</span>
-      </div>
-
-      <nav>
-        <ul class="nav-menu">
-          <li><a href="index.php" class="nav-link">📊 Dashboard</a></li>
-          <li><a href="clients.php" class="nav-link">👥 Pipeline</a></li>
-          <li><a href="campaigns.php" class="nav-link">🚀 Campañas IA</a></li>
-          <li><a href="analytics.php" class="nav-link">📈 Analítica &amp; Tráfico</a></li>
-          <li><a href="ml_brain.php" class="nav-link">🧠 Cerebro ML</a></li>
-          <li><a href="wc_wizard.php" class="nav-link">🧙 Wizard WooCommerce</a></li>
-          <li><a href="templates_view.php" class="nav-link">📑 Plantillas</a></li>
-          <li><a href="settings.php" class="nav-link active">⚙️ Ajustes</a></li>
-        </ul>
-      </nav>
-
-      <div class="user-controls">
-        <div class="user-badge">
-          <div class="user-avatar"><?= strtoupper(substr($user['name'], 0, 1)) ?></div>
-          <div>
-            <div style="font-weight: 700; line-height: 1.1;"><?= htmlspecialchars($user['name']) ?></div>
-            <span class="role-tag <?= $user['role'] === 'admin' ? 'role-admin' : 'role-enviador' ?>">
-              <?= strtoupper($user['role']) ?>
-            </span>
-          </div>
-        </div>
-        <a href="logout.php" class="btn btn-secondary btn-sm">Salir 🚪</a>
-      </div>
-    </div>
-  </header>
+  <!-- SIDEBAR NAVIGATION -->
+  <?php include __DIR__ . '/sidebar.php'; ?>
 
   <main class="main-container" style="max-width: 900px;">
     
