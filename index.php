@@ -1,19 +1,10 @@
 <?php
-
 /**
- * Laravel - A PHP Framework For Web Artisans
- *
- * This file allows us to run Laravel seamlessly in Laragon subfolder environments
- * (e.g. http://localhost/SUITABLE-2026/) as well as virtual hosts.
+ * Forwarding root directory to public/ for Laragon subfolder environments
  */
-
-$uri = urldecode(
-    parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? ''
-);
-
-// Let static files in public be handled if requested directly
-if ($uri !== '/' && file_exists(__DIR__.'/public'.$uri)) {
-    return false;
+$target = 'public/';
+if (!empty($_SERVER['QUERY_STRING'])) {
+    $target .= '?' . $_SERVER['QUERY_STRING'];
 }
-
-require_once __DIR__.'/public/index.php';
+header('Location: ' . $target);
+exit;
