@@ -858,6 +858,7 @@ $initial_draft = [
                 <label class="form-label">Modo de Envío</label>
                 <select id="manual_dispatch_mode" class="form-control">
                   <option value="simulacion">🧪 Simulación &amp; Registro CRM (Prueba segura)</option>
+                  <option value="vps_smtp">🛡️ Envío Sigiloso vía VPS Postfix (MUA Camuflado)</option>
                   <option value="brevo_api">🚀 Envío Directo vía Brevo API v3</option>
                 </select>
               </div>
@@ -952,6 +953,7 @@ $initial_draft = [
           <label class="form-label">Modo de Envío</label>
           <select id="modal_dispatch_mode" class="form-control">
             <option value="simulacion">🧪 Simulación &amp; Registro CRM (Guarda en pipeline sin enviar emails reales)</option>
+            <option value="vps_smtp" selected>🛡️ Envío Sigiloso vía VPS Postfix (MUA Camuflado - Opción 1)</option>
             <option value="brevo_api">🚀 Envío Directo vía Brevo API v3 (Disparo real a bandejas de entrada)</option>
           </select>
         </div>

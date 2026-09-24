@@ -12,7 +12,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_settings'])) {
         'active_ai_provider', 'groq_api_key', 'groq_model',
         'openai_api_key', 'openai_model', 'claude_api_key', 'claude_model',
         'gemini_api_key', 'gemini_model', 'brevo_api_key',
-        'sender_email', 'sender_name', 'wc_store_url', 'wc_consumer_key', 'wc_consumer_secret'
+        'sender_email', 'sender_name', 'wc_store_url', 'wc_consumer_key', 'wc_consumer_secret',
+        'smtp_host', 'smtp_port', 'smtp_user', 'smtp_pass', 'smtp_secure', 'smtp_helo_domain', 'smtp_delay_seconds'
     ];
 
     foreach ($keys as $k) {
@@ -192,6 +193,72 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_settings'])) {
         </div>
       </div>
 
+      <!-- SECCIÓN 4: VPS POSTFIX & SERVIDOR PROPIO (SIGILOSO) -->
+      <div class="settings-section" style="border-top: 4px solid #1E8888;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <div>
+            <h2 style="font-size: 16px; font-weight: 800; color: var(--text-main); margin-bottom: 4px;">
+              🛡️ Servidor VPS Propio (Postfix + OpenDKIM Camuflado)
+            </h2>
+            <p style="font-size: 12px; color: var(--text-muted); margin: 0;">
+              Envío directo desde su propio VPS con sanitización de cabeceras, sin intermediarios y emulando un cliente corporativo legítimo.
+            </p>
+          </div>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="testSmtpConnection()">
+            🔌 Probar Conexión VPS
+          </button>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group" style="flex: 2;">
+            <label class="form-label" style="font-size: 11px;">Host / IP del VPS Postfix</label>
+            <input type="text" name="smtp_host" id="smtp_host" class="form-control" value="<?= htmlspecialchars(get_setting('smtp_host', '127.0.0.1')) ?>" placeholder="127.0.0.1 o mail.suitable.cl">
+          </div>
+          <div class="form-group" style="flex: 1;">
+            <label class="form-label" style="font-size: 11px;">Puerto</label>
+            <input type="number" name="smtp_port" id="smtp_port" class="form-control" value="<?= htmlspecialchars(get_setting('smtp_port', '25')) ?>" placeholder="25 o 587">
+          </div>
+          <div class="form-group" style="flex: 1;">
+            <label class="form-label" style="font-size: 11px;">Cifrado</label>
+            <?php $sec = get_setting('smtp_secure', 'none'); ?>
+            <select name="smtp_secure" id="smtp_secure" class="form-control">
+              <option value="none" <?= $sec === 'none' ? 'selected' : '' ?>>Ninguno (Interno)</option>
+              <option value="tls" <?= $sec === 'tls' ? 'selected' : '' ?>>STARTTLS (Puerto 587)</option>
+              <option value="ssl" <?= $sec === 'ssl' ? 'selected' : '' ?>>SSL (Puerto 465)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" style="font-size: 11px;">Usuario SMTP (Opcional si es local en el VPS)</label>
+            <input type="text" name="smtp_user" id="smtp_user" class="form-control" value="<?= htmlspecialchars(get_setting('smtp_user')) ?>" placeholder="usuario">
+          </div>
+          <div class="form-group">
+            <label class="form-label" style="font-size: 11px;">Contraseña SMTP (Opcional)</label>
+            <input type="password" name="smtp_pass" id="smtp_pass" class="form-control" value="<?= htmlspecialchars(get_setting('smtp_pass')) ?>" placeholder="••••••••">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" style="font-size: 11px;">Dominio HELO / EHLO de Saludo</label>
+            <input type="text" name="smtp_helo_domain" id="smtp_helo_domain" class="form-control" value="<?= htmlspecialchars(get_setting('smtp_helo_domain', 'mail.suitable.cl')) ?>" placeholder="mail.suitable.cl">
+          </div>
+          <div class="form-group">
+            <label class="form-label" style="font-size: 11px;">Delay Humano entre Envíos (Jitter en segundos)</label>
+            <input type="number" name="smtp_delay_seconds" id="smtp_delay_seconds" class="form-control" value="<?= htmlspecialchars(get_setting('smtp_delay_seconds', '35')) ?>" min="5" max="300">
+          </div>
+        </div>
+
+        <div style="background: #F1F5F9; border-radius: 8px; padding: 12px; font-size: 11px; color: #475569; display: flex; align-items: center; justify-content: space-between;">
+          <div>
+            <strong>Script de Configuración Automática para Linux:</strong> Disponible en el directorio raíz como <code>setup_vps_postfix.sh</code>.
+          </div>
+          <span class="badge badge-teal">Opción 1 Activa</span>
+        </div>
+      </div>
+
       <button type="submit" class="btn btn-primary" style="padding: 12px 24px; font-size: 14px; font-weight: 700;">
         💾 Guardar Toda la Configuración
       </button>
@@ -217,6 +284,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_settings'])) {
         }
       } catch (err) {
         showToast('Error de comunicación con el servidor', 'error');
+      }
+    }
+
+    async function testSmtpConnection() {
+      showToast('Probando conexión con el servidor VPS Postfix...', 'success');
+      const formData = new FormData();
+      formData.append('action', 'test_smtp');
+      formData.append('host', document.getElementById('smtp_host').value);
+      formData.append('port', document.getElementById('smtp_port').value);
+      formData.append('user', document.getElementById('smtp_user').value);
+      formData.append('pass', document.getElementById('smtp_pass').value);
+      formData.append('secure', document.getElementById('smtp_secure').value);
+      formData.append('helo_domain', document.getElementById('smtp_helo_domain').value);
+
+      try {
+        const res = await fetch('api.php', { method: 'POST', body: formData });
+        const data = await res.json();
+        if (data.success) {
+          showToast(data.message, 'success');
+        } else {
+          showToast(data.message || 'No se pudo conectar al VPS Postfix', 'error');
+        }
+      } catch (err) {
+        showToast('Error al conectar con la API', 'error');
       }
     }
   </script>

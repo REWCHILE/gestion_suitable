@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/ai_service.php';
+require_once __DIR__ . '/smtp_sender.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -54,6 +55,21 @@ switch ($action) {
             json_response(['success' => false, 'error' => 'Proveedor no especificado']);
         }
         $res = AIService::testConnection($provider);
+        json_response($res);
+        break;
+
+    // 2.1 TEST VPS POSTFIX / SMTP CONNECTION
+    case 'test_smtp':
+        $host = trim($_POST['host'] ?? get_setting('smtp_host', '127.0.0.1'));
+        $port = intval($_POST['port'] ?? get_setting('smtp_port', '25'));
+        $user = trim($_POST['user'] ?? get_setting('smtp_user', ''));
+        $pass = trim($_POST['pass'] ?? get_setting('smtp_pass', ''));
+        $secure = trim($_POST['secure'] ?? get_setting('smtp_secure', 'none'));
+        $helo = trim($_POST['helo_domain'] ?? get_setting('smtp_helo_domain', 'mail.suitable.cl'));
+
+        $res = SmtpSender::testConnection([
+            'host' => $host, 'port' => $port, 'user' => $user, 'pass' => $pass, 'secure' => $secure, 'helo_domain' => $helo
+        ]);
         json_response($res);
         break;
 
@@ -213,14 +229,48 @@ switch ($action) {
             WHERE id = ?
         ");
 
-        $status_label = ($mode === 'brevo_api') ? 'enviado_brevo' : 'simulado';
+        $status_label = ($mode === 'brevo_api') ? 'enviado_brevo' : (($mode === 'vps_smtp') ? 'enviado_vps_postfix' : 'simulado');
 
-        foreach ($recipients as $rec) {
-            $stmt_log->execute([$rec['id'], $campaign_id, $user['id'], $template_id, $rec['email'], $subject, $status_label]);
-            $stmt_up_cli->execute([$tpl_type, $new_status, $rec['id']]);
+        if ($mode === 'vps_smtp') {
+            $baseHtml = AIService::renderCampaignHtml([
+                'template_id' => $template_id,
+                'subject' => $subject
+            ]);
+            $delay = intval(get_setting('smtp_delay_seconds', '35'));
+
+            foreach ($recipients as $idx => $rec) {
+                // Personalize body tags
+                $personalized = str_replace(
+                    ['{{ contact.NOMBRE }}', '{{ contact.EMPRESA }}', '{{ unsubscribe }}'],
+                    [htmlspecialchars($rec['contacto_nombre'] ?: 'Director/a'), htmlspecialchars($rec['empresa'] ?: 'Institución'), 'https://suitable.cl/desuscribir'],
+                    $baseHtml
+                );
+
+                $sentRes = SmtpSender::send(
+                    $rec['email'],
+                    $rec['contacto_nombre'] ?: '',
+                    $subject,
+                    $personalized
+                );
+
+                $itemStatus = $sentRes['success'] ? 'enviado_vps_postfix' : 'error_vps';
+                $stmt_log->execute([$rec['id'], $campaign_id, $user['id'], $template_id, $rec['email'], $subject, $itemStatus]);
+                $stmt_up_cli->execute([$tpl_type, $new_status, $rec['id']]);
+
+                // Small jitter pause if sending sequentially
+                if ($idx < count($recipients) - 1 && $delay > 0) {
+                    usleep(min($delay, 2) * 500000);
+                }
+            }
+        } else {
+            foreach ($recipients as $rec) {
+                $stmt_log->execute([$rec['id'], $campaign_id, $user['id'], $template_id, $rec['email'], $subject, $status_label]);
+                $stmt_up_cli->execute([$tpl_type, $new_status, $rec['id']]);
+            }
         }
 
-        $msg = "¡Campaña '$name' orquestada exitosamente para $total_count clínicas con " . ($template_id == 2 ? 'Plantilla 2 B2B' : 'Plantilla 1') . "!";
+        $dispName = ($mode === 'vps_smtp') ? 'VPS Postfix Sigiloso' : (($mode === 'brevo_api') ? 'Brevo API' : 'Simulación CRM');
+        $msg = "¡Campaña '$name' orquestada exitosamente para $total_count clínicas vía $dispName!";
         json_response(['success' => true, 'message' => $msg, 'campaign_id' => $campaign_id]);
         break;
 
