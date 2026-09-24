@@ -1,77 +1,58 @@
-# 🩺 SUITABLE | Plataforma B2B Outreach, Orquestador de Campañas & Cerebro de ML
+<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-Sistema corporativo integral diseñado para **SUITABLE** ([suitable.cl](https://suitable.cl)), fabricante y distribuidor chileno de uniformes clínicos (*scrubs*) de alta gama.
+<p align="center">
+<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+</p>
 
----
+## About Laravel
 
-## 👥 Credenciales de Acceso
+Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-| Rol | Correo Electrónico | Contraseña | Permisos |
-|---|---|---|---|
-| **Administrador** | `admin@suitable.cl` | `admin123` | Control total, configuración de llaves de IA, Brevo y WooCommerce |
-| **Enviador B2B** | `ventas@suitable.cl` | `ventas123` | Pipeline de clínicas, orquestación de envíos y agendamiento de tallaje |
-| **Convenios Clínicos** | `convenios@suitable.cl` | `convenios123` | Gestión de cuentas corporativas y seguimiento de cotizaciones |
+- [Simple, fast routing engine](https://laravel.com/docs/routing).
+- [Powerful dependency injection container](https://laravel.com/docs/container).
+- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
+- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
+- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
+- [Robust background job processing](https://laravel.com/docs/queues).
+- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-*(Se incluyen botones de acceso rápido en la pantalla de inicio de sesión para facilitar las pruebas).*
+Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
----
+## Learning Laravel
 
-## 🚀 Módulos y Funcionalidades
+Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
-### 1. 📧 Plantillas de Correo Corporativo (Compatibles con Brevo)
-* **Plantilla 1 (`email_corporativo_suitable_1.html`):** Institucional general, tecnología textil Flex, telas antifluidos, bordados y muestrario de catálogo mujer/hombre.
-* **Plantilla 2 B2B (`email_corporativo_suitable_2.html`):** Enfoque corporativo de alto impacto con **imágenes autogeneradas**:
-  * 🇨🇱 **Somos Fabricantes Chilenos:** Venta directa de fábrica sin intermediarios y reposición garantizada.
-  * 🛡️ **6 Meses de Garantía:** Respaldo total en confección, costuras y telas.
-  * 📏 **Servicio Exclusivo de Tallaje en Clínica:** Llevamos muestras y tallero (XS a 3XL) directamente a su institución.
-  * 💧 **Tecnología Antifluidos & Flex 4-Way:** Demostración fotográfica de repelencia a líquidos.
-  * 🏷️ **Etiquetas Brevo obligatorias integradas:** `{{ unsubscribe }}`, `{{ mirror }}`, `{{ contact.NOMBRE }}`, `{{ contact.EMPRESA }}`.
+In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-### 2. 🤖 Copiloto de Inteligencia Artificial Multi-Proveedor
-* Conexión con los 4 proveedores líderes:
-  * ⚡ **Groq** (`llama-3.3-70b-versatile` / `mixtral-8x7b-32768`)
-  * 🧠 **OpenAI** (`gpt-4o` / `gpt-4o-mini`)
-  * 🎭 **Anthropic Claude** (`claude-3-5-sonnet-20241022` / `claude-3-haiku`)
-  * ✨ **Google Gemini** (`gemini-1.5-flash` / `gemini-2.0-flash`)
-* **Generación inteligente en 1 clic:**
-  * Asuntos B2B irresistibles para directores médicos y jefes de adquisiciones.
-  * Ganchos comerciales adaptados para clínicas dentales, hospitales y centros estéticos.
-  * Modo de contingencia local inteligente integrado.
+You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
 
-### 3. 📥 Importador de Listas CSV & Segmentación por Grupos
-* Detección y mapeo automático de columnas: *Empresa, Contacto, Email, Teléfono/WhatsApp, Cargo, Comuna y N° de Personal*.
-* Asignación inmediata a grupos o creación de nuevos segmentos durante la importación.
-* Plantilla CSV de ejemplo descargable con un clic.
+## Agentic Development
 
-### 4. 🧙 Wizard Detector de WooCommerce en Panel / cPanel
-* Escaneo automático del servidor MySQL (Laragon / cPanel / subdominios).
-* Detección automática de tiendas en subdominios (ej. `tienda.suitable.cl` o `b2b.suitable.cl`).
-* **Preview Card en tiempo real:**
-  * Subdominio detectado
-  * Cantidad de pedidos históricos (`X pedidos`)
-  * Ventas totales acumuladas (`$X CLP`)
-  * Rango de fechas y estado
-* Botón **"Conectar e Importar Tienda"** en 1 clic.
+Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
 
-### 5. 📈 Analítica de E-commerce & Métricas de Tráfico
-* Selector temporal dinámico por **Día**, **Semana**, **Mes** y **Año**.
-* Cards de métricas de marketing: **CTR (Click Through Rate)**, **CPA (Costo por Adquisición)**, **AOV (Ticket Promedio)**, **CVR (Conversión)** e Ingresos.
-* Gráfico interactivo de evolución de ventas.
-* Ranking de categorías y colores clínicos más vendidos (Azul Marino, Celeste, Verde Nilo, etc.).
+```bash
+composer require laravel/boost --dev
 
-### 6. 🧠 Cerebro de Machine Learning & Tendencias
-* **Tendencias de Compra:** Detección de productos en aceleración de demanda y ciclo de recompra médica (114 días promedio).
-* **Tendencias de Búsqueda:** Monitor diario, semanal y mensual de términos clave de salud en Chile.
-* **Forecasting & Diagnóstico de IA:** Proyección algorítmica de demanda para 30, 60 y 90 días, con reporte de abastecimiento de fábrica generado por IA.
+php artisan boost:install
+```
 
----
+Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
 
-## 🛠️ Tecnologías Utilizadas
+## Contributing
 
-* **Backend:** PHP 8.3 nativo, SQLite con PDO (portátil y ligero).
-* **Frontend:** Vanilla JS + CSS3 moderno (diseño médico, glassmorphism, responsive).
-* **APIs:** Groq API, OpenAI API, Anthropic Claude API, Google Gemini API, Brevo API v3, WooCommerce REST API.
+Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
----
+## Code of Conduct
 
-© 2026 Suitable SpA. Marca y Fabricación Nacional de Uniformes Clínicos.
+In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+
+## Security Vulnerabilities
+
+If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+
+## License
+
+The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
