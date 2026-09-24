@@ -49,30 +49,49 @@
       margin-left: 260px !important;
     }
     .sidebar-header {
-      height: 64px !important; padding: 0 14px !important;
-      display: flex !important; align-items: center !important; justify-content: space-between !important;
+      height: 68px !important; padding: 0 12px !important;
+      display: flex !important; align-items: center !important; justify-content: center !important;
       border-bottom: 1px solid #E2E8F0 !important; flex-shrink: 0 !important;
       overflow: hidden !important; background: #FFFFFF !important;
+      transition: all 0.22s ease !important;
+    }
+    .app-sidebar:hover .sidebar-header, body.sidebar-pinned .sidebar-header {
+      padding: 0 16px !important;
+      justify-content: space-between !important;
     }
     .sidebar-brand {
       display: flex !important; align-items: center !important; gap: 10px !important;
-      text-decoration: none !important; min-width: 42px !important; overflow: hidden !important;
+      text-decoration: none !important; min-width: 46px !important; overflow: hidden !important;
+      justify-content: center !important;
     }
-    .sidebar-logo-icon {
-      width: 42px !important; height: 42px !important; min-width: 42px !important;
-      background: linear-gradient(135deg, #1E8888 0%, #115353 100%) !important;
-      border-radius: 10px !important; display: flex !important; align-items: center !important; justify-content: center !important;
-      color: #FFFFFF !important; font-size: 20px !important;
-      box-shadow: 0 2px 8px rgba(30, 136, 136, 0.3) !important; flex-shrink: 0 !important;
+    .app-sidebar:hover .sidebar-brand, body.sidebar-pinned .sidebar-brand {
+      justify-content: flex-start !important;
     }
+    /* LOGO PROTAGONISMO AL COLAPSAR */
+    .sidebar-logo-icon-wrap {
+      width: 48px !important; height: 48px !important; min-width: 48px !important;
+      border-radius: 12px !important; display: flex !important; align-items: center !important; justify-content: center !important;
+      background: #FFFFFF !important; border: 1.5px solid #CCFBF1 !important;
+      box-shadow: 0 3px 10px rgba(30, 136, 136, 0.18) !important; flex-shrink: 0 !important;
+      transition: all 0.2s ease !important;
+    }
+    .sidebar-logo-icon-wrap img {
+      width: 36px !important; height: 36px !important; object-fit: contain !important;
+    }
+    .sidebar-logo-icon-wrap:hover {
+      transform: scale(1.06) !important;
+      box-shadow: 0 4px 14px rgba(30, 136, 136, 0.28) !important;
+      border-color: #1E8888 !important;
+    }
+    /* LOGO COMPLETO MÁS GRANDE EN EXPANDIDO */
     .sidebar-logo-full {
-      height: 28px !important; max-width: 140px !important; object-fit: contain !important;
+      height: 38px !important; max-width: 165px !important; object-fit: contain !important;
       display: none !important; opacity: 0; transition: opacity 0.2s ease !important;
     }
     .app-sidebar:hover .sidebar-logo-full, body.sidebar-pinned .sidebar-logo-full {
       display: block !important; opacity: 1 !important;
     }
-    .app-sidebar:hover .sidebar-logo-icon, body.sidebar-pinned .sidebar-logo-icon {
+    .app-sidebar:hover .sidebar-logo-icon-wrap, body.sidebar-pinned .sidebar-logo-icon-wrap {
       display: none !important;
     }
     .sidebar-pin-btn {
@@ -114,9 +133,15 @@
     .sidebar-label { opacity: 0; margin-left: 8px !important; transition: opacity 0.2s ease !important; white-space: nowrap !important; display: none !important; }
     .app-sidebar:hover .sidebar-label, body.sidebar-pinned .sidebar-label { display: inline-block !important; opacity: 1 !important; }
     .sidebar-footer {
-      padding: 10px 12px !important; border-top: 1px solid #E2E8F0 !important;
+      padding: 10px 10px !important; border-top: 1px solid #E2E8F0 !important;
       background-color: #F8FAFC !important; display: flex !important; align-items: center !important;
-      justify-content: space-between !important; flex-shrink: 0 !important; height: 60px !important; overflow: hidden !important;
+      justify-content: center !important; flex-shrink: 0 !important; min-height: 60px !important; overflow: hidden !important;
+      flex-direction: column !important; gap: 8px !important;
+    }
+    .app-sidebar:hover .sidebar-footer, body.sidebar-pinned .sidebar-footer {
+      padding: 10px 14px !important;
+      flex-direction: row !important;
+      justify-content: space-between !important;
     }
     .sidebar-user { display: flex !important; align-items: center !important; gap: 10px !important; overflow: hidden !important; }
     .sidebar-user .user-avatar {
@@ -128,7 +153,38 @@
     }
     .sidebar-user-info { display: none !important; opacity: 0; transition: opacity 0.2s ease !important; overflow: hidden !important; }
     .app-sidebar:hover .sidebar-user-info, body.sidebar-pinned .sidebar-user-info { display: block !important; opacity: 1 !important; }
-    .sidebar-user-name { font-size: 12px !important; font-weight: 700 !important; color: #0F172A !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; max-width: 130px !important; }
+    .sidebar-user-name { font-size: 12px !important; font-weight: 700 !important; color: #0F172A !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; max-width: 95px !important; }
+
+    /* BOTÓN CERRAR SESIÓN ESTILIZADO */
+    .sidebar-logout-btn {
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 5px !important;
+      background: #FEF2F2 !important;
+      color: #DC2626 !important;
+      border: 1px solid #FECACA !important;
+      border-radius: 6px !important;
+      padding: 6px 9px !important;
+      font-size: 11px !important;
+      font-weight: 700 !important;
+      text-decoration: none !important;
+      transition: all 0.18s ease !important;
+      cursor: pointer !important;
+      white-space: nowrap !important;
+    }
+    .sidebar-logout-btn:hover {
+      background: #DC2626 !important;
+      color: #FFFFFF !important;
+      border-color: #DC2626 !important;
+      box-shadow: 0 2px 8px rgba(220, 38, 38, 0.35) !important;
+    }
+    .sidebar-logout-label {
+      display: none !important;
+    }
+    .app-sidebar:hover .sidebar-logout-label, body.sidebar-pinned .sidebar-logout-label {
+      display: inline !important;
+    }
   </style>
   @stack('styles')
 </head>
@@ -153,9 +209,11 @@
     
     <!-- HEADER -->
     <div class="sidebar-header">
-      <a href="{{ route('dashboard') }}" class="sidebar-brand">
-        <div class="sidebar-logo-icon">🩺</div>
-        <img src="https://suitable.cl/wp-content/uploads/2025/04/logo_verde-350x128.png" alt="Suitable" class="sidebar-logo-full">
+      <a href="{{ route('dashboard') }}" class="sidebar-brand" title="Suitable B2B">
+        <div class="sidebar-logo-icon-wrap" title="Suitable Monograma">
+          <img src="{{ asset('images/logo_icon_suitable.png') }}" alt="Suitable Logo">
+        </div>
+        <img src="{{ asset('images/logo_suitable.png') }}" alt="Suitable" class="sidebar-logo-full">
       </a>
       <button type="button" id="sidebar-pin-btn" class="sidebar-pin-btn" title="Anclar menú fijado a la izquierda" onclick="toggleSidebarPin()">
         <svg class="pin-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -245,12 +303,16 @@
     <!-- FOOTER -->
     <div class="sidebar-footer">
       <div class="sidebar-user">
-        <div class="user-avatar">S</div>
+        <div class="user-avatar" title="Usuario Administrador">S</div>
         <div class="sidebar-user-info">
           <div class="sidebar-user-name">Suitable Admin</div>
-          <span style="font-size: 10px; color: #1E8888; font-weight: 800;">LARAVEL 11</span>
+          <span style="font-size: 10px; color: #1E8888; font-weight: 800;">ADMINISTRADOR</span>
         </div>
       </div>
+      <a href="{{ route('logout') }}" class="sidebar-logout-btn" title="Cerrar sesión de la plataforma">
+        <span>🚪</span>
+        <span class="sidebar-logout-label">Cerrar Sesión</span>
+      </a>
     </div>
 
   </aside>

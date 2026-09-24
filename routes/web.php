@@ -76,3 +76,13 @@ Route::post('/settings', [SettingController::class, 'store'])->name('settings.st
 Route::post('/settings/test-smtp', [SettingController::class, 'testSmtp'])->name('settings.test_smtp');
 Route::post('/settings/check-status', [SettingController::class, 'checkStatus'])->name('settings.check_status');
 Route::post('/settings/ai-brand-assist', [SettingController::class, 'aiBrandAssist'])->name('settings.ai_brand_assist');
+
+// Auth Logout
+Route::match(['get', 'post'], '/logout', function () {
+    session()->flush();
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        session_destroy();
+    }
+    return redirect('/login.php');
+})->name('logout');
+

@@ -181,82 +181,132 @@ $categories = \App\Services\CampaignPresetService::categories();
       justify-content: center;
     }
 
+    /* PISTA DE DESLIZAMIENTO SUAVE VERTICAL */
+    .tpl-scroll-track {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      transform: translateY(0);
+      transition: transform 7.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      will-change: transform;
+    }
+
+    /* AL POSAR EL MOUSE: DESLIZAMIENTO LENTO DE ARRIBA A ABAJO */
+    .tpl-card:hover .tpl-scroll-track {
+      transform: translateY(-520px);
+    }
+
+    /* AL RETIRAR EL MOUSE: REGRESO SUAVE A LA CABECERA */
+    .tpl-card:not(:hover) .tpl-scroll-track {
+      transition: transform 1.2s ease-out;
+    }
+
     .tpl-mini-iframe {
       width: 620px;
-      height: 1200px;
+      height: 1600px;
       border: none;
       pointer-events: none;
       transform-origin: top center;
       background: #FFFFFF;
     }
 
-    /* OVERLAY HOVER CON ACCIONES */
-    .tpl-overlay {
+    /* BADGE INDICADOR DE DESPLAZAMIENTO */
+    .tpl-scroll-badge {
       position: absolute;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.65);
-      backdrop-filter: blur(2px);
+      top: 10px;
+      left: 10px;
+      background: rgba(30, 136, 136, 0.9);
+      backdrop-filter: blur(4px);
+      color: #FFFFFF;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 9px;
+      border-radius: 12px;
       display: flex;
-      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      gap: 12px;
+      gap: 4px;
       opacity: 0;
-      transition: opacity 0.2s ease;
-      z-index: 10;
-      padding: 20px;
+      transform: translateY(-5px);
+      transition: all 0.22s ease;
+      pointer-events: none;
+      z-index: 15;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
 
-    .tpl-card:hover .tpl-overlay {
+    .tpl-card:hover .tpl-scroll-badge {
       opacity: 1;
+      transform: translateY(0);
     }
 
-    .btn-tpl-action-primary {
+    /* DOCK FLOTANTE DE ACCIONES INFERIOR (NO TAPA LA PLANTILLA) */
+    .tpl-floating-dock {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: rgba(15, 23, 42, 0.88);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 30px;
+      padding: 5px 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      opacity: 0;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 20;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      white-space: nowrap;
+    }
+
+    .tpl-card:hover .tpl-floating-dock {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .btn-dock-use {
       background: #2563EB;
       color: #FFFFFF;
       border: none;
-      border-radius: 6px;
-      padding: 10px 18px;
-      font-size: 13px;
-      font-weight: 700;
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 800;
       cursor: pointer;
       text-decoration: none;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+      gap: 4px;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
       transition: all 0.15s ease;
-      width: 100%;
-      max-width: 190px;
-      justify-content: center;
     }
 
-    .btn-tpl-action-primary:hover {
+    .btn-dock-use:hover {
       background: #1D4ED8;
-      transform: scale(1.02);
+      transform: scale(1.04);
+      color: #FFFFFF;
     }
 
-    .btn-tpl-action-secondary {
-      background: rgba(255, 255, 255, 0.95);
-      color: #0F172A;
-      border: none;
-      border-radius: 6px;
-      padding: 9px 18px;
-      font-size: 12.5px;
+    .btn-dock-action {
+      background: rgba(255, 255, 255, 0.15);
+      color: #FFFFFF;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 20px;
+      padding: 6px 12px;
+      font-size: 11.5px;
       font-weight: 700;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
       transition: all 0.15s ease;
-      width: 100%;
-      max-width: 190px;
-      justify-content: center;
     }
 
-    .btn-tpl-action-secondary:hover {
-      background: #FFFFFF;
-      color: #1E8888;
+    .btn-dock-action:hover {
+      background: rgba(255, 255, 255, 0.3);
+      color: #FFFFFF;
     }
 
     /* INFO INFERIOR DE LA TARJETA */
@@ -424,30 +474,35 @@ $categories = \App\Services\CampaignPresetService::categories();
           <?php foreach($allPresets as $p): ?>
             <div class="tpl-card" data-category="<?= htmlspecialchars($p['category_slug'] ?? 'clinicas') ?>" data-name="<?= strtolower(htmlspecialchars($p['name'] . ' ' . $p['description'])) ?>">
               
-              <!-- VIEWPORT CON IFRAME MINIATURA ESCALADO -->
+              <!-- VIEWPORT CON IFRAME MINIATURA ESCALADO Y DESPLAZAMIENTO SUAVE -->
               <div class="tpl-viewport">
-                <iframe 
-                  src="public/campaigns/presets/<?= $p['id'] ?>/preview" 
-                  class="tpl-mini-iframe" 
-                  loading="lazy" 
-                  scrolling="no" 
-                  tabindex="-1"
-                  title="<?= htmlspecialchars($p['name']) ?>"
-                ></iframe>
+                <!-- PISTA DE DESPLAZAMIENTO DINAMICA -->
+                <div class="tpl-scroll-track">
+                  <iframe 
+                    src="public/campaigns/presets/<?= $p['id'] ?>/preview" 
+                    class="tpl-mini-iframe" 
+                    loading="lazy" 
+                    scrolling="no" 
+                    tabindex="-1"
+                    title="<?= htmlspecialchars($p['name']) ?>"
+                  ></iframe>
+                </div>
 
-                <!-- HOVER OVERLAY -->
-                <div class="tpl-overlay">
-                  <a href="send_outreach.php?preset=<?= $p['id'] ?>" class="btn-tpl-action-primary">
-                    <span>🚀</span>
-                    <span>Usar esta plantilla</span>
+                <!-- BADGE INDICADOR DE DESPLAZAMIENTO -->
+                <div class="tpl-scroll-badge">
+                  <span>⬇️ Desplazando plantilla...</span>
+                </div>
+
+                <!-- DOCK FLOTANTE DE ACCIONES (NO TAPA LA PLANTILLA) -->
+                <div class="tpl-floating-dock">
+                  <a href="send_outreach.php?preset=<?= $p['id'] ?>" class="btn-dock-use" title="Usar esta plantilla">
+                    <span>🚀 Usar</span>
                   </a>
-                  <button type="button" class="btn-tpl-action-secondary" onclick="openHdModal('<?= $p['id'] ?>', '<?= addslashes($p['name']) ?>')">
-                    <span>👁️</span>
-                    <span>Vista Previa HD</span>
+                  <button type="button" class="btn-dock-action" onclick="openHdModal('<?= $p['id'] ?>', '<?= addslashes($p['name']) ?>')" title="Vista Previa HD">
+                    <span>👁️ HD</span>
                   </button>
-                  <button type="button" class="btn-tpl-action-secondary" onclick="copyPresetHtmlDirect('<?= $p['id'] ?>')" style="font-size: 11.5px; padding: 7px 14px;">
-                    <span>📋</span>
-                    <span>Copiar HTML Brevo</span>
+                  <button type="button" class="btn-dock-action" onclick="copyPresetHtmlDirect('<?= $p['id'] ?>')" title="Copiar HTML para Brevo">
+                    <span>📋 Brevo</span>
                   </button>
                 </div>
               </div>

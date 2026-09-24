@@ -76,19 +76,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       color: var(--text-muted);
       margin-top: 4px;
     }
-    .demo-users-box {
-      margin-top: 24px;
-      padding: 16px;
-      background-color: var(--bg-subtle);
-      border-radius: var(--radius-md);
-      border: 1px dashed var(--border-light);
-      font-size: 12px;
-    }
-    .demo-btn-group {
-      display: flex;
-      gap: 8px;
-      margin-top: 10px;
-    }
     .alert-error {
       background-color: #FEE2E2;
       border: 1px solid #FCA5A5;
@@ -130,26 +117,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         Iniciar Sesión Segura →
       </button>
     </form>
-
-    <!-- ACCESO RÁPIDO PARA PRUEBAS -->
-    <div class="demo-users-box">
-      <span style="font-weight: 700; color: var(--text-main);">⚡ Accesos Rápidos de Demostración:</span>
-      <div class="demo-btn-group">
-        <button type="button" class="btn btn-secondary btn-sm" onclick="setLogin('admin@suitable.cl', 'admin123')">
-          👤 Administrador
-        </button>
-        <button type="button" class="btn btn-secondary btn-sm" onclick="setLogin('ventas@suitable.cl', 'ventas123')">
-          ✉️ Enviador B2B
-        </button>
-      </div>
-    </div>
   </div>
-
-  <script>
-    function setLogin(email, pass) {
-      document.getElementById('email').value = email;
-      document.getElementById('password').value = pass;
-    }
-  </script>
 </body>
 </html>

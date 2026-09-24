@@ -63,28 +63,48 @@ body.sidebar-pinned .main-container {
   align-items: center !important;
   gap: 10px !important;
   text-decoration: none !important;
-  min-width: 42px !important;
+  min-width: 46px !important;
   overflow: hidden !important;
+  justify-content: center !important;
 }
 
-.sidebar-logo-icon {
-  width: 42px !important;
-  height: 42px !important;
-  min-width: 42px !important;
-  background: linear-gradient(135deg, #1E8888 0%, #115353 100%) !important;
-  border-radius: 10px !important;
+.app-sidebar:hover .sidebar-brand,
+body.sidebar-pinned .sidebar-brand {
+  justify-content: flex-start !important;
+}
+
+/* LOGO PROTAGONISMO AL COLAPSAR */
+.sidebar-logo-icon-wrap {
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px !important;
+  border-radius: 12px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  color: #FFFFFF !important;
-  font-size: 20px !important;
-  box-shadow: 0 2px 8px rgba(30, 136, 136, 0.3) !important;
+  background: #FFFFFF !important;
+  border: 1.5px solid #CCFBF1 !important;
+  box-shadow: 0 3px 10px rgba(30, 136, 136, 0.18) !important;
   flex-shrink: 0 !important;
+  transition: all 0.2s ease !important;
 }
 
+.sidebar-logo-icon-wrap img {
+  width: 36px !important;
+  height: 36px !important;
+  object-fit: contain !important;
+}
+
+.sidebar-logo-icon-wrap:hover {
+  transform: scale(1.06) !important;
+  box-shadow: 0 4px 14px rgba(30, 136, 136, 0.28) !important;
+  border-color: #1E8888 !important;
+}
+
+/* LOGO COMPLETO MÁS GRANDE EN EXPANDIDO */
 .sidebar-logo-full {
-  height: 28px !important;
-  max-width: 140px !important;
+  height: 38px !important;
+  max-width: 165px !important;
   object-fit: contain !important;
   display: none !important;
   opacity: 0;
@@ -97,8 +117,8 @@ body.sidebar-pinned .sidebar-logo-full {
   opacity: 1 !important;
 }
 
-.app-sidebar:hover .sidebar-logo-icon,
-body.sidebar-pinned .sidebar-logo-icon {
+.app-sidebar:hover .sidebar-logo-icon-wrap,
+body.sidebar-pinned .sidebar-logo-icon-wrap {
   display: none !important;
 }
 
@@ -338,9 +358,11 @@ body.sidebar-pinned .sidebar-logout-btn {
   
   <!-- SIDEBAR HEADER: LOGO & PIN -->
   <div class="sidebar-header">
-    <a href="index.php" class="sidebar-brand">
-      <div class="sidebar-logo-icon">🩺</div>
-      <img src="https://suitable.cl/wp-content/uploads/2025/04/logo_verde-350x128.png" alt="Suitable" class="sidebar-logo-full">
+    <a href="index.php" class="sidebar-brand" title="Suitable B2B">
+      <div class="sidebar-logo-icon-wrap" title="Suitable Monograma">
+        <img src="public/images/logo_icon_suitable.png" alt="Suitable Logo">
+      </div>
+      <img src="public/images/logo_suitable.png" alt="Suitable" class="sidebar-logo-full">
     </a>
     <button type="button" id="sidebar-pin-btn" class="sidebar-pin-btn" title="Anclar menú fijado a la izquierda" onclick="toggleSidebarPin()">
       <svg class="pin-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -438,7 +460,10 @@ body.sidebar-pinned .sidebar-logout-btn {
         </span>
       </div>
     </div>
-    <a href="logout.php" class="sidebar-logout-btn" title="Cerrar sesión">🚪</a>
+    <a href="logout.php" class="sidebar-logout-btn" title="Cerrar sesión">
+      <span>🚪</span>
+      <span class="sidebar-logout-label">Salir</span>
+    </a>
   </div>
 
 </aside>
