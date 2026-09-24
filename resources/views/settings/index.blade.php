@@ -65,6 +65,35 @@
     align-items: center;
     gap: 4px;
   }
+  .voice-record-btn {
+    border: 1px solid #CBD5E1;
+    background: #FFFFFF;
+    color: #475569;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+  }
+  .voice-record-btn:hover {
+    border-color: #1E8888;
+    color: #1E8888;
+    background: #E6F4F4;
+  }
+  .voice-record-btn.recording {
+    background: #FEF2F2 !important;
+    border-color: #EF4444 !important;
+    color: #DC2626 !important;
+    animation: voice-pulse 1.2s infinite ease-in-out;
+  }
+  @keyframes voice-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+  }
 </style>
 @endpush
 
@@ -191,6 +220,10 @@
 
         <div style="display: flex; gap: 8px; margin-top: 14px;">
           <input type="text" id="ai_brand_custom_focus" class="form-control" style="font-size: 12px; padding: 7px 10px;" placeholder="Ej: Redactar para licitaciones públicas o veterinarias...">
+          <button type="button" class="voice-record-btn" id="btn_voice_brand" onclick="toggleVoiceBrand()" title="Grabar instrucción con tu voz">
+            <span>🎙️</span>
+            <span>Dictar</span>
+          </button>
           <button type="button" id="btn_generate_custom_brand" class="btn btn-primary btn-sm" onclick="generateCustomBrandAi()" style="white-space: nowrap; font-size: 11.5px; padding: 7px 12px;">
             ⚡ Redactar con IA
           </button>
@@ -582,6 +615,71 @@
     } finally {
       btn.disabled = false;
       btn.innerHTML = originalText;
+    }
+  }
+
+  // --- DICTADO POR VOZ (SPEECH RECOGNITION 🎙️) ---
+  let brandVoiceRec = null;
+  let isBrandRecording = false;
+
+  function toggleVoiceBrand() {
+    const input = document.getElementById('ai_brand_custom_focus');
+    const btn = document.getElementById('btn_voice_brand');
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      alert('Tu navegador no soporta reconocimiento de voz nativo. Te recomendamos usar Google Chrome o Microsoft Edge.');
+      return;
+    }
+
+    if (isBrandRecording) {
+      if (brandVoiceRec) brandVoiceRec.stop();
+      isBrandRecording = false;
+      btn.classList.remove('recording');
+      btn.querySelector('span:last-child').innerText = 'Dictar';
+      return;
+    }
+
+    if (!brandVoiceRec) {
+      brandVoiceRec = new SpeechRecognition();
+      brandVoiceRec.lang = 'es-CL';
+      brandVoiceRec.continuous = true;
+      brandVoiceRec.interimResults = true;
+
+      brandVoiceRec.onstart = function() {
+        isBrandRecording = true;
+        btn.classList.add('recording');
+        btn.querySelector('span:last-child').innerText = 'Grabando...';
+        showToast('🎙️ Micrófono activo: habla tu idea de remitente...', 'info');
+      };
+
+      brandVoiceRec.onresult = function(event) {
+        let interim = '';
+        let final = '';
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          if (event.results[i].isFinal) final += event.results[i][0].transcript;
+          else interim += event.results[i][0].transcript;
+        }
+        input.value = (final + ' ' + interim).trim();
+      };
+
+      brandVoiceRec.onerror = function() {
+        isBrandRecording = false;
+        btn.classList.remove('recording');
+        btn.querySelector('span:last-child').innerText = 'Dictar';
+      };
+
+      brandVoiceRec.onend = function() {
+        isBrandRecording = false;
+        btn.classList.remove('recording');
+        btn.querySelector('span:last-child').innerText = 'Dictar';
+      };
+    }
+
+    try {
+      brandVoiceRec.start();
+    } catch(e) {
+      console.warn(e);
     }
   }
 </script>

@@ -1,16 +1,103 @@
 @extends('layouts.app')
 
-@section('title', 'Estudio Creador de Campañas con IA | Suitable')
+@section('title', 'Estudio Creador Modular con IA | Suitable')
 
 @section('content')
+<!-- ESTILOS EXCLUSIVOS DEL ESTUDIO MODULAR -->
+<style>
+  .preset-card {
+    border: 2px solid #E2E8F0;
+    border-radius: 10px;
+    padding: 12px 10px;
+    cursor: pointer;
+    background: #FFFFFF;
+    transition: all 0.2s ease;
+    text-align: center;
+    position: relative;
+  }
+  .preset-card:hover {
+    border-color: #99D5D5;
+    transform: translateY(-2px);
+  }
+  .preset-card.active {
+    border-color: #1E8888;
+    background: #E6F4F4;
+    box-shadow: 0 4px 12px rgba(30, 136, 136, 0.2);
+  }
+  .preset-card.active .preset-badge {
+    display: block !important;
+  }
+
+  .voice-record-btn {
+    background: #F1F5F9;
+    border: 1px solid #CBD5E1;
+    color: #475569;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s ease;
+  }
+  .voice-record-btn:hover {
+    background: #E2E8F0;
+    color: #0F172A;
+  }
+  .voice-record-btn.recording {
+    background: #FEE2E2 !important;
+    border-color: #EF4444 !important;
+    color: #DC2626 !important;
+    animation: voicePulse 1.2s infinite ease-in-out;
+  }
+
+  @keyframes voicePulse {
+    0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); }
+    70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+  }
+
+  .preview-section-wrapper {
+    position: relative;
+    transition: outline 0.2s ease;
+  }
+  .preview-section-wrapper:hover {
+    outline: 2px dashed #1E8888;
+    outline-offset: -2px;
+  }
+  .section-edit-trigger {
+    display: none;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: #0F2B2B;
+    color: #CCFBF1;
+    border: 1px solid rgba(255,255,255,0.3);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    z-index: 20;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  .preview-section-wrapper:hover .section-edit-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+</style>
+
 <div class="page-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
   <div class="page-title-group">
     <div style="display: inline-flex; align-items: center; gap: 8px; margin-bottom: 4px;">
-      <span style="font-size: 22px;">✨</span>
-      <h1 style="margin: 0; font-size: 24px; font-weight: 800; color: #0F172A;">Estudio Creador de Campañas con IA</h1>
+      <span style="font-size: 24px;">🎨</span>
+      <h1 style="margin: 0; font-size: 24px; font-weight: 800; color: #0F172A;">Estudio Modular de Campañas con IA</h1>
     </div>
     <p class="page-subtitle" style="margin: 0; color: #64748B; font-size: 13.5px;">
-      Diseñe propuestas B2B dinámicas y coherentes con Gemini, seleccione imágenes de portada y previsualice en vivo
+      Presets modulares estilo Brevo, generador de imágenes IA por prompt o voz (🎙️) y edición sección por sección
     </p>
   </div>
   <div class="header-actions">
@@ -22,157 +109,287 @@
 
 <div style="display: grid; grid-template-columns: 1.15fr 1fr; gap: 24px; align-items: start;">
   
-  <!-- LEFT COLUMN: CONTROLS & AI GENERATOR -->
+  <!-- LEFT COLUMN: CONTROLS & MODULAR BUILDER -->
   <div class="table-card" style="padding: 24px;">
-    
-    <!-- 1. TARGET GROUP -->
-    <div class="form-group" style="margin-bottom: 20px;">
-      <label class="form-label" style="font-weight: 800; color: #0F172A; display: flex; align-items: center; gap: 6px;">
-        <span>👥</span> 1. Segmento de Destinatarios (CRM)
+
+    <!-- PASO 1: SELECCIONAR PRESET DE ESTRUCTURA MODULAR -->
+    <div class="form-group" style="margin-bottom: 22px;">
+      <label class="form-label" style="font-weight: 800; color: #0F172A; display: flex; align-items: center; justify-content: space-between;">
+        <span>📐 1. Estructura y Preset del Correo (Tipo Brevo)</span>
+        <span style="font-size: 11px; color: #1E8888; font-weight: 700;">Selecciona una maqueta</span>
       </label>
-      <select id="group_id" class="form-control" onchange="updateTargetCount(this)" style="font-size: 13.5px;">
-        <option value="0" data-count="{{ \App\Models\Client::count() }}">-- Toda la base institucional ({{ \App\Models\Client::count() }} contactos) --</option>
-        @foreach($groups as $g)
-          <option value="{{ $g->id }}" data-count="{{ $g->clients_count }}" {{ $selectedGroupId == $g->id ? 'selected' : '' }}>
-            {{ $g->name }} ({{ $g->clients_count }} contactos)
-          </option>
-        @endforeach
-      </select>
-      <div style="margin-top: 6px; font-size: 12px; color: #1E8888; font-weight: 700;">
-        🎯 Audiencia proyectada: <span id="target_display">{{ $targetCount }}</span> instituciones de salud
+      
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+        <!-- PRESET 1: CLASICA B2B -->
+        <div class="preset-card active" id="preset_card_clasica" onclick="selectPreset('clasica')">
+          <div style="font-size: 20px; margin-bottom: 4px;">🏛️</div>
+          <strong style="font-size: 11.5px; color: #0F172A; display: block;">Clásica B2B</strong>
+          <span style="font-size: 10px; color: #64748B; display: block; line-height: 1.2; margin-top: 2px;">Hero + 3 Columnas</span>
+          <span class="preset-badge" style="display: block; position: absolute; top: 4px; right: 4px; background: #1E8888; color: white; font-size: 8px; font-weight: 800; padding: 1px 4px; border-radius: 4px;">ACTIVO</span>
+        </div>
+
+        <!-- PRESET 2: SPLIT 50/50 -->
+        <div class="preset-card" id="preset_card_split" onclick="selectPreset('split')">
+          <div style="font-size: 20px; margin-bottom: 4px;">⚖️</div>
+          <strong style="font-size: 11.5px; color: #0F172A; display: block;">Split 50/50</strong>
+          <span style="font-size: 10px; color: #64748B; display: block; line-height: 1.2; margin-top: 2px;">Foto Izq / Texto Der</span>
+          <span class="preset-badge" style="display: none; position: absolute; top: 4px; right: 4px; background: #1E8888; color: white; font-size: 8px; font-weight: 800; padding: 1px 4px; border-radius: 4px;">ACTIVO</span>
+        </div>
+
+        <!-- PRESET 3: SHOWCASE / GALERIA -->
+        <div class="preset-card" id="preset_card_showcase" onclick="selectPreset('showcase')">
+          <div style="font-size: 20px; margin-bottom: 4px;">🖼️</div>
+          <strong style="font-size: 11.5px; color: #0F172A; display: block;">Showcase 2x2</strong>
+          <span style="font-size: 10px; color: #64748B; display: block; line-height: 1.2; margin-top: 2px;">Catálogo 4 Modelos</span>
+          <span class="preset-badge" style="display: none; position: absolute; top: 4px; right: 4px; background: #1E8888; color: white; font-size: 8px; font-weight: 800; padding: 1px 4px; border-radius: 4px;">ACTIVO</span>
+        </div>
+
+        <!-- PRESET 4: TALLAJE 1-2-3 -->
+        <div class="preset-card" id="preset_card_tallaje" onclick="selectPreset('tallaje')">
+          <div style="font-size: 20px; margin-bottom: 4px;">📏</div>
+          <strong style="font-size: 11.5px; color: #0F172A; display: block;">Tallaje 1-2-3</strong>
+          <span style="font-size: 10px; color: #64748B; display: block; line-height: 1.2; margin-top: 2px;">Pasos en Terreno</span>
+          <span class="preset-badge" style="display: none; position: absolute; top: 4px; right: 4px; background: #1E8888; color: white; font-size: 8px; font-weight: 800; padding: 1px 4px; border-radius: 4px;">ACTIVO</span>
+        </div>
       </div>
     </div>
 
-    <!-- 2. AI PROVIDER SELECTOR -->
-    <div class="form-group" style="margin-bottom: 20px;">
-      <label class="form-label" style="font-weight: 800; color: #0F172A; display: flex; align-items: center; gap: 6px;">
-        <span>🧠</span> 2. Motor de Inteligencia Artificial
-      </label>
-      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
-        @foreach($aiProviders as $key => $prov)
-          <label id="provider_card_{{ $key }}" style="border: 2px solid {{ $activeAiProvider === $key ? '#1E8888' : '#E2E8F0' }}; background: {{ $activeAiProvider === $key ? '#E6F4F4' : '#FFFFFF' }}; border-radius: 8px; padding: 10px 6px; text-align: center; cursor: pointer; transition: all 0.2s ease;">
-            <input type="radio" name="ai_provider" value="{{ $key }}" {{ $activeAiProvider === $key ? 'checked' : '' }} onchange="selectProviderUI('{{ $key }}')" style="display: none;">
-            <div style="font-size: 18px; margin-bottom: 2px;">{{ $prov['icon'] }}</div>
-            <strong style="display: block; font-size: 12px; color: #0F172A;">{{ $prov['name'] }}</strong>
-            <span style="font-size: 10px; color: #64748B;">{{ $prov['badge'] }}</span>
-          </label>
-        @endforeach
+    <!-- PASO 2: DESTINATARIOS CRM & MOTOR IA -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 22px;">
+      <!-- DESTINATARIOS -->
+      <div>
+        <label class="form-label" style="font-weight: 700; font-size: 12px; color: #0F172A;">
+          👥 Audiencia CRM
+        </label>
+        <select id="group_id" class="form-control" onchange="updateTargetCount(this)" style="font-size: 12.5px;">
+          <option value="0" data-count="{{ \App\Models\Client::count() }}">Todos ({{ \App\Models\Client::count() }} contactos)</option>
+          @foreach($groups as $g)
+            <option value="{{ $g->id }}" data-count="{{ $g->clients_count }}" {{ $selectedGroupId == $g->id ? 'selected' : '' }}>
+              {{ $g->name }} ({{ $g->clients_count }})
+            </option>
+          @endforeach
+        </select>
+      </div>
+
+      <!-- MOTOR IA -->
+      <div>
+        <label class="form-label" style="font-weight: 700; font-size: 12px; color: #0F172A;">
+          🧠 Motor de IA
+        </label>
+        <select id="ai_provider_select" class="form-control" style="font-size: 12.5px;">
+          @foreach($aiProviders as $key => $prov)
+            <option value="{{ $key }}" {{ $activeAiProvider === $key ? 'selected' : '' }}>
+              {{ $prov['icon'] }} {{ $prov['name'] }}
+            </option>
+          @endforeach
+        </select>
       </div>
     </div>
 
-    <!-- 3. HERO IMAGE SELECTOR DRAWER -->
+    <!-- PASO 3: FOTOS INSTITUCIONALES VS GENERADOR IA POR PROMPT O VOZ -->
     <div class="form-group" style="margin-bottom: 22px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px; padding: 16px;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
         <label class="form-label" style="font-weight: 800; color: #0F172A; margin: 0; display: flex; align-items: center; gap: 6px;">
           <span>📸</span> 3. Imagen de Cabecera (Hero Banner)
         </label>
-        <span id="selected_img_label" style="font-size: 11px; font-weight: 700; color: #1E8888; background: #E6F4F4; padding: 2px 8px; border-radius: 10px;">
-          hero-grupo-clinico.jpg
+        
+        <!-- PESTAÑAS: STOCK VS GENERADOR IA -->
+        <div style="display: inline-flex; background: #E2E8F0; border-radius: 6px; padding: 2px;">
+          <button type="button" id="tab_btn_stock" onclick="switchImageTab('stock')" style="border: none; background: white; color: #0F172A; font-weight: 700; font-size: 11px; padding: 4px 10px; border-radius: 4px; cursor: pointer;">
+            Fotos Suitable
+          </button>
+          <button type="button" id="tab_btn_ai" onclick="switchImageTab('ai')" style="border: none; background: transparent; color: #64748B; font-weight: 700; font-size: 11px; padding: 4px 10px; border-radius: 4px; cursor: pointer;">
+            ✨ Crear con IA (FLUX)
+          </button>
+        </div>
+      </div>
+
+      <!-- TAB 1: STOCK FOTOS SUITABLE -->
+      <div id="image_tab_stock">
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+          <div class="hero-img-card active" id="card_img_equipo" onclick="selectHeroImage('hero-grupo-clinico.jpg', 'card_img_equipo')" style="border: 2px solid #1E8888; border-radius: 8px; overflow: hidden; cursor: pointer; background: white; box-shadow: 0 2px 6px rgba(30,136,136,0.2);">
+            <div style="height: 64px; overflow: hidden; background: #0F172A; position: relative;">
+              <img src="{{ asset('images/hero-grupo-clinico.jpg') }}" alt="Equipo Clínico" style="width: 100%; height: 100%; object-fit: cover;">
+              <span class="img-badge" style="position: absolute; top: 4px; right: 4px; background: #1E8888; color: white; font-size: 8px; font-weight: 800; padding: 1px 4px; border-radius: 3px;">✓ ACTIVO</span>
+            </div>
+            <div style="padding: 5px; text-align: center; font-size: 11px; font-weight: 700; color: #0F172A;">
+              👨‍⚕️ Equipo Clínico
+            </div>
+          </div>
+
+          <div class="hero-img-card" id="card_img_tela" onclick="selectHeroImage('tela-antifluidos-macro.jpg', 'card_img_tela')" style="border: 2px solid #E2E8F0; border-radius: 8px; overflow: hidden; cursor: pointer; background: white;">
+            <div style="height: 64px; overflow: hidden; background: #0F172A; position: relative;">
+              <img src="{{ asset('images/tela-antifluidos-macro.jpg') }}" alt="Tela Antifluido" style="width: 100%; height: 100%; object-fit: cover;">
+              <span class="img-badge" style="display: none; position: absolute; top: 4px; right: 4px; background: #1E8888; color: white; font-size: 8px; font-weight: 800; padding: 1px 4px; border-radius: 3px;">✓ ACTIVO</span>
+            </div>
+            <div style="padding: 5px; text-align: center; font-size: 11px; font-weight: 700; color: #0F172A;">
+              🛡️ Tela Antifluido
+            </div>
+          </div>
+
+          <div class="hero-img-card" id="card_img_tallaje" onclick="selectHeroImage('servicio-tallaje-terreno.jpg', 'card_img_tallaje')" style="border: 2px solid #E2E8F0; border-radius: 8px; overflow: hidden; cursor: pointer; background: white;">
+            <div style="height: 64px; overflow: hidden; background: #0F172A; position: relative;">
+              <img src="{{ asset('images/servicio-tallaje-terreno.jpg') }}" alt="Tallaje en Terreno" style="width: 100%; height: 100%; object-fit: cover;">
+              <span class="img-badge" style="display: none; position: absolute; top: 4px; right: 4px; background: #1E8888; color: white; font-size: 8px; font-weight: 800; padding: 1px 4px; border-radius: 3px;">✓ ACTIVO</span>
+            </div>
+            <div style="padding: 5px; text-align: center; font-size: 11px; font-weight: 700; color: #0F172A;">
+              📏 Tallaje en Terreno
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: GENERADOR IA (FLUX) CON PROMPT Y VOZ -->
+      <div id="image_tab_ai" style="display: none;">
+        <div style="background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 8px; padding: 12px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <span style="font-size: 11.5px; font-weight: 800; color: #0F172A;">
+              ✨ Describe la imagen deseada (o dítala por voz):
+            </span>
+            <button type="button" class="voice-record-btn" id="btn_voice_img" onclick="toggleVoiceRecord('ai_image_prompt', 'btn_voice_img')" title="Grabar tu voz">
+              <span>🎙️</span>
+              <span id="voice_status_img">Dictar</span>
+            </button>
+          </div>
+
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="ai_image_prompt" class="form-control" placeholder="Ej: Doctores en pabellón con scrubs azul marino Suitable..." style="font-size: 12px;">
+            <button type="button" class="btn btn-primary btn-sm" id="btn_run_gen_img" onclick="generateAiImageAction()" style="white-space: nowrap; font-weight: 700; background: #1E8888; display: inline-flex; align-items: center; gap: 6px;">
+              <span>🎨</span>
+              <span>Generar Imagen</span>
+            </button>
+          </div>
+
+          <!-- CHIPS RAPIDOS -->
+          <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px;">
+            <button type="button" class="badge" onclick="setImgPromptChip('Equipo médico de clínica dental con scrubs antifluido Suitable')" style="border: none; background: #F1F5F9; color: #475569; cursor: pointer;">🦷 Odontología</button>
+            <button type="button" class="badge" onclick="setImgPromptChip('Enfermeras y médicos en sala de operaciones con uniformes azul quirúrgico')" style="border: none; background: #F1F5F9; color: #475569; cursor: pointer;">🏥 Quirófano</button>
+            <button type="button" class="badge" onclick="setImgPromptChip('Detalle macro de tela impermeable repelente a fluidos con gotas de agua')" style="border: none; background: #F1F5F9; color: #475569; cursor: pointer;">💧 Micro Tela</button>
+            <button type="button" class="badge" onclick="setImgPromptChip('Percheros móviles con uniformes clínicos en sala de clínica privada')" style="border: none; background: #F1F5F9; color: #475569; cursor: pointer;">📏 Percheros Terreno</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PASO 4: ASISTENTE IA PARA GENERAR PROPUESTA COMPLETA (CON VOZ 🎙️) -->
+    <div style="margin-bottom: 22px; background: linear-gradient(135deg, #E6F4F4 0%, #CCFBF1 100%); border: 1px solid #99D5D5; border-radius: 10px; padding: 16px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+        <span style="font-weight: 800; font-size: 13px; color: #0F766E;">
+          ✨ Asistente IA para Propuesta Comercial
         </span>
+        <button type="button" class="voice-record-btn" id="btn_voice_prompt" onclick="toggleVoiceRecord('ai_custom_focus', 'btn_voice_prompt')" title="Grabar instrucción por voz">
+          <span>🎙️</span>
+          <span id="voice_status_prompt">Hablar</span>
+        </button>
       </div>
 
-      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;" id="hero_image_cards">
-        <!-- CARD 1: EQUIPO CLÍNICO -->
-        <div class="hero-img-card active" id="card_img_equipo" onclick="selectHeroImage('hero-grupo-clinico.jpg', 'card_img_equipo')" style="border: 2px solid #1E8888; border-radius: 8px; overflow: hidden; cursor: pointer; background: white; box-shadow: 0 2px 6px rgba(30,136,136,0.2); transition: all 0.2s ease;">
-          <div style="height: 72px; overflow: hidden; background: #0F172A; position: relative;">
-            <img src="{{ asset('images/hero-grupo-clinico.jpg') }}" alt="Equipo Clínico" style="width: 100%; height: 100%; object-fit: cover;">
-            <span class="img-badge" style="position: absolute; top: 4px; right: 4px; background: #1E8888; color: white; font-size: 9px; font-weight: 800; padding: 1px 5px; border-radius: 4px;">✓ ACTIVO</span>
-          </div>
-          <div style="padding: 6px; text-align: center; font-size: 11px; font-weight: 700; color: #0F172A;">
-            👨‍⚕️ Equipo Clínico
-          </div>
-        </div>
-
-        <!-- CARD 2: TELA ANTIFLUIDO -->
-        <div class="hero-img-card" id="card_img_tela" onclick="selectHeroImage('tela-antifluidos-macro.jpg', 'card_img_tela')" style="border: 2px solid #E2E8F0; border-radius: 8px; overflow: hidden; cursor: pointer; background: white; transition: all 0.2s ease;">
-          <div style="height: 72px; overflow: hidden; background: #0F172A; position: relative;">
-            <img src="{{ asset('images/tela-antifluidos-macro.jpg') }}" alt="Tela Antifluido" style="width: 100%; height: 100%; object-fit: cover;">
-            <span class="img-badge" style="display: none; position: absolute; top: 4px; right: 4px; background: #1E8888; color: white; font-size: 9px; font-weight: 800; padding: 1px 5px; border-radius: 4px;">✓ ACTIVO</span>
-          </div>
-          <div style="padding: 6px; text-align: center; font-size: 11px; font-weight: 700; color: #0F172A;">
-            🛡️ Tela Antifluido
-          </div>
-        </div>
-
-        <!-- CARD 3: TALLAJE EN TERRENO -->
-        <div class="hero-img-card" id="card_img_tallaje" onclick="selectHeroImage('servicio-tallaje-terreno.jpg', 'card_img_tallaje')" style="border: 2px solid #E2E8F0; border-radius: 8px; overflow: hidden; cursor: pointer; background: white; transition: all 0.2s ease;">
-          <div style="height: 72px; overflow: hidden; background: #0F172A; position: relative;">
-            <img src="{{ asset('images/servicio-tallaje-terreno.jpg') }}" alt="Tallaje en Terreno" style="width: 100%; height: 100%; object-fit: cover;">
-            <span class="img-badge" style="display: none; position: absolute; top: 4px; right: 4px; background: #1E8888; color: white; font-size: 9px; font-weight: 800; padding: 1px 5px; border-radius: 4px;">✓ ACTIVO</span>
-          </div>
-          <div style="padding: 6px; text-align: center; font-size: 11px; font-weight: 700; color: #0F172A;">
-            📏 Tallaje en Terreno
-          </div>
-        </div>
-      </div>
-
-      <!-- GEMINI ALIGNMENT ACTION -->
-      <div style="margin-top: 12px; display: flex; gap: 8px;">
-        <input type="text" id="ai_custom_focus" class="form-control" placeholder="Instrucción adicional opcional (ej: Clínicas dentales, invierno térmico...)" style="font-size: 12px;">
+      <div style="display: flex; gap: 8px;">
+        <input type="text" id="ai_custom_focus" class="form-control" placeholder="Escribe o dicta tu idea (ej: Clínicas dentales, temporada de invierno...)" style="font-size: 12px; background: white;">
         <button type="button" class="btn btn-primary btn-sm" id="btn_ai_align" onclick="requestAiProposal()" style="font-weight: 700; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: linear-gradient(135deg, #1E8888 0%, #0F5E68 100%);">
           <span>✨</span>
-          <span>Pedir a IA propuesta coherente</span>
+          <span>Armar Propuesta</span>
         </button>
       </div>
     </div>
 
-    <!-- 4. CAMPAIGN DETAILS FORM -->
+    <!-- PASO 5: FORMULARIO DE EDICIÓN MODULAR -->
     <form id="campaign_form" onsubmit="saveCampaign(event)">
+      <input type="hidden" id="preset_template" name="preset_template" value="clasica">
       <input type="hidden" id="hero_image" name="hero_image" value="hero-grupo-clinico.jpg">
 
-      <div class="form-group" style="margin-bottom: 14px;">
-        <label class="form-label" style="font-weight: 700; font-size: 12.5px;">Nombre Interno de la Campaña *</label>
-        <input type="text" id="campaign_name" name="name" class="form-control" value="Campaña Clínicas B2B - {{ date('d/m/Y') }}" required>
-      </div>
+      <!-- SECCIÓN A: METADATOS BÁSICOS -->
+      <div style="border-bottom: 1px solid #E2E8F0; padding-bottom: 14px; margin-bottom: 14px;">
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="form-label" style="font-weight: 700; font-size: 12px;">Nombre de la Campaña *</label>
+          <input type="text" id="campaign_name" name="name" class="form-control" value="Campaña Clínicas B2B - {{ date('d/m/Y') }}" required>
+        </div>
 
-      <div class="form-group" style="margin-bottom: 14px;">
-        <label class="form-label" style="font-weight: 700; font-size: 12.5px;">Asunto del Correo (Subject) *</label>
-        <input type="text" id="campaign_subject" name="subject" class="form-control" value="[Convenio Clínico] Uniformes médicos con 6 meses de garantía directa de fábrica y servicio de tallaje" required oninput="updatePreview()">
-      </div>
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="form-label" style="font-weight: 700; font-size: 12px;">Asunto del Correo (Subject) *</label>
+          <input type="text" id="campaign_subject" name="subject" class="form-control" value="[Convenio Clínico] Uniformes médicos con 6 meses de garantía directa de fábrica y servicio de tallaje" required oninput="updatePreview()">
+        </div>
 
-      <div class="form-group" style="margin-bottom: 14px;">
-        <label class="form-label" style="font-weight: 700; font-size: 12.5px;">Preheader (Texto visible en la bandeja de entrada) *</label>
-        <input type="text" id="campaign_preheader" name="preheader" class="form-control" value="Somos fabricantes chilenos de uniformes clínicos antifluidos. Servicio exclusivo de tallaje en su clínica y 6 meses de garantía." oninput="updatePreview()">
-      </div>
-
-      <div class="form-group" style="margin-bottom: 14px;">
-        <label class="form-label" style="font-weight: 700; font-size: 12.5px;">Titular Principal del Correo (Hero Title)</label>
-        <input type="text" id="hero_title" name="hero_title" class="form-control" value="Equipe a su personal de salud con la confianza de fabricantes directos" oninput="updatePreview()">
-      </div>
-
-      <div class="form-group" style="margin-bottom: 16px;">
-        <label class="form-label" style="font-weight: 700; font-size: 12.5px;">Cuerpo de la Propuesta Comercial</label>
-        <textarea id="hero_desc" name="hero_desc" class="form-control" rows="4" oninput="updatePreview()">En Suitable confeccionamos uniformes clínicos de alto rendimiento con telas antifluidos de última generación y respaldo integral de fábrica. Llevamos muestras en vivo a su clínica para que su equipo pruebe tallas antes de comprar.</textarea>
-      </div>
-
-      <!-- 3 VALUE PILLARS -->
-      <div style="background: #F1F5F9; border-radius: 8px; padding: 14px; margin-bottom: 20px;">
-        <span style="font-size: 12px; font-weight: 800; color: #475569; text-transform: uppercase; display: block; margin-bottom: 10px;">
-          🏛️ 3 Pilares Estratégicos del Correo
-        </span>
-        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
-          <div>
-            <label style="font-size: 11px; font-weight: 700; color: #0F172A;">Pilar 1 (Fábrica)</label>
-            <input type="text" id="pilar1_title" name="pilar1_title" class="form-control" value="Fabricación 100% Chilena" style="font-size: 11.5px; margin-bottom: 4px;" oninput="updatePreview()">
-            <textarea id="pilar1_desc" name="pilar1_desc" class="form-control" rows="2" style="font-size: 11px;" oninput="updatePreview()">Confección directa sin intermediarios con garantía de fábrica.</textarea>
-          </div>
-          <div>
-            <label style="font-size: 11px; font-weight: 700; color: #0F172A;">Pilar 2 (Tela Flex)</label>
-            <input type="text" id="pilar2_title" name="pilar2_title" class="form-control" value="Telas Flex Antifluidos" style="font-size: 11.5px; margin-bottom: 4px;" oninput="updatePreview()">
-            <textarea id="pilar2_desc" name="pilar2_desc" class="form-control" rows="2" style="font-size: 11px;" oninput="updatePreview()">Elasticidad multidireccional 4-Way y bioseguridad contra fluidos.</textarea>
-          </div>
-          <div>
-            <label style="font-size: 11px; font-weight: 700; color: #0F172A;">Pilar 3 (Garantía &amp; Tallas)</label>
-            <input type="text" id="pilar3_title" name="pilar3_title" class="form-control" value="Garantía 6 Meses y Tallaje" style="font-size: 11.5px; margin-bottom: 4px;" oninput="updatePreview()">
-            <textarea id="pilar3_desc" name="pilar3_desc" class="form-control" rows="2" style="font-size: 11px;" oninput="updatePreview()">Percheros en la clínica para probar tallas antes de ordenar.</textarea>
-          </div>
+        <div class="form-group" style="margin-bottom: 6px;">
+          <label class="form-label" style="font-weight: 700; font-size: 12px;">Preheader (Bandeja de entrada) *</label>
+          <input type="text" id="campaign_preheader" name="preheader" class="form-control" value="Somos fabricantes chilenos de uniformes clínicos antifluidos. Servicio exclusivo de tallaje en su clínica y 6 meses de garantía." oninput="updatePreview()">
         </div>
       </div>
 
+      <!-- SECCIÓN B: HERO BANNER & TEXTO -->
+      <div id="editor_section_hero" style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 14px; margin-bottom: 14px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <strong style="font-size: 12px; color: #0F172A;">📌 Cabecera (Hero Section)</strong>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="openSectionRewriteModal('hero')" style="padding: 2px 8px; font-size: 11px;">✨ Mejorar Hero con IA</button>
+        </div>
+        <div class="form-group" style="margin-bottom: 8px;">
+          <input type="text" id="hero_title" name="hero_title" class="form-control" value="Equipe a su personal de salud con la confianza de fabricantes directos" placeholder="Titular principal" oninput="updatePreview()">
+        </div>
+        <div class="form-group" style="margin-bottom: 0;">
+          <textarea id="hero_desc" name="hero_desc" class="form-control" rows="3" placeholder="Texto descriptivo persuasivo" oninput="updatePreview()">En Suitable confeccionamos uniformes clínicos de alto rendimiento con telas antifluidos de última generación y respaldo integral de fábrica. Llevamos muestras en vivo a su clínica para que su equipo pruebe tallas antes de comprar.</textarea>
+        </div>
+      </div>
+
+      <!-- SECCIÓN C: DINÁMICA SEGÚN PRESET (PILARES / SPLIT / SHOWCASE / TALLAJE) -->
+      <div id="editor_section_modular" style="background: #F1F5F9; border-radius: 8px; padding: 14px; margin-bottom: 20px;">
+        
+        <!-- MODULAR BLOCK: PILARES (Preset Clásica) -->
+        <div id="modular_edit_clasica">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <strong style="font-size: 12px; color: #475569; text-transform: uppercase;">🏛️ 3 Pilares en Columnas</strong>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="openSectionRewriteModal('pillars')" style="padding: 2px 8px; font-size: 11px;">✨ Mejorar con IA</button>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+            <div>
+              <input type="text" id="pilar1_title" name="pilar1_title" class="form-control" value="Fabricación 100% Chilena" style="font-size: 11.5px; margin-bottom: 4px;" oninput="updatePreview()">
+              <textarea id="pilar1_desc" name="pilar1_desc" class="form-control" rows="2" style="font-size: 11px;" oninput="updatePreview()">Confección directa sin intermediarios con garantía.</textarea>
+            </div>
+            <div>
+              <input type="text" id="pilar2_title" name="pilar2_title" class="form-control" value="Telas Flex Antifluidos" style="font-size: 11.5px; margin-bottom: 4px;" oninput="updatePreview()">
+              <textarea id="pilar2_desc" name="pilar2_desc" class="form-control" rows="2" style="font-size: 11px;" oninput="updatePreview()">Elasticidad 4-Way y bioseguridad contra fluidos.</textarea>
+            </div>
+            <div>
+              <input type="text" id="pilar3_title" name="pilar3_title" class="form-control" value="Garantía 6 Meses y Tallaje" style="font-size: 11.5px; margin-bottom: 4px;" oninput="updatePreview()">
+              <textarea id="pilar3_desc" name="pilar3_desc" class="form-control" rows="2" style="font-size: 11px;" oninput="updatePreview()">Percheros en la clínica para probar tallas.</textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- MODULAR BLOCK: SPLIT 50/50 -->
+        <div id="modular_edit_split" style="display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <strong style="font-size: 12px; color: #475569; text-transform: uppercase;">⚖️ Bloque Split (Foto Izquierda / Texto Derecha)</strong>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="openSectionRewriteModal('split')" style="padding: 2px 8px; font-size: 11px;">✨ Mejorar con IA</button>
+          </div>
+          <div class="form-group" style="margin-bottom: 8px;">
+            <label style="font-size: 11px; font-weight: 700;">Título del Bloque Split</label>
+            <input type="text" id="split_title" class="form-control" value="Ingeniería Textil para Personal de Salud" style="font-size: 12px;" oninput="updatePreview()">
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label style="font-size: 11px; font-weight: 700;">Contenido Explicativo &amp; Beneficios</label>
+            <textarea id="split_content" name="split_content" class="form-control" rows="3" style="font-size: 11.5px;" oninput="updatePreview()">Nuestras telas Flex 4-Way combinan máxima libertad de movimiento con tecnología hidrófuga que repele fluidos. Servicio de personalización con bordados y pruebas de calce presenciales.</textarea>
+          </div>
+        </div>
+
+        <!-- MODULAR BLOCK: SHOWCASE 2x2 -->
+        <div id="modular_edit_showcase" style="display: none;">
+          <strong style="font-size: 12px; color: #475569; text-transform: uppercase; display: block; margin-bottom: 8px;">🖼️ Catálogo 4 Productos en Grilla</strong>
+          <p style="font-size: 11.5px; color: #64748B; margin: 0;">Se incluirán en el correo las 4 líneas principales: Scrubs Médicos, Línea Antifluidos, Tallaje en Clínica y Delantales Clínicos con sus fotos y botones de cotización.</p>
+        </div>
+
+        <!-- MODULAR BLOCK: TALLAJE 1-2-3 -->
+        <div id="modular_edit_tallaje" style="display: none;">
+          <strong style="font-size: 12px; color: #475569; text-transform: uppercase; display: block; margin-bottom: 8px;">📏 Servicio en Terreno: 3 Fases</strong>
+          <p style="font-size: 11.5px; color: #64748B; margin: 0;">El correo presentará de forma gráfica las 3 etapas: 1) Coordinación de visita, 2) Prueba con percheros móviles XS-3XL en la clínica, y 3) Confección y despacho garantizado.</p>
+        </div>
+
+      </div>
+
+      <!-- BOTÓN GUARDAR -->
       <div style="display: flex; gap: 12px;">
         <button type="submit" id="btn_save_campaign" class="btn btn-primary" style="flex: 1; padding: 12px; font-size: 14px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
           <span>💾</span>
-          <span>Guardar Campaña en Laravel</span>
+          <span>Guardar Campaña Modular en Laravel</span>
         </button>
       </div>
     </form>
@@ -185,8 +402,8 @@
     <!-- PREVIEW TOOLBAR -->
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
       <div>
-        <h3 style="font-size: 15px; font-weight: 800; margin: 0; color: #0F172A;">Vista Previa en Vivo del Correo</h3>
-        <p style="margin: 2px 0 0 0; font-size: 11.5px; color: #64748B;">Renderizado en tiempo real</p>
+        <h3 style="font-size: 15px; font-weight: 800; margin: 0; color: #0F172A;">Vista Previa en Vivo</h3>
+        <p style="margin: 2px 0 0 0; font-size: 11.5px; color: #64748B;">Pasa el mouse sobre cualquier sección para editarla (✏️)</p>
       </div>
       
       <!-- DEVICE TOGGLES -->
@@ -202,7 +419,7 @@
 
     <!-- SUBJECT SIMULATOR BAR -->
     <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 6px; padding: 8px 12px; margin-bottom: 12px; font-size: 12px;">
-      <div style="color: #64748B; font-size: 10.5px; text-transform: uppercase; font-weight: 700; margin-bottom: 2px;">Bandeja de entrada:</div>
+      <div style="color: #64748B; font-size: 10px; text-transform: uppercase; font-weight: 700; margin-bottom: 2px;">Bandeja de entrada:</div>
       <div style="font-weight: 800; color: #0F172A;" id="prev_subject_text">
         [Convenio Clínico] Uniformes médicos con 6 meses de garantía directa de fábrica y servicio de tallaje
       </div>
@@ -220,21 +437,24 @@
         <span style="color: #6CD2D2;">Ver en el navegador</span>
       </div>
 
-      <!-- EMAIL HEADER LOGO -->
-      <div style="background: #1E8888; padding: 18px 24px; text-align: center;">
+      <!-- HEADER / LOGO (SECTION 1) -->
+      <div class="preview-section-wrapper" style="background: #1E8888; padding: 18px 24px; text-align: center;">
+        <button type="button" class="section-edit-trigger" onclick="focusEditorSection('hero')">✏️ Editar Cabecera</button>
         <img src="https://suitable.cl/wp-content/uploads/2025/04/logo_blanco-350x128.png" alt="Suitable" style="height: 34px;">
         <div style="color: #CCFBF1; font-size: 10.5px; margin-top: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
           Uniformes Clínicos de Alta Gama • Confección Nacional
         </div>
       </div>
 
-      <!-- HERO PHOTO -->
-      <div style="background: #0F172A; line-height: 0; text-align: center; max-height: 220px; overflow: hidden;">
+      <!-- HERO PHOTO (SECTION 2) -->
+      <div class="preview-section-wrapper" style="background: #0F172A; line-height: 0; text-align: center; max-height: 220px; overflow: hidden; position: relative;">
+        <button type="button" class="section-edit-trigger" onclick="switchImageTab('ai')">🎨 Cambiar Foto con IA</button>
         <img id="prev_hero_img" src="{{ asset('images/hero-grupo-clinico.jpg') }}" alt="Hero Banner" style="width: 100%; height: auto; display: block; object-fit: cover;">
       </div>
 
-      <!-- HERO CONTENT -->
-      <div style="background: linear-gradient(135deg, #1E8888 0%, #146161 100%); padding: 30px 24px; text-align: center; color: white;">
+      <!-- HERO CONTENT (SECTION 3) -->
+      <div class="preview-section-wrapper" style="background: linear-gradient(135deg, #1E8888 0%, #146161 100%); padding: 30px 24px; text-align: center; color: white;">
+        <button type="button" class="section-edit-trigger" onclick="focusEditorSection('hero')">✏️ Editar Hero</button>
         <div style="display: inline-block; background: rgba(0,0,0,0.2); padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: 800; letter-spacing: 0.8px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.25);">
           ✦ PROPUESTA CORPORATIVA INSTITUCIONAL
         </div>
@@ -249,22 +469,85 @@
         </a>
       </div>
 
-      <!-- 3 PILARS GRID -->
-      <div style="padding: 20px; background: #F8FAFC; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; border-top: 1px solid #E2E8F0;">
+      <!-- PREVIEW MODULAR BLOCKS -->
+
+      <!-- 1. PREVIEW: CLASICA (3 PILARES) -->
+      <div id="prev_block_clasica" class="preview-section-wrapper" style="padding: 20px; background: #F8FAFC; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; border-top: 1px solid #E2E8F0;">
+        <button type="button" class="section-edit-trigger" onclick="focusEditorSection('modular')">✏️ Editar Pilares</button>
         <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 6px; padding: 10px; text-align: center;">
           <div style="font-size: 18px; margin-bottom: 2px;">🇨🇱</div>
           <strong id="prev_pilar1_title" style="font-size: 11.5px; color: #0F172A; display: block;">Fabricación 100% Chilena</strong>
-          <span id="prev_pilar1_desc" style="font-size: 10.5px; color: #64748B; display: block; line-height: 1.3; margin-top: 2px;">Confección directa sin intermediarios con garantía.</span>
+          <span id="prev_pilar1_desc" style="font-size: 10.5px; color: #64748B; display: block; line-height: 1.3; margin-top: 2px;">Confección directa sin intermediarios.</span>
         </div>
         <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 6px; padding: 10px; text-align: center;">
           <div style="font-size: 18px; margin-bottom: 2px;">🛡️</div>
           <strong id="prev_pilar2_title" style="font-size: 11.5px; color: #0F172A; display: block;">Telas Flex Antifluidos</strong>
-          <span id="prev_pilar2_desc" style="font-size: 10.5px; color: #64748B; display: block; line-height: 1.3; margin-top: 2px;">Elasticidad 4-Way y bioseguridad contra fluidos.</span>
+          <span id="prev_pilar2_desc" style="font-size: 10.5px; color: #64748B; display: block; line-height: 1.3; margin-top: 2px;">Elasticidad 4-Way y bioseguridad.</span>
         </div>
         <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 6px; padding: 10px; text-align: center;">
           <div style="font-size: 18px; margin-bottom: 2px;">📏</div>
           <strong id="prev_pilar3_title" style="font-size: 11.5px; color: #0F172A; display: block;">Garantía 6 Meses y Tallaje</strong>
           <span id="prev_pilar3_desc" style="font-size: 10.5px; color: #64748B; display: block; line-height: 1.3; margin-top: 2px;">Percheros en la clínica para probar tallas.</span>
+        </div>
+      </div>
+
+      <!-- 2. PREVIEW: SPLIT 50/50 -->
+      <div id="prev_block_split" class="preview-section-wrapper" style="display: none; padding: 24px 20px; background: #FFFFFF; border-top: 1px solid #E2E8F0;">
+        <button type="button" class="section-edit-trigger" onclick="focusEditorSection('modular')">✏️ Editar Split</button>
+        <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 16px; align-items: center;">
+          <img id="prev_split_img" src="{{ asset('images/tela-antifluidos-macro.jpg') }}" alt="Detalle" style="width: 100%; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+          <div>
+            <span style="display: inline-block; background: #E6F4F4; color: #146161; font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 10px; margin-bottom: 6px;">✦ TECNOLOGÍA TEXTIL</span>
+            <h4 id="prev_split_title" style="margin: 0 0 6px 0; font-size: 15px; color: #0F172A; font-weight: 800;">Ingeniería Textil para Personal de Salud</h4>
+            <p id="prev_split_content" style="margin: 0 0 12px 0; font-size: 11.5px; line-height: 1.5; color: #475569;">
+              Nuestras telas Flex 4-Way combinan máxima libertad de movimiento con tecnología hidrófuga que repele fluidos.
+            </p>
+            <a href="https://suitable.cl/clinicas-y-centros/" target="_blank" style="background: #1E8888; color: white; padding: 8px 14px; border-radius: 6px; font-size: 11.5px; font-weight: 700; text-decoration: none; display: inline-block;">
+              Solicitar Muestra Textil →
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. PREVIEW: SHOWCASE 2x2 -->
+      <div id="prev_block_showcase" class="preview-section-wrapper" style="display: none; padding: 20px; background: #FFFFFF; border-top: 1px solid #E2E8F0; text-align: center;">
+        <button type="button" class="section-edit-trigger" onclick="focusEditorSection('modular')">✏️ Ver Catálogo</button>
+        <strong style="font-size: 14px; color: #0F172A; display: block; margin-bottom: 12px;">Líneas Destacadas de Uniformes Clínicos</strong>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; text-align: left;">
+          <div style="border: 1px solid #E2E8F0; border-radius: 6px; padding: 8px; background: #F8FAFC;">
+            <img src="{{ asset('images/hero-grupo-clinico.jpg') }}" style="width: 100%; height: 75px; object-fit: cover; border-radius: 4px;">
+            <strong style="font-size: 11px; display: block; margin-top: 4px; color: #0F172A;">Scrubs Médicos</strong>
+            <span style="font-size: 10px; color: #64748B;">Flex 4-Way Antifluido</span>
+          </div>
+          <div style="border: 1px solid #E2E8F0; border-radius: 6px; padding: 8px; background: #F8FAFC;">
+            <img src="{{ asset('images/tela-antifluidos-macro.jpg') }}" style="width: 100%; height: 75px; object-fit: cover; border-radius: 4px;">
+            <strong style="font-size: 11px; display: block; margin-top: 4px; color: #0F172A;">Línea Antifluidos</strong>
+            <span style="font-size: 10px; color: #64748B;">Barrera Biosegura</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. PREVIEW: TALLAJE 1-2-3 -->
+      <div id="prev_block_tallaje" class="preview-section-wrapper" style="display: none; padding: 20px; background: #FFFFFF; border-top: 1px solid #E2E8F0; text-align: center;">
+        <button type="button" class="section-edit-trigger" onclick="focusEditorSection('modular')">✏️ Ver Pasos</button>
+        <span style="background: #E6F4F4; color: #146161; font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 10px;">PROCESO EN TERRENO</span>
+        <h4 style="margin: 6px 0 12px 0; font-size: 14px; color: #0F172A; font-weight: 800;">3 Pasos para Renovar su Dotación</h4>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px;">
+          <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 6px; padding: 8px;">
+            <div style="width: 24px; height: 24px; line-height: 24px; border-radius: 50%; background: #1E8888; color: white; font-weight: 800; font-size: 11px; margin: 0 auto 4px auto;">1</div>
+            <strong style="font-size: 10.5px; display: block; color: #0F172A;">Coordinamos</strong>
+            <span style="font-size: 9.5px; color: #64748B;">Día y hora clínica.</span>
+          </div>
+          <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 6px; padding: 8px;">
+            <div style="width: 24px; height: 24px; line-height: 24px; border-radius: 50%; background: #1E8888; color: white; font-weight: 800; font-size: 11px; margin: 0 auto 4px auto;">2</div>
+            <strong style="font-size: 10.5px; display: block; color: #0F172A;">Percheros</strong>
+            <span style="font-size: 9.5px; color: #64748B;">Pruebas XS a 3XL.</span>
+          </div>
+          <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 6px; padding: 8px;">
+            <div style="width: 24px; height: 24px; line-height: 24px; border-radius: 50%; background: #1E8888; color: white; font-weight: 800; font-size: 11px; margin: 0 auto 4px auto;">3</div>
+            <strong style="font-size: 10.5px; display: block; color: #0F172A;">Entrega</strong>
+            <span style="font-size: 9.5px; color: #64748B;">6 meses garantía.</span>
+          </div>
         </div>
       </div>
 
@@ -279,31 +562,105 @@
 
 </div>
 
+<!-- MODAL: ASISTENTE IA PARA REESCRIBIR SECCIÓN ESPECÍFICA -->
+<div id="section_rewrite_modal" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.6); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+  <div style="background: white; border-radius: 12px; width: 100%; max-width: 500px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+      <h3 style="margin: 0; font-size: 16px; font-weight: 800; color: #0F172A; display: flex; align-items: center; gap: 8px;">
+        <span>✨</span> Reescribir Sección con IA: <span id="rewrite_section_title" style="color: #1E8888;">Hero</span>
+      </h3>
+      <button type="button" onclick="closeSectionRewriteModal()" style="border: none; background: transparent; font-size: 20px; cursor: pointer; color: #94A3B8;">✕</button>
+    </div>
+
+    <div style="margin-bottom: 14px;">
+      <label style="font-size: 11.5px; font-weight: 700; color: #475569; display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+        <span>¿Qué cambio deseas realizar en esta sección?</span>
+        <button type="button" class="voice-record-btn" id="btn_voice_modal" onclick="toggleVoiceRecord('rewrite_instruction_input', 'btn_voice_modal')">
+          <span>🎙️</span> <span>Dictar</span>
+        </button>
+      </label>
+      <textarea id="rewrite_instruction_input" class="form-control" rows="3" placeholder="Ej: Haz este titular más contundente para jefes de adquisiciones de clínicas privadas, enfatizando la garantía..."></textarea>
+    </div>
+
+    <div style="display: flex; gap: 10px; justify-content: flex-end;">
+      <button type="button" class="btn btn-secondary btn-sm" onclick="closeSectionRewriteModal()">Cancelar</button>
+      <button type="button" class="btn btn-primary btn-sm" id="btn_apply_rewrite" onclick="applySectionRewrite()" style="font-weight: 700; background: #1E8888;">
+        ✨ Aplicar Mejora a la Sección
+      </button>
+    </div>
+  </div>
+</div>
+
 <script>
+  let activeSectionForRewrite = 'hero';
+  let voiceRecognition = null;
+  let isRecordingVoice = false;
+  let activeVoiceTargetInput = null;
+  let activeVoiceButton = null;
+
   const imageAssets = {
     'hero-grupo-clinico.jpg': "{{ asset('images/hero-grupo-clinico.jpg') }}",
     'tela-antifluidos-macro.jpg': "{{ asset('images/tela-antifluidos-macro.jpg') }}",
     'servicio-tallaje-terreno.jpg': "{{ asset('images/servicio-tallaje-terreno.jpg') }}"
   };
 
-  function selectProviderUI(key) {
-    ['gemini', 'groq', 'claude', 'openai'].forEach(p => {
-      const card = document.getElementById('provider_card_' + p);
+  // --- 1. PRESET SELECTOR ---
+  function selectPreset(presetKey) {
+    document.getElementById('preset_template').value = presetKey;
+
+    // Actualizar cards
+    ['clasica', 'split', 'showcase', 'tallaje'].forEach(p => {
+      const card = document.getElementById('preset_card_' + p);
       if (card) {
-        if (p === key) {
-          card.style.borderColor = '#1E8888';
-          card.style.background = '#E6F4F4';
-        } else {
-          card.style.borderColor = '#E2E8F0';
-          card.style.background = '#FFFFFF';
-        }
+        card.classList.toggle('active', p === presetKey);
       }
     });
+
+    // Mostrar formulario modular correspondiente
+    document.getElementById('modular_edit_clasica').style.display = (presetKey === 'clasica') ? 'block' : 'none';
+    document.getElementById('modular_edit_split').style.display = (presetKey === 'split') ? 'block' : 'none';
+    document.getElementById('modular_edit_showcase').style.display = (presetKey === 'showcase') ? 'block' : 'none';
+    document.getElementById('modular_edit_tallaje').style.display = (presetKey === 'tallaje') ? 'block' : 'none';
+
+    // Mostrar bloque correspondiente en la vista previa en vivo
+    document.getElementById('prev_block_clasica').style.display = (presetKey === 'clasica') ? 'grid' : 'none';
+    document.getElementById('prev_block_split').style.display = (presetKey === 'split') ? 'block' : 'none';
+    document.getElementById('prev_block_showcase').style.display = (presetKey === 'showcase') ? 'block' : 'none';
+    document.getElementById('prev_block_tallaje').style.display = (presetKey === 'tallaje') ? 'block' : 'none';
+
+    updatePreview();
+  }
+
+  // --- 2. TABS DE IMÁGENES: STOCK VS IA ---
+  function switchImageTab(tab) {
+    const tabStock = document.getElementById('image_tab_stock');
+    const tabAi = document.getElementById('image_tab_ai');
+    const btnStock = document.getElementById('tab_btn_stock');
+    const btnAi = document.getElementById('tab_btn_ai');
+
+    if (tab === 'ai') {
+      tabStock.style.display = 'none';
+      tabAi.style.display = 'block';
+      btnAi.style.background = 'white';
+      btnAi.style.color = '#0F172A';
+      btnStock.style.background = 'transparent';
+      btnStock.style.color = '#64748B';
+    } else {
+      tabStock.style.display = 'block';
+      tabAi.style.display = 'none';
+      btnStock.style.background = 'white';
+      btnStock.style.color = '#0F172A';
+      btnAi.style.background = 'transparent';
+      btnAi.style.color = '#64748B';
+    }
+  }
+
+  function setImgPromptChip(text) {
+    document.getElementById('ai_image_prompt').value = text;
   }
 
   function selectHeroImage(imgName, cardId) {
     document.getElementById('hero_image').value = imgName;
-    document.getElementById('selected_img_label').innerText = imgName;
 
     // Actualizar estilos de cards
     document.querySelectorAll('.hero-img-card').forEach(c => {
@@ -323,28 +680,190 @@
 
     // Actualizar preview en vivo
     const prevImg = document.getElementById('prev_hero_img');
-    if (prevImg && imageAssets[imgName]) {
-      prevImg.src = imageAssets[imgName];
+    const targetUrl = imageAssets[imgName] || ("{{ asset('images') }}/" + imgName);
+    if (prevImg) {
+      prevImg.src = targetUrl;
     }
   }
 
-  function updateTargetCount(sel) {
-    const opt = sel.options[sel.selectedIndex];
-    document.getElementById('target_display').innerText = opt.getAttribute('data-count') || '0';
+  // --- 3. GENERADOR DE IMÁGENES FLUX CON IA ---
+  async function generateAiImageAction() {
+    const promptInput = document.getElementById('ai_image_prompt');
+    const prompt = promptInput.value.trim();
+    if (!prompt) {
+      showToast('Escribe o dicta por voz qué imagen deseas generar', 'warning');
+      return;
+    }
+
+    const btn = document.getElementById('btn_run_gen_img');
+    btn.disabled = true;
+    btn.innerHTML = '<span>⏳</span> <span>Creando imagen...</span>';
+
+    showToast('Generando fotografía médica con FLUX AI...', 'info');
+
+    try {
+      const token = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').content : '';
+      const res = await fetch("{{ route('campaigns.ai_generate_image') }}", {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json', 
+          'X-CSRF-TOKEN': token,
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({ prompt: prompt, section: 'hero' })
+      });
+
+      const data = await res.json();
+      if (data.success && data.image_url) {
+        showToast('✓ Imagen fotográfica generada e insertada', 'success');
+        
+        // Guardar nombre y registrar en imageAssets
+        document.getElementById('hero_image').value = data.image_name;
+        imageAssets[data.image_name] = data.image_url;
+
+        // Actualizar preview inmediatamente
+        const prevImg = document.getElementById('prev_hero_img');
+        if (prevImg) prevImg.src = data.image_url;
+
+        // Actualizar card visual
+        const stockContainer = document.querySelector('#image_tab_stock > div');
+        if (stockContainer) {
+          const newCardId = 'card_img_' + Date.now();
+          const cardHtml = `
+            <div class="hero-img-card active" id="${newCardId}" onclick="selectHeroImage('${data.image_name}', '${newCardId}')" style="border: 2px solid #1E8888; border-radius: 8px; overflow: hidden; cursor: pointer; background: white; box-shadow: 0 2px 6px rgba(30,136,136,0.2);">
+              <div style="height: 64px; overflow: hidden; background: #0F172A; position: relative;">
+                <img src="${data.image_url}" alt="Generada con IA" style="width: 100%; height: 100%; object-fit: cover;">
+                <span class="img-badge" style="position: absolute; top: 4px; right: 4px; background: #1E8888; color: white; font-size: 8px; font-weight: 800; padding: 1px 4px; border-radius: 3px;">✓ IA</span>
+              </div>
+              <div style="padding: 5px; text-align: center; font-size: 11px; font-weight: 700; color: #0F172A; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                ✨ Creada con IA
+              </div>
+            </div>`;
+          stockContainer.insertAdjacentHTML('afterbegin', cardHtml);
+          switchImageTab('stock');
+        }
+      } else {
+        showToast(data.error || 'No se pudo generar la imagen con IA', 'error');
+      }
+    } catch (e) {
+      showToast('Error de comunicación con el motor de imágenes', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<span>🎨</span> <span>Generar Imagen</span>';
+    }
   }
 
+  // --- 4. DICTADO POR VOZ (SPEECH RECOGNITION 🎙️) ---
+  function initVoiceRecognition() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) return null;
+
+    const rec = new SpeechRecognition();
+    rec.lang = 'es-CL';
+    rec.continuous = true;
+    rec.interimResults = true;
+
+    rec.onstart = function() {
+      isRecordingVoice = true;
+      if (activeVoiceButton) {
+        activeVoiceButton.classList.add('recording');
+        const txt = activeVoiceButton.querySelector('span:last-child');
+        if (txt) txt.innerText = 'Grabando...';
+      }
+      showToast('🎙️ Micrófono activo: habla ahora...', 'info');
+    };
+
+    rec.onresult = function(event) {
+      let interim = '';
+      let final = '';
+      for (let i = event.resultIndex; i < event.results.length; ++i) {
+        if (event.results[i].isFinal) {
+          final += event.results[i][0].transcript;
+        } else {
+          interim += event.results[i][0].transcript;
+        }
+      }
+      if (activeVoiceTargetInput) {
+        const base = activeVoiceTargetInput.dataset.preVoice || '';
+        activeVoiceTargetInput.value = (base + ' ' + final + ' ' + interim).trim();
+        updatePreview();
+      }
+    };
+
+    rec.onerror = function(event) {
+      stopVoiceRecording();
+      showToast('Micrófono detenido o sin permisos', 'warning');
+    };
+
+    rec.onend = function() {
+      stopVoiceRecording();
+    };
+
+    return rec;
+  }
+
+  function toggleVoiceRecord(inputId, btnId) {
+    const input = document.getElementById(inputId);
+    const btn = document.getElementById(btnId);
+    activeVoiceTargetInput = input;
+    activeVoiceButton = btn;
+
+    if (input) input.dataset.preVoice = input.value;
+
+    if (isRecordingVoice) {
+      stopVoiceRecording();
+    } else {
+      if (!voiceRecognition) {
+        voiceRecognition = initVoiceRecognition();
+      }
+      if (voiceRecognition) {
+        try {
+          voiceRecognition.start();
+        } catch (e) {
+          console.log(e);
+        }
+      } else {
+        showToast('El dictado por voz requiere Google Chrome o Microsoft Edge', 'warning');
+      }
+    }
+  }
+
+  function stopVoiceRecording() {
+    isRecordingVoice = false;
+    if (voiceRecognition) {
+      try { voiceRecognition.stop(); } catch(e) {}
+    }
+    document.querySelectorAll('.voice-record-btn').forEach(b => {
+      b.classList.remove('recording');
+      const txt = b.querySelector('span:last-child');
+      if (txt) {
+        if (b.id.includes('img')) txt.innerText = 'Dictar';
+        else if (b.id.includes('modal')) txt.innerText = 'Dictar';
+        else txt.innerText = 'Hablar';
+      }
+    });
+  }
+
+  // --- 5. ACTUALIZACIÓN EN VIVO (LIVE PREVIEW) ---
   function updatePreview() {
     document.getElementById('prev_subject_text').innerText = document.getElementById('campaign_subject').value;
     document.getElementById('prev_preheader_text').innerText = document.getElementById('campaign_preheader').value;
     document.getElementById('prev_hero_title').innerText = document.getElementById('hero_title').value;
     document.getElementById('prev_hero_desc').innerText = document.getElementById('hero_desc').value;
 
+    // Pilares
     document.getElementById('prev_pilar1_title').innerText = document.getElementById('pilar1_title').value;
     document.getElementById('prev_pilar1_desc').innerText = document.getElementById('pilar1_desc').value;
     document.getElementById('prev_pilar2_title').innerText = document.getElementById('pilar2_title').value;
     document.getElementById('prev_pilar2_desc').innerText = document.getElementById('pilar2_desc').value;
     document.getElementById('prev_pilar3_title').innerText = document.getElementById('pilar3_title').value;
     document.getElementById('prev_pilar3_desc').innerText = document.getElementById('pilar3_desc').value;
+
+    // Split
+    const splitTitleInput = document.getElementById('split_title');
+    const splitContentInput = document.getElementById('split_content');
+    if (splitTitleInput) document.getElementById('prev_split_title').innerText = splitTitleInput.value;
+    if (splitContentInput) document.getElementById('prev_split_content').innerText = splitContentInput.value;
   }
 
   function setPreviewDevice(mode) {
@@ -371,17 +890,104 @@
     }
   }
 
+  function focusEditorSection(sectionKey) {
+    const el = document.getElementById('editor_section_' + sectionKey);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      el.style.boxShadow = '0 0 0 3px rgba(30,136,136,0.4)';
+      setTimeout(() => el.style.boxShadow = 'none', 1400);
+    }
+  }
+
+  // --- 6. MODAL DE REESCRITURA DE SECCIÓN ESPECÍFICA ---
+  function openSectionRewriteModal(sectionKey) {
+    activeSectionForRewrite = sectionKey;
+    document.getElementById('rewrite_section_title').innerText = sectionKey.toUpperCase();
+    document.getElementById('rewrite_instruction_input').value = '';
+    document.getElementById('section_rewrite_modal').style.display = 'flex';
+  }
+  function closeSectionRewriteModal() {
+    stopVoiceRecording();
+    document.getElementById('section_rewrite_modal').style.display = 'none';
+  }
+
+  async function applySectionRewrite() {
+    const instruction = document.getElementById('rewrite_instruction_input').value.trim();
+    if (!instruction) {
+      showToast('Ingresa una indicación para reescribir la sección', 'warning');
+      return;
+    }
+
+    const btn = document.getElementById('btn_apply_rewrite');
+    btn.disabled = true;
+    btn.innerText = 'Reescribiendo con IA...';
+
+    let currentText = '';
+    if (activeSectionForRewrite === 'hero') {
+      currentText = document.getElementById('hero_title').value + ' ' + document.getElementById('hero_desc').value;
+    } else if (activeSectionForRewrite === 'split') {
+      currentText = document.getElementById('split_content').value;
+    } else {
+      currentText = document.getElementById('pilar1_desc').value;
+    }
+
+    try {
+      const token = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').content : '';
+      const prov = document.getElementById('ai_provider_select').value;
+
+      const res = await fetch("{{ route('campaigns.ai_rewrite_section') }}", {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json', 
+          'X-CSRF-TOKEN': token,
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({ 
+          section: activeSectionForRewrite, 
+          instruction: instruction, 
+          current_text: currentText,
+          provider: prov
+        })
+      });
+
+      const data = await res.json();
+      if (data.success && data.data) {
+        if (activeSectionForRewrite === 'hero') {
+          if (data.data.title) document.getElementById('hero_title').value = data.data.title;
+          if (data.data.desc) document.getElementById('hero_desc').value = data.data.desc;
+        } else if (activeSectionForRewrite === 'split') {
+          if (data.data.title) document.getElementById('split_title').value = data.data.title;
+          if (data.data.desc) document.getElementById('split_content').value = data.data.desc;
+        } else {
+          if (data.data.title) document.getElementById('pilar1_title').value = data.data.title;
+          if (data.data.desc) document.getElementById('pilar1_desc').value = data.data.desc;
+        }
+        updatePreview();
+        showToast('✓ Sección actualizada con éxito', 'success');
+        closeSectionRewriteModal();
+      } else {
+        showToast('No se pudo reescribir la sección', 'error');
+      }
+    } catch (e) {
+      showToast('Error de comunicación con el motor de IA', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerText = '✨ Aplicar Mejora a la Sección';
+    }
+  }
+
+  // --- 7. ASISTENTE GENERAL DE IA ---
   async function requestAiProposal() {
-    const provInput = document.querySelector('input[name="ai_provider"]:checked');
-    const prov = provInput ? provInput.value : 'groq';
+    stopVoiceRecording();
+    const prov = document.getElementById('ai_provider_select').value;
     const heroImg = document.getElementById('hero_image').value;
     const customFocus = document.getElementById('ai_custom_focus').value;
 
     const btn = document.getElementById('btn_ai_align');
     btn.disabled = true;
-    btn.innerHTML = '<span>⏳</span> <span>Generando propuesta...</span>';
+    btn.innerHTML = '<span>⏳</span> <span>Armando...</span>';
 
-    showToast('Consultando propuesta inteligente a ' + prov.toUpperCase() + '...', 'info');
+    showToast('Consultando propuesta completa a ' + prov.toUpperCase() + '...', 'info');
 
     try {
       const token = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').content : '';
@@ -415,8 +1021,11 @@
         if (d.pilar3_title) document.getElementById('pilar3_title').value = d.pilar3_title;
         if (d.pilar3_desc) document.getElementById('pilar3_desc').value = d.pilar3_desc;
 
+        const splitContent = document.getElementById('split_content');
+        if (splitContent && d.hero_desc) splitContent.value = d.hero_desc;
+
         updatePreview();
-        showToast('✓ Propuesta generada e integrada en la plantilla', 'success');
+        showToast('✓ Propuesta estructurada cargada en la plantilla', 'success');
       } else {
         showToast(data.error || 'No se pudo generar la propuesta con IA', 'warning');
       }
@@ -424,22 +1033,25 @@
       showToast('Error al conectar con el servicio de IA', 'error');
     } finally {
       btn.disabled = false;
-      btn.innerHTML = '<span>✨</span> <span>Pedir a IA propuesta coherente</span>';
+      btn.innerHTML = '<span>✨</span> <span>Armar Propuesta</span>';
     }
   }
 
+  // --- 8. GUARDAR CAMPAÑA ---
   async function saveCampaign(e) {
     e.preventDefault();
+    stopVoiceRecording();
+
     const btn = document.getElementById('btn_save_campaign');
     btn.disabled = true;
-    btn.innerText = 'Guardando campaña...';
+    btn.innerText = 'Guardando campaña modular...';
 
     const token = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').content : '';
-    const provInput = document.querySelector('input[name="ai_provider"]:checked');
 
     const payload = {
       name: document.getElementById('campaign_name').value,
       group_id: document.getElementById('group_id').value,
+      preset_template: document.getElementById('preset_template').value,
       subject: document.getElementById('campaign_subject').value,
       preheader: document.getElementById('campaign_preheader').value,
       hero_title: document.getElementById('hero_title').value,
@@ -451,8 +1063,9 @@
       pilar2_desc: document.getElementById('pilar2_desc').value,
       pilar3_title: document.getElementById('pilar3_title').value,
       pilar3_desc: document.getElementById('pilar3_desc').value,
-      ai_provider: provInput ? provInput.value : 'groq',
-      ai_prompt: document.getElementById('ai_custom_focus').value || 'Generada en estudio',
+      split_content: document.getElementById('split_content') ? document.getElementById('split_content').value : '',
+      ai_provider: document.getElementById('ai_provider_select').value,
+      ai_prompt: document.getElementById('ai_custom_focus').value || 'Generada en estudio modular',
       status: 'borrador'
     };
 
@@ -468,17 +1081,21 @@
       });
       const data = await res.json();
       if (data.success) {
-        showToast('✓ Campaña guardada exitosamente en Laravel', 'success');
+        showToast('✓ Campaña modular guardada exitosamente en Laravel', 'success');
         setTimeout(() => location.href = "{{ route('campaigns.index') }}", 700);
       } else {
         showToast(data.error || 'Error al guardar la campaña', 'error');
       }
     } catch (e) {
-      showToast('Error de comunicación al guardar campaña', 'error');
+      showToast('Error al guardar campaña', 'error');
     } finally {
       btn.disabled = false;
-      btn.innerHTML = '<span>💾</span> <span>Guardar Campaña en Laravel</span>';
+      btn.innerHTML = '<span>💾</span> <span>Guardar Campaña Modular en Laravel</span>';
     }
+  }
+
+  function updateTargetCount(sel) {
+    const opt = sel.options[sel.selectedIndex];
   }
 </script>
 @endsection

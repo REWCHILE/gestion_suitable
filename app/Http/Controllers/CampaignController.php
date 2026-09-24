@@ -133,7 +133,113 @@ class CampaignController extends Controller
             $html = str_replace('Tallaje en Clínica', htmlspecialchars($campaign->pilar3_title), $html);
         }
 
-        // 5. Reemplazos de muestra
+        // 5. Inyectar Bloque según Preset de Estructura
+        $preset = $campaign->preset_template ?: 'clasica';
+        if ($preset === 'split') {
+            $splitImg = $campaign->hero_image ? asset('images/' . $campaign->hero_image) : asset('images/tela-antifluidos-macro.jpg');
+            $splitHtml = '
+            <!-- PRESET: SPLIT 50/50 -->
+            <tr>
+              <td class="mobile-padding" style="padding: 32px 28px; background-color: #FFFFFF;">
+                <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td class="stack-column" width="50%" valign="middle" style="padding: 10px;">
+                      <img src="' . $splitImg . '" alt="Suitable Detalle Textil" style="width: 100%; border-radius: 8px; box-shadow: 0 4px 14px rgba(0,0,0,0.1); display: block;" />
+                    </td>
+                    <td class="stack-column" width="50%" valign="middle" style="padding: 10px 18px;">
+                      <span style="display: inline-block; background: #E6F4F4; color: #146161; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 12px; margin-bottom: 8px;">✦ CONFECCIÓN DIRECTA</span>
+                      <h3 style="font-size: 18px; font-weight: 800; color: #0F172A; margin: 0 0 10px 0;">' . htmlspecialchars($campaign->pilar1_title ?: 'Ingeniería Textil a su Medida') . '</h3>
+                      <p style="font-size: 13.5px; line-height: 20px; color: #475569; margin: 0 0 16px 0;">' . htmlspecialchars($campaign->split_content ?: ($campaign->pilar1_desc ?: 'Nuestros uniformes clínicos combinan tecnología Flex 4-Way y repelencia a fluidos con garantía directa de fábrica.')) . '</p>
+                      <a href="https://suitable.cl/clinicas-y-centros/" target="_blank" style="background: #1E8888; color: white; padding: 10px 20px; border-radius: 6px; font-size: 12.5px; font-weight: 700; text-decoration: none; display: inline-block;">Solicitar Muestra Textil →</a>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>';
+            $html = preg_replace('/<!-- VALUE PROPOSITION INTRO -->.*?<!-- PRODUCT SPOTLIGHT \/ SHOWCASE -->/s', $splitHtml . "\n<!-- PRODUCT SPOTLIGHT / SHOWCASE -->", $html);
+        } elseif ($preset === 'showcase') {
+            $showcaseHtml = '
+            <!-- PRESET: SHOWCASE 2x2 -->
+            <tr>
+              <td class="mobile-padding" style="padding: 30px 24px; background-color: #FFFFFF; text-align: center;">
+                <h2 style="font-size: 20px; font-weight: 800; color: #0F172A; margin: 0 0 8px 0;">Líneas Destacadas de Uniformes Clínicos</h2>
+                <p style="font-size: 13.5px; color: #64748B; margin: 0 auto 20px auto; max-width: 460px;">Modelos de confección chilena disponibles para dotación institucional.</p>
+                <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td class="stack-column" width="50%" style="padding: 8px;">
+                      <div style="border: 1px solid #E2E8F0; border-radius: 8px; overflow: hidden; padding: 12px; background: #F8FAFC;">
+                        <img src="' . asset('images/hero-grupo-clinico.jpg') . '" style="width: 100%; height: 120px; object-fit: cover; border-radius: 6px;" />
+                        <strong style="font-size: 13px; color: #0F172A; display: block; margin-top: 8px;">Scrubs Clínicos Médicos</strong>
+                        <span style="font-size: 11px; color: #64748B;">Tecnología Flex 4-Way</span>
+                      </div>
+                    </td>
+                    <td class="stack-column" width="50%" style="padding: 8px;">
+                      <div style="border: 1px solid #E2E8F0; border-radius: 8px; overflow: hidden; padding: 12px; background: #F8FAFC;">
+                        <img src="' . asset('images/tela-antifluidos-macro.jpg') . '" style="width: 100%; height: 120px; object-fit: cover; border-radius: 6px;" />
+                        <strong style="font-size: 13px; color: #0F172A; display: block; margin-top: 8px;">Línea Antifluidos Bioseguridad</strong>
+                        <span style="font-size: 11px; color: #64748B;">Barrera contra patógenos</span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="stack-column" width="50%" style="padding: 8px;">
+                      <div style="border: 1px solid #E2E8F0; border-radius: 8px; overflow: hidden; padding: 12px; background: #F8FAFC;">
+                        <img src="' . asset('images/servicio-tallaje-terreno.jpg') . '" style="width: 100%; height: 120px; object-fit: cover; border-radius: 6px;" />
+                        <strong style="font-size: 13px; color: #0F172A; display: block; margin-top: 8px;">Servicio de Tallaje en Clínica</strong>
+                        <span style="font-size: 11px; color: #64748B;">Percheros con curva XS a 3XL</span>
+                      </div>
+                    </td>
+                    <td class="stack-column" width="50%" style="padding: 8px;">
+                      <div style="border: 1px solid #E2E8F0; border-radius: 8px; overflow: hidden; padding: 12px; background: #F8FAFC;">
+                        <img src="' . asset('images/hero-grupo-clinico.jpg') . '" style="width: 100%; height: 120px; object-fit: cover; border-radius: 6px;" />
+                        <strong style="font-size: 13px; color: #0F172A; display: block; margin-top: 8px;">Delantales &amp; Chaquetas</strong>
+                        <span style="font-size: 11px; color: #64748B;">Bordado computarizado</span>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>';
+            $html = preg_replace('/<!-- VALUE PROPOSITION INTRO -->.*?<!-- PRODUCT SPOTLIGHT \/ SHOWCASE -->/s', $showcaseHtml . "\n<!-- PRODUCT SPOTLIGHT / SHOWCASE -->", $html);
+        } elseif ($preset === 'tallaje') {
+            $tallajeHtml = '
+            <!-- PRESET: TALLAJE 1-2-3 -->
+            <tr>
+              <td class="mobile-padding" style="padding: 32px 24px; background-color: #FFFFFF; text-align: center;">
+                <span style="background: #E6F4F4; color: #146161; font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 12px;">PROCESO SIN COSTO</span>
+                <h2 style="font-size: 20px; font-weight: 800; color: #0F172A; margin: 8px 0 6px 0;">3 Pasos para Renovar los Uniformes de su Clínica</h2>
+                <p style="font-size: 13px; color: #64748B; margin: 0 auto 24px auto; max-width: 480px;">Sin pérdidas de tiempo en cambios de talla ni intermediarios.</p>
+                <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td class="stack-column" width="33.3%" style="padding: 10px; text-align: center;">
+                      <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px; padding: 18px 12px;">
+                        <div style="width: 36px; height: 36px; line-height: 36px; border-radius: 50%; background: #1E8888; color: white; font-weight: 800; margin: 0 auto 10px auto; font-size: 15px;">1</div>
+                        <strong style="font-size: 13px; color: #0F172A; display: block;">Coordinamos Visita</strong>
+                        <span style="font-size: 11px; color: #64748B; display: block; margin-top: 4px;">Agendamos según turnos médicos.</span>
+                      </div>
+                    </td>
+                    <td class="stack-column" width="33.3%" style="padding: 10px; text-align: center;">
+                      <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px; padding: 18px 12px;">
+                        <div style="width: 36px; height: 36px; line-height: 36px; border-radius: 50%; background: #1E8888; color: white; font-weight: 800; margin: 0 auto 10px auto; font-size: 15px;">2</div>
+                        <strong style="font-size: 13px; color: #0F172A; display: block;">Llevamos Percheros</strong>
+                        <span style="font-size: 11px; color: #64748B; display: block; margin-top: 4px;">Pruebas en vivo (curva XS-3XL).</span>
+                      </div>
+                    </td>
+                    <td class="stack-column" width="33.3%" style="padding: 10px; text-align: center;">
+                      <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px; padding: 18px 12px;">
+                        <div style="width: 36px; height: 36px; line-height: 36px; border-radius: 50%; background: #1E8888; color: white; font-weight: 800; margin: 0 auto 10px auto; font-size: 15px;">3</div>
+                        <strong style="font-size: 13px; color: #0F172A; display: block;">Entrega &amp; Garantía</strong>
+                        <span style="font-size: 11px; color: #64748B; display: block; margin-top: 4px;">6 meses de garantía de fábrica.</span>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>';
+            $html = preg_replace('/<!-- VALUE PROPOSITION INTRO -->.*?<!-- PRODUCT SPOTLIGHT \/ SHOWCASE -->/s', $tallajeHtml . "\n<!-- PRODUCT SPOTLIGHT / SHOWCASE -->", $html);
+        }
+
+        // 6. Reemplazos de muestra
         $html = str_replace(
             ['{{ contact.NOMBRE | default: "profesional de la salud" }}', '{{ contact.NOMBRE }}'],
             'Director/a Médico y Encargado/a de Adquisiciones',
@@ -288,12 +394,99 @@ class CampaignController extends Controller
         ]);
     }
 
+    public function generateAiImage(Request $request): JsonResponse
+    {
+        $prompt = trim($request->input('prompt', ''));
+        $section = $request->input('section', 'hero');
+
+        if (empty($prompt)) {
+            return response()->json(['success' => false, 'error' => 'Debe ingresar un prompt para la imagen.'], 422);
+        }
+
+        try {
+            // Optimizar prompt a inglés fotográfico
+            $provider = Setting::get('active_ai_provider', 'groq');
+            $translationSystem = "You are an expert AI photography director. Convert the following Spanish prompt into a concise, detailed, hyper-realistic English prompt for FLUX/SDXL image generation focused on medical uniforms, clinic environment, or textile details. Output ONLY the English prompt.";
+            $enhancedRes = AiService::generateCopy($provider, "Describe this visual: " . $prompt, $translationSystem);
+            $englishPrompt = trim(preg_replace('/^"|"$|^`|`$/', '', $enhancedRes['content'] ?? $prompt));
+            if (strlen($englishPrompt) < 5 || str_contains($englishPrompt, '{')) {
+                $englishPrompt = "medical doctors and healthcare team in modern clinic wearing premium scrubs, professional photography, 8k resolution, cinematic lighting";
+            }
+
+            // Generar imagen con FLUX vía Pollinations
+            $encoded = urlencode($englishPrompt);
+            $seed = rand(1000, 999999);
+            $pollinationsUrl = "https://image.pollinations.ai/prompt/{$encoded}?model=flux&width=800&height=450&nologo=true&seed={$seed}";
+
+            $client = new \GuzzleHttp\Client(['timeout' => 30]);
+            $res = $client->get($pollinationsUrl);
+
+            if ($res->getStatusCode() === 200 && strlen($res->getBody()) > 5000) {
+                $filename = 'ai_' . time() . '_' . substr(md5($prompt), 0, 6) . '.jpg';
+                $destPath = public_path('images/' . $filename);
+                
+                if (!file_exists(public_path('images'))) {
+                    mkdir(public_path('images'), 0777, true);
+                }
+                
+                file_put_contents($destPath, $res->getBody());
+
+                return response()->json([
+                    'success' => true,
+                    'image_name' => $filename,
+                    'image_url' => asset('images/' . $filename),
+                    'prompt' => $prompt,
+                    'enhanced_prompt' => $englishPrompt
+                ]);
+            }
+
+            return response()->json(['success' => false, 'error' => 'El motor no devolvió una imagen válida.'], 500);
+
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error("Error en generateAiImage: " . $e->getMessage());
+            return response()->json(['success' => false, 'error' => 'Error al generar imagen: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function rewriteSection(Request $request): JsonResponse
+    {
+        $section = $request->input('section', 'hero');
+        $instruction = $request->input('instruction', '');
+        $currentText = $request->input('current_text', '');
+        $provider = $request->input('provider', Setting::get('active_ai_provider', 'groq'));
+
+        $systemPrompt = "Eres el redactor senior de marketing B2B de 'SUITABLE' (confección chilena de uniformes clínicos, 6 meses de garantía, telas antifluidos Flex 4-Way y tallaje presencial en clínicas).\n" .
+            "Tu misión es reescribir o mejorar la sección '$section' según la indicación del usuario.\n" .
+            "Responde en formato JSON con las claves exactas: 'title' y 'desc'. Responde ÚNICAMENTE con el bloque JSON.";
+
+        $userPrompt = "Sección: $section\nContenido Actual: $currentText\nInstrucción de Cambio: $instruction";
+
+        $result = AiService::generateCopy($provider, $userPrompt, $systemPrompt);
+        $raw = $result['content'] ?? '';
+        $clean = trim(preg_replace('/```(?:json)?|```/i', '', $raw));
+        $data = json_decode($clean, true);
+
+        if (!is_array($data) || empty($data['title'])) {
+            $data = [
+                'title' => 'Propuesta Actualizada',
+                'desc' => $clean ?: $currentText
+            ];
+        }
+
+        return response()->json([
+            'success' => true,
+            'section' => $section,
+            'data' => $data
+        ]);
+    }
+
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'group_id' => 'nullable|integer',
             'template_id' => 'nullable|integer',
+            'preset_template' => 'nullable|string|max:50',
             'subject' => 'required|string|max:255',
             'preheader' => 'nullable|string|max:255',
             'hero_title' => 'nullable|string|max:255',
@@ -305,6 +498,8 @@ class CampaignController extends Controller
             'pilar2_desc' => 'nullable|string',
             'pilar3_title' => 'nullable|string|max:255',
             'pilar3_desc' => 'nullable|string',
+            'split_content' => 'nullable|string',
+            'gallery_json' => 'nullable|string',
             'ai_provider' => 'nullable|string|max:50',
             'ai_prompt' => 'nullable|string',
             'status' => 'nullable|string|max:50'
@@ -331,6 +526,7 @@ class CampaignController extends Controller
             'name' => 'required|string|max:255',
             'group_id' => 'nullable|integer',
             'template_id' => 'nullable|integer',
+            'preset_template' => 'nullable|string|max:50',
             'subject' => 'required|string|max:255',
             'preheader' => 'nullable|string|max:255',
             'hero_title' => 'nullable|string|max:255',
@@ -342,6 +538,8 @@ class CampaignController extends Controller
             'pilar2_desc' => 'nullable|string',
             'pilar3_title' => 'nullable|string|max:255',
             'pilar3_desc' => 'nullable|string',
+            'split_content' => 'nullable|string',
+            'gallery_json' => 'nullable|string',
             'ai_provider' => 'nullable|string|max:50',
             'ai_prompt' => 'nullable|string',
             'status' => 'nullable|string|max:50'

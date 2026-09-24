@@ -37,6 +37,8 @@ Route::put('/campaigns/{campaign}', [CampaignController::class, 'update'])->name
 Route::post('/campaigns/{campaign}/update', [CampaignController::class, 'update']);
 Route::post('/campaigns', [CampaignController::class, 'store'])->name('campaigns.store');
 Route::post('/campaigns/ai-generate', [CampaignController::class, 'generateAi'])->name('campaigns.ai_generate');
+Route::post('/campaigns/ai-generate-image', [CampaignController::class, 'generateAiImage'])->name('campaigns.ai_generate_image');
+Route::post('/campaigns/ai-rewrite-section', [CampaignController::class, 'rewriteSection'])->name('campaigns.ai_rewrite_section');
 Route::post('/campaigns/{campaign}/send', [CampaignController::class, 'send'])->name('campaigns.send');
 Route::post('/campaigns/{campaign}/test-email', [CampaignController::class, 'sendTestEmail'])->name('campaigns.test_email');
 Route::delete('/campaigns/{campaign}', [CampaignController::class, 'destroy'])->name('campaigns.destroy');
