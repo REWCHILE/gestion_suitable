@@ -739,6 +739,13 @@ $initial_draft = [
                 <span>Tallaje en Terreno</span>
               </div>
             </div>
+
+            <!-- GEMINI COHERENT PROPOSAL BUTTON -->
+            <div style="margin-top: 8px;">
+              <button type="button" class="btn btn-sm" id="btn-gemini-align" onclick="triggerGeminiProposalForImage()" style="width: 100%; background: linear-gradient(135deg, #1E8888 0%, #0F5E68 100%); color: white; border: none; font-size: 11px; font-weight: 700; padding: 7px 12px; border-radius: 6px; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; box-shadow: 0 2px 6px rgba(15, 94, 104, 0.25);">
+                ✨ Pedir a Gemini propuesta coherente con esta imagen
+              </button>
+            </div>
           </div>
 
           <!-- INPUT AREA -->
@@ -1028,6 +1035,28 @@ $initial_draft = [
       // Tell agent
       appendUserMessage(`Cambia la imagen principal por ${imgName}`);
       callAgentEndpoint(`He cambiado la imagen de portada a ${imgName}`);
+    }
+
+    function triggerGeminiProposalForImage() {
+      // 1. Switch dropdown to Gemini
+      const provSelect = document.getElementById('chat_ai_provider');
+      if (provSelect) {
+        provSelect.value = 'gemini';
+      }
+
+      const currentImg = currentDraft.hero_image || 'tela-antifluidos-macro.jpg';
+      let promptText = '';
+      if (currentImg.includes('tela')) {
+        promptText = 'Gemini, genera una propuesta de correo B2B 100% coherente con la imagen de Tela Antifluido (bioseguridad, salpicaduras y tecnología Flex 4-Way) para directores médicos y comités de compras.';
+      } else if (currentImg.includes('tallaje')) {
+        promptText = 'Gemini, genera una propuesta de correo B2B coherente con la imagen de Servicio de Tallaje en Terreno (cero margen de error de tallas, percheros en la clínica y ahorro de tiempo) para jefaturas de adquisiciones.';
+      } else {
+        promptText = 'Gemini, genera una propuesta de correo B2B coherente con la imagen de Equipo Clínico (identidad institucional corporativa, sentido de pertenencia y 6 meses de garantía) para instituciones de salud.';
+      }
+
+      showToast('✨ Activando Gemini para alinear la propuesta a la imagen...', 'success');
+      appendUserMessage(promptText);
+      callAgentEndpoint(promptText);
     }
 
     function updateStepperUI(step) {

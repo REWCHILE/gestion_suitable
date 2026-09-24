@@ -521,6 +521,52 @@ Debes responder SIEMPRE un JSON estrictamente válido con este formato:
             ];
         }
 
+        // CASE C4: Explicit request for proposal coherent with the selected image (Gemini / AI Alignment)
+        if (strpos($lower, 'propuesta') !== false || strpos($lower, 'coherente') !== false || strpos($lower, 'alineada') !== false || strpos($lower, 'gemini') !== false) {
+            if ($draft['hero_image'] === 'tela-antifluidos-macro.jpg' || strpos($lower, 'tela') !== false || strpos($lower, 'antifluido') !== false) {
+                $draft['hero_image'] = 'tela-antifluidos-macro.jpg';
+                $draft['campaign_name'] = 'Propuesta Bioseguridad & Tecnología Textil Antifluido';
+                $draft['subject'] = '🔬 [Bioseguridad de Alto Estándar] Uniformes con tecnología antifluido Flex 4-Way y 6 meses de garantía';
+                $draft['preheader'] = 'Máxima protección contra salpicaduras y fluidos corporales con confección 100% chilena de fábrica.';
+                $draft['hero_title'] = 'Tecnología textil antifluidos diseñada para la máxima exigencia clínica';
+                $draft['hero_desc'] = 'Estimado/a <strong>{{ contact.NOMBRE | default: "Director/a o Encargado/a de Adquisiciones" }}</strong> de <strong>{{ contact.EMPRESA | default: "su institución" }}</strong>: Como fabricantes chilenos, en <strong>Suitable</strong> entendemos que la bioseguridad del equipo de salud no admite compromisos. Nuestras prendas integran acabado repelente a salpicaduras y elasticidad Flex 4-Way que aseguran frescura, higiene y libertad de movimiento en turnos prolongados.';
+                $draft['hero_cta_text'] = 'Solicitar Muestrario de Telas Antifluido →';
+                $draft['pilar3_title'] = '💧 Repelencia Total a Fluidos y Salpicaduras';
+                $draft['pilar3_desc'] = 'Tejido de alta densidad que evita la absorción de líquidos, sangre y aerosoles médicos, manteniendo al profesional seco y protegido.';
+                $reply = "✨ <strong>¡Propuesta con IA optimizada y 100% coherente con la imagen de Tela Antifluido!</strong><br><br>He alineado todo el correo a este gancho visual:<br>• <strong>Bioseguridad y Repelencia:</strong> Protección certificada ante salpicaduras y fluidos en pabellón/box.<br>• <strong>Tecnología Flex 4-Way:</strong> Movilidad multidireccional sin perder resistencia.<br>• <strong>Llamado a la acción:</strong> Solicitud de muestrario físico para el comité de compras.<br><br>👉 Mira la vista previa en vivo a la derecha: el texto y la fotografía macro ahora se complementan con total coherencia comercial.";
+            } elseif ($draft['hero_image'] === 'servicio-tallaje-terreno.jpg' || strpos($lower, 'tallaje') !== false) {
+                $draft['hero_image'] = 'servicio-tallaje-terreno.jpg';
+                $draft['campaign_name'] = 'Propuesta Servicio Exclusivo de Tallaje en Terreno';
+                $draft['subject'] = '📏 [Cero Margen de Error] Llevamos el servicio de tallaje a su clínica sin costo ni compromiso | Suitable';
+                $draft['preheader'] = 'Evite devoluciones y problemas de calce. Sesión de tallaje directo en sus dependencias con curva XS a 3XL.';
+                $draft['hero_title'] = 'Calce perfecto garantizado para cada integrante de su equipo médico';
+                $draft['hero_desc'] = 'Estimado/a <strong>{{ contact.NOMBRE | default: "Jefe/a de Adquisiciones" }}</strong> de <strong>{{ contact.EMPRESA | default: "su clínica" }}</strong>: Uno de los mayores dolores de cabeza en compras corporativas es la discrepancia de tallas. En <strong>Suitable</strong> lo resolvemos llevando nuestro <strong>Servicio de Tallaje en Terreno</strong> directamente a su institución, con percheros y prendas de prueba para cada profesional.';
+                $draft['hero_cta_text'] = 'Coordinar Visita de Tallaje para mi Clínica →';
+                $reply = "✨ <strong>¡Propuesta 100% coherente con la imagen de Tallaje en Terreno lista!</strong><br><br>El mensaje ahora ataca directo el problema de tallas erróneas y destaca la comodidad de recibir al equipo de Suitable en su propia clínica. Revisa la vista previa.";
+            } else {
+                $draft['hero_image'] = 'hero-grupo-clinico.jpg';
+                $draft['campaign_name'] = 'Propuesta Identidad & Dotación Médica Corporativa';
+                $draft['subject'] = '🏥 [Convenio Institucional] Equipe a su personal con uniformes clínicos de alta gama y garantía de fábrica';
+                $draft['hero_title'] = 'Imagen corporativa y confort de alto rendimiento para su institución de salud';
+                $draft['hero_cta_text'] = 'Cotizar Dotación para mi Equipo Clínico →';
+                $reply = "✨ <strong>¡Propuesta coherente con la imagen de Equipo Clínico generada!</strong><br><br>Enfocada en identidad de marca, sentido de pertenencia y respaldo directo de fábrica.";
+            }
+
+            return [
+                'success' => true,
+                'agent_reply' => $reply,
+                'step' => 4,
+                'accepted' => false,
+                'suggested_chips' => [
+                    '✅ Ya, okay, lo acepto',
+                    '✏️ Haz el asunto más corto',
+                    '💬 Cambiar botón a WhatsApp',
+                    '🛡️ Resaltar 6 meses de garantía'
+                ],
+                'email_draft' => $draft
+            ];
+        }
+
         // CASE D: Step 1 -> Concept Definition
         if ($turnCount <= 1 || strpos($lower, 'invierno') !== false || strpos($lower, 'tallaje') !== false || strpos($lower, 'dental') !== false || strpos($lower, 'reactivaci') !== false || strpos($lower, 'garant') !== false || strpos($lower, 'hospital') !== false) {
             
