@@ -53,3 +53,5 @@ Route::post('/woocommerce/sync', [WooCommerceController::class, 'sync'])->name('
 Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
 Route::post('/settings', [SettingController::class, 'store'])->name('settings.store');
 Route::post('/settings/test-smtp', [SettingController::class, 'testSmtp'])->name('settings.test_smtp');
+Route::post('/settings/check-status', [SettingController::class, 'checkStatus'])->name('settings.check_status');
+Route::post('/settings/ai-brand-assist', [SettingController::class, 'aiBrandAssist'])->name('settings.ai_brand_assist');
