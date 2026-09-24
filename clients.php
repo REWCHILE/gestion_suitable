@@ -8,19 +8,34 @@ $db = get_db();
 // Filter parameters: DEFAULT VIEW IS 'table' AS REQUESTED
 $status_filter = $_GET['status'] ?? '';
 $search = trim($_GET['search'] ?? '');
+$group_filter = intval($_GET['group'] ?? 0);
 $view_mode = $_GET['view'] ?? 'table'; // 'table' by default
 
+$current_group = null;
+if ($group_filter > 0) {
+    $stmt_cg = $db->prepare("SELECT * FROM contact_groups WHERE id = ?");
+    $stmt_cg->execute([$group_filter]);
+    $current_group = $stmt_cg->fetch();
+}
+
 // Base query
-$query = "SELECT * FROM clients WHERE 1=1";
+$query = "SELECT clients.* FROM clients";
 $params = [];
 
+if ($group_filter > 0) {
+    $query .= " INNER JOIN group_members gm ON clients.id = gm.client_id AND gm.group_id = ?";
+    $params[] = $group_filter;
+}
+
+$query .= " WHERE 1=1";
+
 if ($status_filter) {
-    $query .= " AND estado = ?";
+    $query .= " AND clients.estado = ?";
     $params[] = $status_filter;
 }
 
 if ($search) {
-    $query .= " AND (empresa LIKE ? OR contacto_nombre LIKE ? OR email LIKE ? OR region_comuna LIKE ?)";
+    $query .= " AND (clients.empresa LIKE ? OR clients.contacto_nombre LIKE ? OR clients.email LIKE ? OR clients.region_comuna LIKE ?)";
     $search_param = "%$search%";
     $params[] = $search_param;
     $params[] = $search_param;
@@ -28,7 +43,7 @@ if ($search) {
     $params[] = $search_param;
 }
 
-$query .= " ORDER BY updated_at DESC";
+$query .= " ORDER BY clients.updated_at DESC";
 $stmt = $db->prepare($query);
 $stmt->execute($params);
 $clients = $stmt->fetchAll();
@@ -658,10 +673,10 @@ foreach ($clients as $c) {
       <div class="header-actions">
         <!-- View switcher -->
         <div class="view-switcher">
-          <a href="clients.php?view=table<?= $search ? '&search='.urlencode($search) : '' ?>" class="view-btn <?= $view_mode === 'table' ? 'active' : '' ?>">
+          <a href="clients.php?view=table<?= $group_filter ? '&group='.$group_filter : '' ?><?= $search ? '&search='.urlencode($search) : '' ?>" class="view-btn <?= $view_mode === 'table' ? 'active' : '' ?>">
             📑 Tabla
           </a>
-          <a href="clients.php?view=kanban<?= $search ? '&search='.urlencode($search) : '' ?>" class="view-btn <?= $view_mode === 'kanban' ? 'active' : '' ?>">
+          <a href="clients.php?view=kanban<?= $group_filter ? '&group='.$group_filter : '' ?><?= $search ? '&search='.urlencode($search) : '' ?>" class="view-btn <?= $view_mode === 'kanban' ? 'active' : '' ?>">
             📋 Tablero
           </a>
         </div>
@@ -674,22 +689,32 @@ foreach ($clients as $c) {
 
     <!-- FILTER BAR -->
     <div class="table-card" style="padding: 14px 20px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap;">
-      <form method="GET" action="clients.php" style="display: flex; gap: 10px; align-items: center; flex-grow: 1; max-width: 540px;">
+      <form method="GET" action="clients.php" style="display: flex; gap: 10px; align-items: center; flex-grow: 1; max-width: 580px;">
         <input type="hidden" name="view" value="<?= htmlspecialchars($view_mode) ?>">
+        <?php if ($group_filter > 0): ?>
+          <input type="hidden" name="group" value="<?= $group_filter ?>">
+        <?php endif; ?>
         <div class="search-input-wrap" style="flex-grow: 1;">
           <span class="search-icon">🔍</span>
           <input type="text" name="search" class="search-input" placeholder="Buscar por clínica, doctor/contacto o comuna..." value="<?= htmlspecialchars($search) ?>">
         </div>
         <button type="submit" class="btn btn-secondary btn-sm" style="font-weight: 700;">Buscar</button>
-        <?php if ($search): ?>
-          <a href="clients.php?view=<?= $view_mode ?>" class="btn btn-secondary btn-sm" style="color: var(--text-muted);">Limpiar</a>
+        <?php if ($search || $group_filter): ?>
+          <a href="clients.php?view=<?= $view_mode ?>" class="btn btn-secondary btn-sm" style="color: var(--text-muted);">Ver Todos</a>
         <?php endif; ?>
       </form>
 
-      <div style="font-size: 13px; color: var(--text-muted); display: flex; align-items: center; gap: 8px;">
-        <span>Mostrando <strong><?= count($clients) ?></strong> instituciones registradas</span>
+      <div style="font-size: 13px; color: var(--text-muted); display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+        <?php if ($current_group): ?>
+          <span class="badge" style="background-color: #E6F4F4; color: #146161; font-weight: 700; border: 1px solid #99D5D5; padding: 5px 12px; font-size: 12.5px; display: inline-flex; align-items: center; gap: 6px;">
+            👥 Grupo: <strong><?= htmlspecialchars($current_group['name']) ?></strong> (<?= count($clients) ?> contactos)
+            <a href="clients.php?view=<?= $view_mode ?><?= $search ? '&search='.urlencode($search) : '' ?>" style="color: #E11D48; text-decoration: none; margin-left: 6px; font-weight: 900;" title="Quitar filtro de grupo">✕</a>
+          </span>
+        <?php else: ?>
+          <span>Mostrando <strong><?= count($clients) ?></strong> instituciones registradas</span>
+        <?php endif; ?>
         <?php if ($search): ?>
-          <span class="badge badge-teal">Filtrado por: "<?= htmlspecialchars($search) ?>"</span>
+          <span class="badge badge-teal">Búsqueda: "<?= htmlspecialchars($search) ?>"</span>
         <?php endif; ?>
       </div>
     </div>

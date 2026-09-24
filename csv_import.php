@@ -10,7 +10,122 @@ $groups = $db->query("SELECT * FROM contact_groups ORDER BY name ASC")->fetchAll
 
 $import_results = null;
 
-// Handle CSV form submission
+function enrich_chilean_health_contact(string $email, string $raw_name = '', string $raw_empresa = '', string $raw_cargo = '', string $raw_comuna = ''): array {
+    $email_clean = strtolower(trim($email));
+    $parts = explode('@', $email_clean, 2);
+    $local_part = $parts[0] ?? '';
+    $domain = $parts[1] ?? '';
+
+    $empresa = $raw_empresa ?: 'Institución de Salud';
+    $cargo = $raw_cargo ?: 'Profesional de Salud';
+    $comuna = $raw_comuna ?: 'Santiago, RM';
+    $contacto = $raw_name;
+
+    $domain_map = [
+        'ug.uchile.cl' => ['Universidad de Chile (Salud)', 'Santiago'],
+        'uchile.cl' => ['Universidad de Chile', 'Santiago'],
+        'udd.cl' => ['Universidad del Desarrollo (Salud)', 'Las Condes'],
+        'uc.cl' => ['Red de Salud UC CHRISTUS', 'Santiago'],
+        'mayor.cl' => ['Universidad Mayor / Red Salud', 'Huechuraba'],
+        'uandresbello.edu' => ['Universidad Andrés Bello (Salud)', 'Santiago'],
+        'alumnos.upla.cl' => ['Universidad de Playa Ancha', 'Valparaíso'],
+        'alumnos.uv.cl' => ['Universidad de Valparaíso', 'Valparaíso'],
+        'mail.udp.cl' => ['Universidad Diego Portales', 'Santiago'],
+        'usach.cl' => ['Universidad de Santiago de Chile', 'Estación Central'],
+        'umag.cl' => ['Universidad de Magallanes (Salud)', 'Punta Arenas'],
+        'udalba.cl' => ['Universidad del Alba', 'Santiago'],
+        'uft.edu' => ['Universidad Finis Terrae', 'Providencia'],
+        'renca.cl' => ['Corporación Municipal de Salud Renca', 'Renca'],
+        'obesidadyestetica.cl' => ['Clínica Obesidad y Estética', 'Las Condes'],
+        'somoslabtech.com' => ['LabTech Equipamiento', 'Santiago'],
+        'somoslabtech.cl' => ['LabTech Diagnóstica', 'Santiago'],
+        'benefithealth.cl' => ['Benefit Health Chile', 'Providencia'],
+        'nsglobal.cl' => ['NS Global Medical', 'Santiago'],
+        'botanicalsoluttions.cl' => ['Botanical Solutions Chile', 'Santiago'],
+        'policomp.com' => ['Policomp Salud & Servicios', 'Santiago'],
+        'lafabricadechurros.cl' => ['La Fábrica de Churros (Dotación)', 'Santiago'],
+        'medicina.ucsc.cl' => ['Facultad de Medicina UCSC', 'Concepción']
+    ];
+
+    foreach ($domain_map as $d => $info) {
+        if ($domain === $d || str_ends_with($domain, '.' . $d)) {
+            if ($empresa === 'Institución de Salud' || empty($raw_empresa)) {
+                $empresa = $info[0];
+            }
+            if ($comuna === 'Santiago, RM' || empty($raw_comuna)) {
+                $comuna = $info[1];
+            }
+            break;
+        }
+    }
+
+    if (!$contacto) {
+        if (str_starts_with($local_part, 'dr.') || str_starts_with($local_part, 'dr_')) {
+            $cargo = 'Médico Cirujano / Especialista';
+            $clean_part = preg_replace('/^dr[._]/', '', $local_part);
+            $contacto = 'Dr. ' . format_display_name($clean_part);
+        } elseif (str_starts_with($local_part, 'dra.') || str_starts_with($local_part, 'dra_')) {
+            $cargo = 'Médica Cirujana / Especialista';
+            $clean_part = preg_replace('/^dra[._]/', '', $local_part);
+            $contacto = 'Dra. ' . format_display_name($clean_part);
+        } elseif (str_starts_with($local_part, 'ps.') || str_starts_with($local_part, 'ps_')) {
+            $cargo = 'Psicólogo/a Clínico/a';
+            $clean_part = preg_replace('/^ps[._]/', '', $local_part);
+            $contacto = 'Ps. ' . format_display_name($clean_part);
+        } elseif (stripos($local_part, 'kinesiolog') !== false) {
+            $cargo = 'Kinesiólogo/a';
+            $clean_part = preg_replace('/kinesiolog[ao]?/i', '', $local_part);
+            $contacto = format_display_name($clean_part);
+            if ($empresa === 'Institución de Salud') $empresa = 'Centro de Kinesiología y Rehabilitación';
+        } elseif (stripos($local_part, 'fonoaudiolog') !== false) {
+            $cargo = 'Fonoaudiólogo/a';
+            $clean_part = preg_replace('/fonoaudiolog[ao]?/i', '', $local_part);
+            $contacto = format_display_name($clean_part);
+            if ($empresa === 'Institución de Salud') $empresa = 'Centro de Fonoaudiología & Terapias';
+        } elseif (stripos($local_part, 'veterinari') !== false) {
+            $cargo = 'Médico Veterinario / Directora';
+            $contacto = format_display_name($local_part);
+            $empresa = 'Clínica Veterinaria ' . format_display_name(str_ireplace('veterinaria', '', $local_part));
+        } elseif (stripos($local_part, 'estilist') !== false) {
+            $cargo = 'Estilista / Estética';
+            $clean_part = preg_replace('/estilista?/i', '', $local_part);
+            $contacto = format_display_name($clean_part);
+            if ($empresa === 'Institución de Salud') $empresa = 'Estudio de Estética & Belleza';
+        } elseif (preg_match('/^(compras|adquisiciones|contacto|admin)/i', $local_part)) {
+            $cargo = 'Encargado/a de Adquisiciones';
+            $contacto = format_display_name($local_part) . ' ' . ($empresa !== 'Institución de Salud' ? $empresa : '');
+            if ($empresa === 'Institución de Salud') $empresa = 'Centro Médico / Institución';
+        } else {
+            $contacto = format_display_name($local_part);
+            if ($empresa === 'Institución de Salud') {
+                $empresa = 'Consulta / ' . $contacto;
+            }
+        }
+    }
+
+    if (mb_strlen(trim($contacto)) < 3) {
+        $contacto = 'Profesional de Salud';
+    }
+
+    return [
+        'email' => $email_clean,
+        'contacto' => trim($contacto),
+        'empresa' => trim($empresa),
+        'cargo' => trim($cargo),
+        'comuna' => $comuna
+    ];
+}
+
+function format_display_name(string $raw): string {
+    $s = preg_replace('/\d+/', ' ', $raw);
+    $s = preg_replace('/[._-]+/', ' ', $s);
+    $words = array_filter(explode(' ', trim($s)), function($w) {
+        return mb_strlen($w) > 1 || ctype_alpha($w);
+    });
+    return ucwords(strtolower(implode(' ', $words)));
+}
+
+// Handle CSV / Brevo form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['do_import'])) {
     $group_id = intval($_POST['group_id'] ?? 0);
     $new_group_name = trim($_POST['new_group_name'] ?? '');
@@ -18,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['do_import'])) {
 
     // If new group was requested
     if ($group_id === -1 && $new_group_name) {
-        $stmt_g = $db->prepare("INSERT INTO contact_groups (name, description) VALUES (?, 'Grupo creado desde importación CSV')");
+        $stmt_g = $db->prepare("INSERT INTO contact_groups (name, description, color) VALUES (?, 'Grupo creado desde importación de contactos', '#1E8888')");
         $stmt_g->execute([$new_group_name]);
         $group_id = $db->lastInsertId();
     }
@@ -31,73 +146,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['do_import'])) {
     }
 
     if ($csv_content) {
-        // Normalize line endings
-        $lines = preg_split('/\r\n|\r|\n/', trim($csv_content));
-        if (count($lines) >= 1) {
-            // Detect delimiter (, or ;)
-            $first_line = $lines[0];
-            $delimiter = substr_count($first_line, ';') > substr_count($first_line, ',') ? ';' : ',';
+        $inserted = 0;
+        $updated = 0;
+        $errors = 0;
+
+        $stmt_check = $db->prepare("SELECT id FROM clients WHERE email = ?");
+        $stmt_insert = $db->prepare("
+            INSERT INTO clients (empresa, contacto_nombre, email, telefono, cargo, region_comuna, tamano_equipo, estado, notas)
+            VALUES (?, ?, ?, ?, ?, ?, ?, 'nuevo', ?)
+        ");
+        $stmt_update = $db->prepare("
+            UPDATE clients SET empresa = ?, contacto_nombre = ?, telefono = ?, cargo = ?, region_comuna = ?, tamano_equipo = ?
+            WHERE id = ?
+        ");
+        $stmt_member = $db->prepare("INSERT OR IGNORE INTO group_members (group_id, client_id) VALUES (?, ?)");
+
+        // CHECK IF CONTENT IS DIRECT BREVO WEB UI COPY-PASTE
+        $is_brevo_paste = (stripos($csv_content, 'app.brevo.com') !== false || stripos($csv_content, 'EmailSMS') !== false || stripos($csv_content, 'LISTA ENCUESTA') !== false);
+
+        if ($is_brevo_paste) {
+            // Regex match all Brevo link formats: [email](https://app.brevo.com/contact/index/ID)
+            preg_match_all('/\[([^\]]+)\]\(https:\/\/app\.brevo\.com\/contact\/index\/(\d+)\)/i', $csv_content, $brevo_matches, PREG_SET_ORDER);
             
-            $headers = str_getcsv(array_shift($lines), $delimiter);
-            $headers = array_map(function($h) { return strtolower(trim(str_replace(['"', "'", "\xEF\xBB\xBF"], '', $h))); }, $headers);
-
-            // Mapping dictionary
-            $col_map = [
-                'empresa' => -1,
-                'contacto' => -1,
-                'email' => -1,
-                'telefono' => -1,
-                'cargo' => -1,
-                'comuna' => -1,
-                'equipo' => -1,
-            ];
-
-            foreach ($headers as $idx => $h) {
-                if (preg_match('/(empresa|clinica|centro|institucion|hospital|organizacion)/i', $h)) $col_map['empresa'] = $idx;
-                if (preg_match('/(nombre|contacto|representante|persona)/i', $h)) $col_map['contacto'] = $idx;
-                if (preg_match('/(email|correo|mail)/i', $h)) $col_map['email'] = $idx;
-                if (preg_match('/(tel|fono|whatsapp|celular|phone)/i', $h)) $col_map['telefono'] = $idx;
-                if (preg_match('/(cargo|puesto|rol|profesion)/i', $h)) $col_map['cargo'] = $idx;
-                if (preg_match('/(comuna|ciudad|region|ubicacion)/i', $h)) $col_map['comuna'] = $idx;
-                if (preg_match('/(equipo|personal|tamano|cantidad|num)/i', $h)) $col_map['equipo'] = $idx;
+            // If direct links not found, fallback to all email addresses in text
+            if (empty($brevo_matches)) {
+                preg_match_all('/[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+/i', $csv_content, $raw_emails);
+                $unique_emails = array_unique(array_map('strtolower', $raw_emails[0] ?? []));
+                foreach ($unique_emails as $em) {
+                    $brevo_matches[] = [$em, $em, '0'];
+                }
             }
 
-            // Fallback if headers were missing or simple
-            if ($col_map['empresa'] === -1 && isset($headers[0])) $col_map['empresa'] = 0;
-            if ($col_map['contacto'] === -1 && isset($headers[1])) $col_map['contacto'] = 1;
-            if ($col_map['email'] === -1 && isset($headers[2])) $col_map['email'] = 2;
+            $seen_emails = [];
+            foreach ($brevo_matches as $bm) {
+                $raw_em = trim($bm[1] ?? '');
+                $brevo_id = trim($bm[2] ?? '');
+                if (!$raw_em || isset($seen_emails[strtolower($raw_em)])) continue;
+                $seen_emails[strtolower($raw_em)] = true;
 
-            $inserted = 0;
-            $updated = 0;
-            $errors = 0;
-
-            $stmt_check = $db->prepare("SELECT id FROM clients WHERE email = ?");
-            $stmt_insert = $db->prepare("
-                INSERT INTO clients (empresa, contacto_nombre, email, telefono, cargo, region_comuna, tamano_equipo, estado)
-                VALUES (?, ?, ?, ?, ?, ?, ?, 'nuevo')
-            ");
-            $stmt_update = $db->prepare("
-                UPDATE clients SET empresa = ?, contacto_nombre = ?, telefono = ?, cargo = ?, region_comuna = ?, tamano_equipo = ?
-                WHERE id = ?
-            ");
-            $stmt_member = $db->prepare("INSERT OR IGNORE INTO group_members (group_id, client_id) VALUES (?, ?)");
-
-            foreach ($lines as $line) {
-                if (!trim($line)) continue;
-                $row = str_getcsv($line, $delimiter);
-
-                $email = filter_var(trim($row[$col_map['email']] ?? ''), FILTER_VALIDATE_EMAIL);
-                if (!$email) {
-                    $errors++;
-                    continue;
-                }
-
-                $empresa = trim($row[$col_map['empresa']] ?? '') ?: 'Clínica / Institución';
-                $contacto = trim($row[$col_map['contacto']] ?? '') ?: 'Encargado/a de Adquisiciones';
-                $telefono = trim($row[$col_map['telefono']] ?? '');
-                $cargo = trim($row[$col_map['cargo']] ?? '') ?: 'Jefatura de Salud';
-                $comuna = trim($row[$col_map['comuna']] ?? '') ?: 'Santiago, RM';
-                $equipo = intval($row[$col_map['equipo']] ?? 20) ?: 20;
+                $enriched = enrich_chilean_health_contact($raw_em);
+                $email = $enriched['email'];
+                $empresa = $enriched['empresa'];
+                $contacto = $enriched['contacto'];
+                $cargo = $enriched['cargo'];
+                $comuna = $enriched['comuna'];
+                $telefono = '';
+                $equipo = 15;
+                $notas = $brevo_id ? "Importado desde Brevo (ID: $brevo_id)" : "Importado desde Brevo";
 
                 $stmt_check->execute([$email]);
                 $existing = $stmt_check->fetch();
@@ -107,24 +202,99 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['do_import'])) {
                     $stmt_update->execute([$empresa, $contacto, $telefono, $cargo, $comuna, $equipo, $cid]);
                     $updated++;
                 } else {
-                    $stmt_insert->execute([$empresa, $contacto, $email, $telefono, $cargo, $comuna, $equipo]);
+                    $stmt_insert->execute([$empresa, $contacto, $email, $telefono, $cargo, $comuna, $equipo, $notas]);
                     $cid = $db->lastInsertId();
                     $inserted++;
                 }
 
-                // Associate to group if chosen
                 if ($group_id > 0) {
                     $stmt_member->execute([$group_id, $cid]);
                 }
             }
+        } else {
+            // Standard CSV parsing (comma or semicolon delimited)
+            $lines = preg_split('/\r\n|\r|\n/', trim($csv_content));
+            if (count($lines) >= 1) {
+                $first_line = $lines[0];
+                $delimiter = substr_count($first_line, ';') > substr_count($first_line, ',') ? ';' : ',';
+                
+                $headers = str_getcsv(array_shift($lines), $delimiter);
+                $headers = array_map(function($h) { return strtolower(trim(str_replace(['"', "'", "\xEF\xBB\xBF"], '', $h))); }, $headers);
 
-            $import_results = [
-                'inserted' => $inserted,
-                'updated' => $updated,
-                'errors' => $errors,
-                'group_id' => $group_id
-            ];
+                $col_map = [
+                    'empresa' => -1,
+                    'contacto' => -1,
+                    'email' => -1,
+                    'telefono' => -1,
+                    'cargo' => -1,
+                    'comuna' => -1,
+                    'equipo' => -1,
+                ];
+
+                foreach ($headers as $idx => $h) {
+                    if (preg_match('/(empresa|clinica|centro|institucion|hospital|organizacion|company)/i', $h)) $col_map['empresa'] = $idx;
+                    if (preg_match('/(nombre|contacto|representante|persona|firstname|name)/i', $h)) $col_map['contacto'] = $idx;
+                    if (preg_match('/(email|correo|mail)/i', $h)) $col_map['email'] = $idx;
+                    if (preg_match('/(tel|fono|whatsapp|celular|phone|sms)/i', $h)) $col_map['telefono'] = $idx;
+                    if (preg_match('/(cargo|puesto|rol|profesion|job)/i', $h)) $col_map['cargo'] = $idx;
+                    if (preg_match('/(comuna|ciudad|region|ubicacion|city)/i', $h)) $col_map['comuna'] = $idx;
+                    if (preg_match('/(equipo|personal|tamano|cantidad|num)/i', $h)) $col_map['equipo'] = $idx;
+                }
+
+                if ($col_map['empresa'] === -1 && isset($headers[0])) $col_map['empresa'] = 0;
+                if ($col_map['contacto'] === -1 && isset($headers[1])) $col_map['contacto'] = 1;
+                if ($col_map['email'] === -1 && isset($headers[2])) $col_map['email'] = 2;
+
+                foreach ($lines as $line) {
+                    if (!trim($line)) continue;
+                    $row = str_getcsv($line, $delimiter);
+
+                    $raw_email = trim($row[$col_map['email']] ?? '');
+                    if (!filter_var($raw_email, FILTER_VALIDATE_EMAIL)) {
+                        $errors++;
+                        continue;
+                    }
+
+                    $raw_empresa = trim($row[$col_map['empresa']] ?? '');
+                    $raw_contacto = trim($row[$col_map['contacto']] ?? '');
+                    $telefono = trim($row[$col_map['telefono']] ?? '');
+                    $raw_cargo = trim($row[$col_map['cargo']] ?? '');
+                    $raw_comuna = trim($row[$col_map['comuna']] ?? '');
+                    $equipo = intval($row[$col_map['equipo']] ?? 20) ?: 20;
+
+                    $enriched = enrich_chilean_health_contact($raw_email, $raw_contacto, $raw_empresa, $raw_cargo, $raw_comuna);
+                    $email = $enriched['email'];
+                    $empresa = $enriched['empresa'];
+                    $contacto = $enriched['contacto'];
+                    $cargo = $enriched['cargo'];
+                    $comuna = $enriched['comuna'];
+
+                    $stmt_check->execute([$email]);
+                    $existing = $stmt_check->fetch();
+
+                    if ($existing) {
+                        $cid = $existing['id'];
+                        $stmt_update->execute([$empresa, $contacto, $telefono, $cargo, $comuna, $equipo, $cid]);
+                        $updated++;
+                    } else {
+                        $stmt_insert->execute([$empresa, $contacto, $email, $telefono, $cargo, $comuna, $equipo, 'Importado desde CSV']);
+                        $cid = $db->lastInsertId();
+                        $inserted++;
+                    }
+
+                    if ($group_id > 0) {
+                        $stmt_member->execute([$group_id, $cid]);
+                    }
+                }
+            }
         }
+
+        $import_results = [
+            'inserted' => $inserted,
+            'updated' => $updated,
+            'errors' => $errors,
+            'group_id' => $group_id
+        ];
     }
 }
 ?>
@@ -246,10 +416,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['do_import'])) {
             O TAMBIÉN PUEDE
           </div>
 
-          <!-- 3. PEGAR TEXTO CSV -->
+          <!-- 3. PEGAR TEXTO CSV O BREVO -->
           <div class="form-group">
-            <label class="form-label">Opción B: Pegar datos CSV directamente</label>
-            <textarea name="csv_text" id="csv_text" class="form-control" rows="6" placeholder="Clinica,Nombre,Email,Telefono,Cargo,Comuna&#10;Clinica Alemana,Dr. Pedro Ruiz,pruiz@alemana.cl,+56911223344,Director Medico,Vitacura&#10;RedSalud Maipu,Maria Gomez,mgomez@redsalud.cl,+56922334455,Jefa Enfermeria,Maipu"></textarea>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <label class="form-label" style="margin-bottom: 0;">Opción B: Pegar datos CSV o Copiar y Pegar desde Brevo</label>
+              <span class="badge" style="background: #E0F2FE; color: #0284C7; font-size: 11px; font-weight: 700;">✓ Soporte Brevo Copiar/Pegar</span>
+            </div>
+            <textarea name="csv_text" id="csv_text" class="form-control" rows="6" placeholder="Pegue aquí:&#10;1) Archivo CSV tradicional (Clinica,Nombre,Email,Telefono...)&#10;2) O copie y pegue directamente la tabla de Brevo (LISTA ENCUESTA / Contactos con enlaces y correos). El importador extraerá y enriquecerá automáticamente nombres, cargos y clínicas de salud."></textarea>
           </div>
 
           <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; font-size: 14px;">
@@ -261,22 +434,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['do_import'])) {
       <!-- GUÍA DE FORMATO -->
       <div>
         <div class="format-guide-box">
+          <div style="display: inline-flex; align-items: center; gap: 6px; background-color: #E6F4F4; color: #146161; font-weight: 700; font-size: 11px; padding: 4px 8px; border-radius: 4px; margin-bottom: 10px;">
+            ⚡ Compatible con Brevo &amp; Excel
+          </div>
           <h3 style="font-size: 15px; font-weight: 700; color: var(--text-main); margin-bottom: 10px;">
-            💡 Detección Inteligente de Columnas
+            💡 Detección Inteligente de Contactos
           </h3>
           <p style="color: var(--text-muted); line-height: 1.5; margin-bottom: 12px;">
-            El orquestador mapea automáticamente los nombres de columna más comunes en Chile:
+            El orquestador mapea automáticamente columnas de CSV o interpreta tablas copiadas directamente desde el navegador en Brevo:
           </p>
 
           <ul style="padding-left: 18px; color: var(--text-main); font-size: 12px; line-height: 1.8;">
-            <li><strong>Empresa:</strong> <code>Clinica</code>, <code>Empresa</code>, <code>Institucion</code></li>
-            <li><strong>Contacto:</strong> <code>Nombre</code>, <code>Contacto</code>, <code>Representante</code></li>
+            <li><strong>Empresa:</strong> <code>Clinica</code>, <code>Empresa</code>, <code>Institucion</code> o dominio institucional</li>
+            <li><strong>Contacto:</strong> <code>Nombre</code>, <code>Contacto</code>, <code>Email</code> o nombre deducido</li>
             <li><strong>Correo:</strong> <code>Email</code>, <code>Correo</code>, <code>Mail</code> (Requerido)</li>
-            <li><strong>Teléfono:</strong> <code>Telefono</code>, <code>WhatsApp</code>, <code>Celular</code></li>
-            <li><strong>Cargo:</strong> <code>Cargo</code>, <code>Rol</code>, <code>Especialidad</code></li>
-            <li><strong>Comuna:</strong> <code>Comuna</code>, <code>Ciudad</code>, <code>Region</code></li>
-            <li><strong>Personal:</strong> <code>Equipo</code>, <code>Cantidad</code>, <code>N_Empleados</code></li>
+            <li><strong>Teléfono:</strong> <code>Telefono</code>, <code>WhatsApp</code>, <code>Celular</code>, <code>SMS</code></li>
+            <li><strong>Cargo:</strong> <code>Cargo</code>, <code>Rol</code>, especialidad deducida (Dr., Ps., Kinesiólogo)</li>
+            <li><strong>Comuna:</strong> <code>Comuna</code>, <code>Ciudad</code> o sede regional</li>
           </ul>
+
+          <div style="margin-top: 14px; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: var(--radius-sm); padding: 10px;">
+            <strong style="font-size: 11px; color: #0284C7; display: block; margin-bottom: 4px;">🚀 Soporte Directo Brevo:</strong>
+            <p style="font-size: 11px; color: #64748B; margin: 0; line-height: 1.4;">
+              Si abre su lista en Brevo (ej. <em>LISTA ENCUESTA</em>), puede presionar <kbd>Ctrl+A</kbd> o seleccionar los contactos, copiar y pegar aquí directamente.
+            </p>
+          </div>
 
           <div style="margin-top: 16px;">
             <strong style="font-size: 12px; color: var(--text-main);">Ejemplo recomendado de formato:</strong>

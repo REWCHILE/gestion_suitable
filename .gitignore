@@ -1,8 +1,10 @@
-# Temporary files
+# Temporary and scratch files
 *.tmp
 *.log
 __pycache__/
 *.pyc
+scratch/
+scratch_*
 
 # SQLite Journal files
 data/*.db-journal
