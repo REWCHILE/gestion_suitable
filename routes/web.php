@@ -40,8 +40,10 @@ Route::post('/import', [ImportController::class, 'process'])->name('import.proce
 // Analytics & Metrics
 Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
 
-// ML Brain & Search Trends
+// Cerebro Suitable (ML & Inteligencia de Negocio)
 Route::get('/ml-brain', [MlBrainController::class, 'index'])->name('ml_brain.index');
+Route::get('/cerebro-suitable', [MlBrainController::class, 'index'])->name('cerebro_suitable.index');
+Route::post('/ml-brain/diagnostic', [MlBrainController::class, 'diagnostic'])->name('ml_brain.diagnostic');
 
 // WooCommerce Sync
 Route::get('/woocommerce', [WooCommerceController::class, 'index'])->name('woocommerce.index');

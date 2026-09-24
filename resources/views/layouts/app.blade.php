@@ -216,9 +216,9 @@
           </a>
         </li>
         <li>
-          <a href="{{ route('ml_brain.index') }}" class="sidebar-link {{ request()->routeIs('ml_brain.*') ? 'active' : '' }}" title="Cerebro de ML">
+          <a href="{{ route('ml_brain.index') }}" class="sidebar-link {{ request()->routeIs('ml_brain.*') || request()->routeIs('cerebro_suitable.*') ? 'active' : '' }}" title="Cerebro Suitable (Inteligencia & Ventas)">
             <span class="sidebar-icon">🧠</span>
-            <span class="sidebar-label">Cerebro ML</span>
+            <span class="sidebar-label">Cerebro Suitable</span>
           </a>
         </li>
         <li>
