@@ -41,6 +41,8 @@ Route::post('/campaigns', [CampaignController::class, 'store'])->name('campaigns
 Route::post('/campaigns/ai-generate', [CampaignController::class, 'generateAi'])->name('campaigns.ai_generate');
 Route::post('/campaigns/ai-generate-image', [CampaignController::class, 'generateAiImage'])->name('campaigns.ai_generate_image');
 Route::post('/campaigns/ai-rewrite-section', [CampaignController::class, 'rewriteSection'])->name('campaigns.ai_rewrite_section');
+Route::post('/campaigns/ai-rewrite-snippet', [CampaignController::class, 'rewriteSnippet'])->name('campaigns.ai_rewrite_snippet');
+Route::get('/campaigns/ai-image-gallery', [CampaignController::class, 'aiImageGallery'])->name('campaigns.ai_image_gallery');
 Route::post('/campaigns/{campaign}/send', [CampaignController::class, 'send'])->name('campaigns.send');
 Route::post('/campaigns/{campaign}/test-email', [CampaignController::class, 'sendTestEmail'])->name('campaigns.test_email');
 Route::delete('/campaigns/{campaign}', [CampaignController::class, 'destroy'])->name('campaigns.destroy');

@@ -1,57 +1,358 @@
 <?php
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/vendor/autoload.php';
 require_auth();
 
 $user = current_user();
 
-$t1_content = file_exists(__DIR__ . '/email_corporativo_suitable_1.html') ? file_get_contents(__DIR__ . '/email_corporativo_suitable_1.html') : '';
-$t2_content = file_exists(__DIR__ . '/email_corporativo_suitable_2.html') ? file_get_contents(__DIR__ . '/email_corporativo_suitable_2.html') : '';
+$allPresets = \App\Services\CampaignPresetService::all();
+$categories = \App\Services\CampaignPresetService::categories();
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Visor de Plantillas Brevo | Suitable</title>
+  <title>Mis Plantillas • Galería Visual Brevo | Suitable</title>
   <link rel="stylesheet" href="assets/css/app.css?v=<?= time() ?>">
   <style>
-    .templates-view-layout {
+    /* MIS PLANTILLAS - ESTILO BREVO / MAILCHIMP VISUAL GALLERY */
+    .tpl-gallery-layout {
       display: grid;
-      grid-template-columns: 340px 1fr;
-      gap: 24px;
+      grid-template-columns: 240px 1fr;
+      gap: 28px;
       align-items: start;
     }
-    .tpl-card-select {
-      background: white;
-      border: 2px solid var(--border-light);
-      border-radius: var(--radius-md);
-      padding: 18px;
-      margin-bottom: 14px;
+
+    @media (max-width: 900px) {
+      .tpl-gallery-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* LEFT CATEGORY SIDEBAR */
+    .tpl-sidebar {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 16px 12px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+      position: sticky;
+      top: 20px;
+    }
+
+    .tpl-sidebar-title {
+      font-size: 11px;
+      font-weight: 800;
+      color: #94A3B8;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      padding: 4px 10px 10px 10px;
+      margin-bottom: 6px;
+      border-bottom: 1px solid #F1F5F9;
+    }
+
+    .tpl-cat-btn {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #475569;
+      text-decoration: none;
+      background: transparent;
+      border: none;
       cursor: pointer;
-      transition: var(--transition);
+      transition: all 0.15s ease;
+      margin-bottom: 3px;
+      text-align: left;
     }
-    .tpl-card-select.active {
-      border-color: var(--primary);
-      background-color: var(--primary-light);
-      box-shadow: var(--shadow-sm);
+
+    .tpl-cat-btn:hover {
+      background: #F8FAFC;
+      color: #1E8888;
     }
-    .tpl-frame-container {
-      background-color: #E2E8F0;
-      border-radius: var(--radius-md);
-      padding: 24px;
+
+    .tpl-cat-btn.active {
+      background: #E6F4F4;
+      color: #115E59;
+      font-weight: 700;
+    }
+
+    .tpl-cat-pill {
+      background: #F1F5F9;
+      color: #64748B;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 12px;
+      transition: all 0.15s ease;
+    }
+
+    .tpl-cat-btn.active .tpl-cat-pill {
+      background: #115E59;
+      color: #FFFFFF;
+    }
+
+    /* TOP ACTION BAR */
+    .tpl-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .tpl-main-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: #0F172A;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tpl-count-badge {
+      background: #E6F4F4;
+      color: #1E8888;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(30, 136, 136, 0.2);
+    }
+
+    .tpl-search-input {
+      width: 280px;
+      padding: 9px 14px 9px 36px;
+      border: 1px solid #CBD5E1;
+      border-radius: 8px;
+      font-size: 13px;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .tpl-search-input:focus {
+      border-color: #1E8888;
+      box-shadow: 0 0 0 3px rgba(30, 136, 136, 0.15);
+    }
+
+    /* GRID DE PLANTILLAS VISUALES */
+    .tpl-visual-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 22px;
+    }
+
+    /* TARJETA DE PLANTILLA (ESTILO BREVO) */
+    .tpl-card {
+      background: #FFFFFF;
+      border: 2px solid #E2E8F0;
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+      transition: all 0.22s ease;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .tpl-card:hover, .tpl-card.selected {
+      border-color: #2563EB; /* Borde azul de selección estilo Brevo */
+      box-shadow: 0 12px 28px rgba(37, 99, 235, 0.16);
+      transform: translateY(-3px);
+    }
+
+    /* VIEWPORT MINIATURA DE EMAIL */
+    .tpl-viewport {
+      position: relative;
+      width: 100%;
+      height: 410px;
+      background: #F8FAFC;
+      overflow: hidden;
+      border-bottom: 1px solid #E2E8F0;
       display: flex;
       justify-content: center;
-      min-height: 800px;
     }
-    .tpl-iframe {
-      width: 100%;
-      max-width: 620px;
-      height: 850px;
+
+    .tpl-mini-iframe {
+      width: 620px;
+      height: 1200px;
       border: none;
-      background: white;
+      pointer-events: none;
+      transform-origin: top center;
+      background: #FFFFFF;
+    }
+
+    /* OVERLAY HOVER CON ACCIONES */
+    .tpl-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(2px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      z-index: 10;
+      padding: 20px;
+    }
+
+    .tpl-card:hover .tpl-overlay {
+      opacity: 1;
+    }
+
+    .btn-tpl-action-primary {
+      background: #2563EB;
+      color: #FFFFFF;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 18px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+      transition: all 0.15s ease;
+      width: 100%;
+      max-width: 190px;
+      justify-content: center;
+    }
+
+    .btn-tpl-action-primary:hover {
+      background: #1D4ED8;
+      transform: scale(1.02);
+    }
+
+    .btn-tpl-action-secondary {
+      background: rgba(255, 255, 255, 0.95);
+      color: #0F172A;
+      border: none;
+      border-radius: 6px;
+      padding: 9px 18px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      width: 100%;
+      max-width: 190px;
+      justify-content: center;
+    }
+
+    .btn-tpl-action-secondary:hover {
+      background: #FFFFFF;
+      color: #1E8888;
+    }
+
+    /* INFO INFERIOR DE LA TARJETA */
+    .tpl-card-info {
+      padding: 14px 16px;
+      background: #FFFFFF;
+    }
+
+    .tpl-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .tpl-name {
+      font-size: 14px;
+      font-weight: 800;
+      color: #0F172A;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tpl-tag {
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 6px;
+      background: #F1F5F9;
+      color: #475569;
+      white-space: nowrap;
+    }
+
+    .tpl-desc-mini {
+      font-size: 12px;
+      color: #64748B;
+      line-height: 1.4;
+      margin: 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* MODAL HD PREVIEW */
+    .preview-modal-bg {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(4px);
+      z-index: 10000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .preview-modal-box {
+      background: #FFFFFF;
+      width: 100%;
+      max-width: 900px;
+      height: 90vh;
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+    }
+
+    .preview-modal-header {
+      background: #0F172A;
+      color: #FFFFFF;
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .preview-modal-body {
+      flex: 1;
+      background: #E2E8F0;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      justify-content: center;
+    }
+
+    .preview-modal-iframe {
+      background: #FFFFFF;
+      width: 600px;
+      height: 100%;
+      border: none;
       border-radius: 8px;
-      box-shadow: var(--shadow-lg);
-      transition: max-width 0.3s ease;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+      transition: width 0.3s ease;
     }
   </style>
 </head>
@@ -62,84 +363,114 @@ $t2_content = file_exists(__DIR__ . '/email_corporativo_suitable_2.html') ? file
 
   <main class="main-container">
     
-    <div class="page-header">
-      <div class="page-title-group">
-        <h1>Catálogo de Plantillas de Correo Corporativo</h1>
-        <p class="page-subtitle">Diseños HTML profesionales testeados y optimizados para el editor Brevo (ex Sendinblue)</p>
+    <!-- TOP TOOLBAR -->
+    <div class="tpl-top-bar">
+      <div>
+        <h1 class="tpl-main-title">
+          <span>🎨</span>
+          <span>Mis plantillas</span>
+          <span class="tpl-count-badge" id="visible-count-badge">20 plantillas</span>
+        </h1>
+        <p style="margin: 4px 0 0 0; color: #64748B; font-size: 13.5px;">
+          Catálogo visual interactivo de correos corporativos listos para usar en campañas B2B y editor Brevo
+        </p>
       </div>
 
-      <div class="header-actions">
-        <button type="button" class="btn btn-primary" onclick="copyCurrentTemplate()">
-          📋 Copiar Código para Brevo
-        </button>
+      <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+        <div style="position: relative;">
+          <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94A3B8; font-size: 14px;">🔍</span>
+          <input type="text" id="tplSearchInput" class="tpl-search-input" placeholder="Buscar por nombre o especialidad..." oninput="handleFilterGrid()">
+        </div>
+
+        <a href="send_outreach.php" class="btn btn-primary" style="background: #1E8888; display: inline-flex; align-items: center; gap: 6px; font-weight: 700; padding: 9px 16px; border-radius: 8px;">
+          <span>✨</span>
+          <span>Orquestador de Envíos</span>
+        </a>
       </div>
     </div>
 
-    <div class="templates-view-layout">
-      
-      <!-- SELECTOR LATERAL -->
+    <!-- MAIN GALLERY LAYOUT -->
+    <div class="tpl-gallery-layout">
+
+      <!-- LEFT FILTER COLUMN -->
+      <aside class="tpl-sidebar">
+        <div class="tpl-sidebar-title">Categorías &amp; Filtros</div>
+
+        <button type="button" class="tpl-cat-btn active" onclick="filterCategory('all', this)">
+          <span>📑 Todas las plantillas</span>
+          <span class="tpl-cat-pill">20</span>
+        </button>
+
+        <?php foreach($categories as $cat): ?>
+          <?php if($cat['slug'] !== 'all'): ?>
+            <button type="button" class="tpl-cat-btn" onclick="filterCategory('<?= $cat['slug'] ?>', this)">
+              <span><?= $cat['icon'] ?> <?= htmlspecialchars($cat['name']) ?></span>
+              <span class="tpl-cat-pill"><?= $cat['count'] ?></span>
+            </button>
+          <?php endif; ?>
+        <?php endforeach; ?>
+
+        <div style="margin-top: 16px; padding-top: 14px; border-top: 1px solid #F1F5F9;">
+          <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 12px; font-size: 11.5px; color: #475569;">
+            <strong style="color: #0F172A; display: block; margin-bottom: 4px;">💡 ¿Cómo funciona?</strong>
+            Pasa el cursor sobre cualquier diseño para ver las acciones rápidas o haz clic para previsualizarlo en tamaño real.
+          </div>
+        </div>
+      </aside>
+
+      <!-- MAIN TEMPLATES GRID -->
       <div>
-        
-        <!-- CARD PLANTILLA 1 -->
-        <div class="tpl-card-select" id="card-t1" onclick="switchTemplate(1)">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-            <strong style="color: var(--text-main); font-size: 15px;">Plantilla 1: Institucional</strong>
-            <span class="badge badge-blue">General</span>
-          </div>
-          <p style="font-size: 12px; color: var(--text-muted); line-height: 1.5; margin-bottom: 12px;">
-            Enfoque de presentación de marca Suitable: Tecnología Flex, propiedades antifluidos, bordados personalizados y catálogo de mujer/hombre.
-          </p>
-          <div style="font-size: 11px; color: #0369A1; font-weight: 600;">
-            ✓ Compatible con Brevo (`{{ unsubscribe }}`)
-          </div>
+        <div class="tpl-visual-grid" id="templatesGrid">
+          <?php foreach($allPresets as $p): ?>
+            <div class="tpl-card" data-category="<?= htmlspecialchars($p['category_slug'] ?? 'clinicas') ?>" data-name="<?= strtolower(htmlspecialchars($p['name'] . ' ' . $p['description'])) ?>">
+              
+              <!-- VIEWPORT CON IFRAME MINIATURA ESCALADO -->
+              <div class="tpl-viewport">
+                <iframe 
+                  src="public/campaigns/presets/<?= $p['id'] ?>/preview" 
+                  class="tpl-mini-iframe" 
+                  loading="lazy" 
+                  scrolling="no" 
+                  tabindex="-1"
+                  title="<?= htmlspecialchars($p['name']) ?>"
+                ></iframe>
+
+                <!-- HOVER OVERLAY -->
+                <div class="tpl-overlay">
+                  <a href="send_outreach.php?preset=<?= $p['id'] ?>" class="btn-tpl-action-primary">
+                    <span>🚀</span>
+                    <span>Usar esta plantilla</span>
+                  </a>
+                  <button type="button" class="btn-tpl-action-secondary" onclick="openHdModal('<?= $p['id'] ?>', '<?= addslashes($p['name']) ?>')">
+                    <span>👁️</span>
+                    <span>Vista Previa HD</span>
+                  </button>
+                  <button type="button" class="btn-tpl-action-secondary" onclick="copyPresetHtmlDirect('<?= $p['id'] ?>')" style="font-size: 11.5px; padding: 7px 14px;">
+                    <span>📋</span>
+                    <span>Copiar HTML Brevo</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- FOOTER DE LA TARJETA -->
+              <div class="tpl-card-info">
+                <div class="tpl-card-header">
+                  <span class="tpl-name" title="<?= htmlspecialchars($p['name']) ?>"><?= $p['icon'] ?> <?= htmlspecialchars($p['name']) ?></span>
+                  <span class="tpl-tag"><?= htmlspecialchars($p['category']) ?></span>
+                </div>
+                <p class="tpl-desc-mini"><?= htmlspecialchars($p['description']) ?></p>
+              </div>
+
+            </div>
+          <?php endforeach; ?>
         </div>
 
-        <!-- CARD PLANTILLA 2 -->
-        <div class="tpl-card-select active" id="card-t2" onclick="switchTemplate(2)">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-            <strong style="color: var(--text-main); font-size: 15px;">Plantilla 2: B2B Alto Impacto</strong>
-            <span class="badge badge-teal">Recomendada</span>
-          </div>
-          <p style="font-size: 12px; color: var(--text-muted); line-height: 1.5; margin-bottom: 12px;">
-            Enfoque 100% B2B con imágenes autogeneradas: Grupos de trabajo clínico, macro de antifluidos, <strong>fabricación nacional directa</strong>, <strong>6 meses de garantía</strong> y <strong>servicio de tallaje en terreno</strong>.
-          </p>
-          <div style="font-size: 11px; color: #0F766E; font-weight: 600;">
-            ✓ Alta conversión B2B para adquisiciones
-          </div>
-        </div>
-
-        <!-- DETALLES BREVO -->
-        <div style="background-color: var(--bg-surface); border: 1px solid var(--border-light); border-radius: var(--radius-md); padding: 18px; margin-top: 20px;">
-          <h4 style="font-size: 13px; font-weight: 700; color: var(--text-main); margin-bottom: 8px;">
-            🚀 Variables Brevo Integradas
-          </h4>
-          <ul style="font-size: 12px; color: var(--text-muted); padding-left: 18px; line-height: 1.7;">
-            <li><code>{{ contact.NOMBRE }}</code>: Nombre contacto</li>
-            <li><code>{{ contact.EMPRESA }}</code>: Institución clínica</li>
-            <li><code>{{ unsubscribe }}</code>: Enlace de desuscripción</li>
-            <li><code>{{ mirror }}</code>: Ver en el navegador</li>
-          </ul>
-        </div>
-
-      </div>
-
-      <!-- PREVIEW CONTAINER -->
-      <div>
-        <div class="table-card" style="margin-bottom: 16px; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between;">
-          <div style="display: flex; align-items: center; gap: 10px;">
-            <strong id="active-tpl-title" style="font-size: 14px; color: var(--text-main);">Plantilla 2 (B2B Fabricantes &amp; Tallaje)</strong>
-            <span class="badge badge-teal" id="active-tpl-tag">HTML Listo</span>
-          </div>
-
-          <div style="display: flex; gap: 8px;">
-            <button type="button" class="btn btn-secondary btn-sm" onclick="setDeviceWidth('620px')">🖥️ Vista Desktop</button>
-            <button type="button" class="btn btn-secondary btn-sm" onclick="setDeviceWidth('375px')">📱 Vista Móvil</button>
-            <a id="download-tpl-btn" href="email_corporativo_suitable_2.html" download class="btn btn-outline-primary btn-sm">💾 Descargar</a>
-          </div>
-        </div>
-
-        <div class="tpl-frame-container">
-          <iframe id="main-tpl-iframe" class="tpl-iframe" src="email_corporativo_suitable_2.html"></iframe>
+        <!-- EMPTY STATE -->
+        <div id="noResultsMsg" style="display: none; text-align: center; padding: 60px 20px; background: white; border-radius: 12px; border: 1px dashed #CBD5E1;">
+          <span style="font-size: 40px; display: block; margin-bottom: 12px;">🔍</span>
+          <h3 style="font-size: 18px; font-weight: 800; color: #0F172A; margin: 0 0 6px 0;">No se encontraron plantillas</h3>
+          <p style="color: #64748B; font-size: 13px; margin: 0 0 16px 0;">Intenta con otros términos de búsqueda o selecciona otra categoría.</p>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="resetFilters()">Restablecer Filtros</button>
         </div>
       </div>
 
@@ -147,39 +478,158 @@ $t2_content = file_exists(__DIR__ . '/email_corporativo_suitable_2.html') ? file
 
   </main>
 
-  <script src="assets/js/app.js"></script>
-  <script>
-    let activeTemplate = 2;
-
-    function switchTemplate(num) {
-      activeTemplate = num;
-      document.getElementById('card-t1').classList.toggle('active', num === 1);
-      document.getElementById('card-t2').classList.toggle('active', num === 2);
-
-      const fileName = num === 1 ? 'email_corporativo_suitable_1.html' : 'email_corporativo_suitable_2.html';
-      document.getElementById('main-tpl-iframe').src = fileName;
-      document.getElementById('download-tpl-btn').href = fileName;
+  <!-- MODAL DE VISTA PREVIA HD RESPONSIVE (DESKTOP / MOBILE) -->
+  <div id="previewModalHd" class="preview-modal-bg" onclick="handleModalBgClick(event)">
+    <div class="preview-modal-box">
       
-      document.getElementById('active-tpl-title').innerText = num === 1 
-        ? 'Plantilla 1: Institucional / Flex' 
-        : 'Plantilla 2: B2B Fabricantes, 6M Garantía & Tallaje';
+      <!-- HEADER -->
+      <div class="preview-modal-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 20px;">📧</span>
+          <div>
+            <h3 id="modalPresetTitle" style="margin: 0; font-size: 16px; font-weight: 800; color: #FFFFFF;">Vista Previa</h3>
+            <span style="font-size: 11px; color: #94A3B8;">Editor HTML Brevo Responsive</span>
+          </div>
+        </div>
+
+        <!-- DEVICE SWITCHER -->
+        <div style="display: inline-flex; background: rgba(255,255,255,0.1); border-radius: 6px; padding: 2px;">
+          <button type="button" id="btnModalDesktop" onclick="setModalDevice('desktop')" style="border: none; background: #FFFFFF; color: #0F172A; font-size: 11.5px; font-weight: 700; padding: 5px 12px; border-radius: 4px; cursor: pointer;">
+            🖥️ Desktop (600px)
+          </button>
+          <button type="button" id="btnModalMobile" onclick="setModalDevice('mobile')" style="border: none; background: transparent; color: #E2E8F0; font-size: 11.5px; font-weight: 700; padding: 5px 12px; border-radius: 4px; cursor: pointer;">
+            📱 Móvil (385px)
+          </button>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <a id="modalUseBtn" href="#" class="btn btn-primary btn-sm" style="background: #1E8888; font-weight: 700; border: none;">
+            🚀 Usar en Orquestador
+          </a>
+          <button type="button" onclick="closeHdModal()" style="background: transparent; border: none; color: #94A3B8; font-size: 24px; cursor: pointer; line-height: 1;">
+            ✕
+          </button>
+        </div>
+      </div>
+
+      <!-- BODY -->
+      <div class="preview-modal-body">
+        <iframe id="modalPreviewIframe" class="preview-modal-iframe" src="about:blank"></iframe>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    let activeCategory = 'all';
+
+    function autoScaleMiniIframes() {
+      document.querySelectorAll('.tpl-viewport').forEach(vp => {
+        const w = vp.clientWidth;
+        const iframe = vp.querySelector('.tpl-mini-iframe');
+        if (iframe && w > 0) {
+          const scale = w / 620;
+          iframe.style.transform = `scale(${scale})`;
+        }
+      });
     }
 
-    function setDeviceWidth(width) {
-      document.getElementById('main-tpl-iframe').style.maxWidth = width;
+    window.addEventListener('resize', autoScaleMiniIframes);
+    window.addEventListener('load', autoScaleMiniIframes);
+    setTimeout(autoScaleMiniIframes, 200);
+
+    function filterCategory(catSlug, btn) {
+      activeCategory = catSlug;
+      document.querySelectorAll('.tpl-cat-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      handleFilterGrid();
     }
 
-    async function copyCurrentTemplate() {
-      const fileName = activeTemplate === 1 ? 'email_corporativo_suitable_1.html' : 'email_corporativo_suitable_2.html';
+    function handleFilterGrid() {
+      const q = document.getElementById('tplSearchInput').value.toLowerCase().trim();
+      const cards = document.querySelectorAll('.tpl-card');
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+        const cardCat = card.getAttribute('data-category');
+        const cardName = card.getAttribute('data-name');
+
+        const matchesCat = (activeCategory === 'all' || cardCat === activeCategory);
+        const matchesSearch = (!q || cardName.includes(q));
+
+        if (matchesCat && matchesSearch) {
+          card.style.display = 'flex';
+          visibleCount++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      document.getElementById('visible-count-badge').innerText = `${visibleCount} plantillas`;
+      document.getElementById('noResultsMsg').style.display = (visibleCount === 0) ? 'block' : 'none';
+
+      setTimeout(autoScaleMiniIframes, 50);
+    }
+
+    function resetFilters() {
+      document.getElementById('tplSearchInput').value = '';
+      const firstBtn = document.querySelector('.tpl-cat-btn');
+      filterCategory('all', firstBtn);
+    }
+
+    // MODAL HD
+    function openHdModal(presetId, presetName) {
+      document.getElementById('modalPresetTitle').innerText = presetName;
+      document.getElementById('modalUseBtn').href = "send_outreach.php?preset=" + presetId;
+      
+      const iframe = document.getElementById('modalPreviewIframe');
+      iframe.src = "public/campaigns/presets/" + presetId + "/preview";
+
+      setModalDevice('desktop');
+      document.getElementById('previewModalHd').style.display = 'flex';
+    }
+
+    function closeHdModal() {
+      document.getElementById('previewModalHd').style.display = 'none';
+      document.getElementById('modalPreviewIframe').src = 'about:blank';
+    }
+
+    function handleModalBgClick(e) {
+      if (e.target.id === 'previewModalHd') {
+        closeHdModal();
+      }
+    }
+
+    function setModalDevice(device) {
+      const iframe = document.getElementById('modalPreviewIframe');
+      const btnD = document.getElementById('btnModalDesktop');
+      const btnM = document.getElementById('btnModalMobile');
+
+      if (device === 'mobile') {
+        iframe.style.width = '385px';
+        btnM.style.background = '#FFFFFF';
+        btnM.style.color = '#0F172A';
+        btnD.style.background = 'transparent';
+        btnD.style.color = '#E2E8F0';
+      } else {
+        iframe.style.width = '600px';
+        btnD.style.background = '#FFFFFF';
+        btnD.style.color = '#0F172A';
+        btnM.style.background = 'transparent';
+        btnM.style.color = '#E2E8F0';
+      }
+    }
+
+    async function copyPresetHtmlDirect(presetId) {
       try {
-        const res = await fetch(fileName);
+        const res = await fetch("public/campaigns/presets/" + presetId + "/preview");
         const html = await res.text();
-        copyToClipboard(html, '¡Código HTML copiado! Péguelo en la sección "Pegar mi código" de Brevo.');
-      } catch (err) {
-        showToast('Error al leer el archivo de plantilla', 'error');
+        await navigator.clipboard.writeText(html);
+        alert('✓ Código HTML de la plantilla copiado al portapapeles. ¡Listo para pegar en Brevo!');
+      } catch(e) {
+        alert('Error al copiar el código HTML');
       }
     }
   </script>
-  <script src="assets/js/app.js"></script>
 </body>
 </html>

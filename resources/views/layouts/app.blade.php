@@ -204,9 +204,9 @@
           </a>
         </li>
         <li>
-          <a href="{{ route('campaigns.presets') }}" class="sidebar-link {{ request()->routeIs('campaigns.presets') ? 'active' : '' }}" title="Catálogo de 20 Presets B2B">
-            <span class="sidebar-icon">📚</span>
-            <span class="sidebar-label">Presets (20)</span>
+          <a href="{{ route('campaigns.presets') }}" class="sidebar-link {{ request()->routeIs('campaigns.presets') ? 'active' : '' }}" title="Mis Plantillas (20 Diseños Visuales)">
+            <span class="sidebar-icon">🎨</span>
+            <span class="sidebar-label">Mis Plantillas (20)</span>
           </a>
         </li>
         <li>

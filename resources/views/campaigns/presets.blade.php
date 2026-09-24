@@ -1,450 +1,551 @@
 @extends('layouts.app')
 
-@section('title', 'Catálogo de 20 Presets de Correo B2B | Suitable')
+@section('title', 'Mis Plantillas • Galería Visual de 20 Diseños B2B | Suitable')
 
 @push('styles')
 <style>
-  .presets-header {
-    background: linear-gradient(135deg, #0F172A 0%, #134E4A 100%);
-    border-radius: 14px;
-    padding: 28px 32px;
+  /* MIS PLANTILLAS - ESTILO BREVO / MAILCHIMP VISUAL GALLERY */
+  .tpl-gallery-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 28px;
+    align-items: start;
+  }
+
+  @media (max-width: 900px) {
+    .tpl-gallery-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* LEFT CATEGORY SIDEBAR */
+  .tpl-sidebar {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 16px 12px;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    position: sticky;
+    top: 20px;
+  }
+
+  .tpl-sidebar-title {
+    font-size: 11px;
+    font-weight: 800;
+    color: #94A3B8;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 4px 10px 10px 10px;
+    margin-bottom: 6px;
+    border-bottom: 1px solid #F1F5F9;
+  }
+
+  .tpl-cat-btn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
+    text-decoration: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    margin-bottom: 3px;
+    text-align: left;
+  }
+
+  .tpl-cat-btn:hover {
+    background: #F8FAFC;
+    color: #1E8888;
+  }
+
+  .tpl-cat-btn.active {
+    background: #E6F4F4;
+    color: #115E59;
+    font-weight: 700;
+  }
+
+  .tpl-cat-pill {
+    background: #F1F5F9;
+    color: #64748B;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 12px;
+    transition: all 0.15s ease;
+  }
+
+  .tpl-cat-btn.active .tpl-cat-pill {
+    background: #115E59;
     color: #FFFFFF;
-    margin-bottom: 24px;
-    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.15);
+  }
+
+  /* TOP ACTION BAR */
+  .tpl-top-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 16px;
+    margin-bottom: 22px;
   }
-  .presets-title {
+
+  .tpl-main-title {
     font-size: 24px;
     font-weight: 800;
-    margin: 0 0 6px 0;
-    letter-spacing: -0.5px;
-  }
-  .presets-subtitle {
-    font-size: 13.5px;
-    color: #CCFBF1;
+    color: #0F172A;
     margin: 0;
-    max-width: 620px;
-    line-height: 1.5;
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
 
-  /* CATEGORY CHIPS */
-  .category-nav {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    padding-bottom: 12px;
-    margin-bottom: 20px;
-    scrollbar-width: thin;
-  }
-  .category-chip {
-    background: #FFFFFF;
-    border: 1.5px solid #E2E8F0;
-    color: #475569;
-    padding: 8px 16px;
-    border-radius: 24px;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.2s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-  }
-  .category-chip:hover {
-    border-color: #1E8888;
+  .tpl-count-badge {
+    background: #E6F4F4;
     color: #1E8888;
-    background: #F0FDFA;
-  }
-  .category-chip.active {
-    background: #1E8888;
-    color: #FFFFFF;
-    border-color: #1E8888;
-    box-shadow: 0 4px 12px rgba(30, 136, 136, 0.3);
-  }
-  .chip-counter {
-    background: rgba(0, 0, 0, 0.08);
-    padding: 2px 7px;
-    border-radius: 10px;
-    font-size: 11px;
-  }
-  .category-chip.active .chip-counter {
-    background: rgba(255, 255, 255, 0.25);
+    font-size: 12px;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: 14px;
+    border: 1px solid rgba(30, 136, 136, 0.2);
   }
 
-  /* SEARCH & STATS BAR */
-  .filter-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 22px;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-  .search-box {
-    position: relative;
-    flex: 1;
-    max-width: 420px;
-  }
-  .search-box input {
-    width: 100%;
-    padding: 10px 14px 10px 38px;
-    border-radius: 8px;
+  .tpl-search-input {
+    width: 280px;
+    padding: 9px 14px 9px 36px;
     border: 1px solid #CBD5E1;
+    border-radius: 8px;
     font-size: 13px;
     outline: none;
-    transition: border-color 0.2s ease;
+    transition: all 0.2s ease;
   }
-  .search-box input:focus {
+
+  .tpl-search-input:focus {
     border-color: #1E8888;
     box-shadow: 0 0 0 3px rgba(30, 136, 136, 0.15);
   }
-  .search-box-icon {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #94A3B8;
-    font-size: 14px;
+
+  /* GRID DE PLANTILLAS VISUALES */
+  .tpl-visual-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 22px;
   }
 
-  /* PRESET CARDS GRID */
-  .presets-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 20px;
-  }
-  .preset-card {
+  /* TARJETA DE PLANTILLA (ESTILO BREVO) */
+  .tpl-card {
     background: #FFFFFF;
-    border: 1.5px solid #E2E8F0;
+    border: 2px solid #E2E8F0;
     border-radius: 12px;
-    padding: 20px;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
     transition: all 0.22s ease;
-    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
     position: relative;
+    cursor: pointer;
   }
-  .preset-card:hover {
-    border-color: #1E8888;
+
+  .tpl-card:hover, .tpl-card.selected {
+    border-color: #2563EB; /* Borde azul de selección estilo Brevo */
+    box-shadow: 0 12px 28px rgba(37, 99, 235, 0.16);
     transform: translateY(-3px);
-    box-shadow: 0 12px 24px rgba(30, 136, 136, 0.12);
   }
-  .preset-top {
+
+  /* VIEWPORT MINIATURA DE EMAIL */
+  .tpl-viewport {
+    position: relative;
+    width: 100%;
+    height: 410px;
+    background: #F8FAFC;
+    overflow: hidden;
+    border-bottom: 1px solid #E2E8F0;
+    display: flex;
+    justify-content: center;
+  }
+
+  .tpl-mini-iframe {
+    width: 620px;
+    height: 1200px;
+    border: none;
+    pointer-events: none;
+    transform-origin: top center;
+    background: #FFFFFF;
+  }
+
+  /* OVERLAY HOVER CON ACCIONES */
+  .tpl-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(2px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    z-index: 10;
+    padding: 20px;
+  }
+
+  .tpl-card:hover .tpl-overlay {
+    opacity: 1;
+  }
+
+  .btn-tpl-action-primary {
+    background: #2563EB;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+    transition: all 0.15s ease;
+    width: 100%;
+    max-width: 190px;
+    justify-content: center;
+  }
+
+  .btn-tpl-action-primary:hover {
+    background: #1D4ED8;
+    transform: scale(1.02);
+  }
+
+  .btn-tpl-action-secondary {
+    background: rgba(255, 255, 255, 0.95);
+    color: #0F172A;
+    border: none;
+    border-radius: 6px;
+    padding: 9px 18px;
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+    width: 100%;
+    max-width: 190px;
+    justify-content: center;
+  }
+
+  .btn-tpl-action-secondary:hover {
+    background: #FFFFFF;
+    color: #1E8888;
+  }
+
+  /* INFO INFERIOR DE LA TARJETA */
+  .tpl-card-info {
+    padding: 14px 16px;
+    background: #FFFFFF;
+  }
+
+  .tpl-card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 6px;
   }
-  .preset-category-tag {
-    font-size: 11px;
+
+  .tpl-name {
+    font-size: 14px;
     font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    padding: 3px 8px;
+    color: #0F172A;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .tpl-tag {
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 2px 7px;
     border-radius: 6px;
     background: #F1F5F9;
     color: #475569;
-  }
-  .preset-badge-tag {
-    font-size: 11px;
-    font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 6px;
-    background: #E6F4F4;
-    color: #115E59;
-  }
-  .preset-title {
-    font-size: 16px;
-    font-weight: 800;
-    color: #0F172A;
-    margin: 0 0 8px 0;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .preset-desc {
-    font-size: 12.5px;
-    color: #475569;
-    line-height: 1.5;
-    margin: 0 0 14px 0;
-    min-height: 54px;
-  }
-  .preset-subject-preview {
-    background: #F8FAFC;
-    border: 1px dashed #CBD5E1;
-    border-radius: 6px;
-    padding: 8px 10px;
-    font-size: 11.5px;
-    color: #334155;
-    margin-bottom: 16px;
-  }
-  .preset-actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 14px;
-    padding-top: 14px;
-    border-top: 1px solid #F1F5F9;
-  }
-  .btn-preview-modal {
-    flex: 1;
-    background: #F8FAFC;
-    color: #334155;
-    border: 1px solid #CBD5E1;
-    padding: 8px 10px;
-    font-size: 12px;
-    font-weight: 700;
-    border-radius: 6px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    transition: all 0.15s ease;
-  }
-  .btn-preview-modal:hover {
-    background: #FFFFFF;
-    color: #1E8888;
-    border-color: #1E8888;
-  }
-  .btn-use-preset {
-    flex: 1.2;
-    background: #1E8888;
-    color: #FFFFFF;
-    border: 1px solid #1E8888;
-    padding: 8px 10px;
-    font-size: 12px;
-    font-weight: 700;
-    border-radius: 6px;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    transition: all 0.15s ease;
-  }
-  .btn-use-preset:hover {
-    background: #146161;
-    border-color: #146161;
-    color: #FFFFFF;
+    white-space: nowrap;
   }
 
-  /* MODAL PREVIEW EN VIVO */
-  .modal-overlay {
+  .tpl-desc-mini {
+    font-size: 12px;
+    color: #64748B;
+    line-height: 1.4;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* MODAL HD PREVIEW */
+  .preview-modal-bg {
+    display: none;
     position: fixed;
     inset: 0;
     background: rgba(15, 23, 42, 0.75);
     backdrop-filter: blur(4px);
-    z-index: 99999;
-    display: none;
+    z-index: 10000;
     align-items: center;
     justify-content: center;
     padding: 20px;
   }
-  .modal-container {
+
+  .preview-modal-box {
     background: #FFFFFF;
-    border-radius: 14px;
     width: 100%;
     max-width: 900px;
     height: 90vh;
+    border-radius: 14px;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
     box-shadow: 0 25px 50px rgba(0,0,0,0.3);
   }
-  .modal-header-bar {
-    padding: 16px 22px;
+
+  .preview-modal-header {
     background: #0F172A;
     color: #FFFFFF;
+    padding: 14px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
-  .modal-body-frame {
+
+  .preview-modal-body {
     flex: 1;
     background: #E2E8F0;
+    padding: 20px;
+    overflow-y: auto;
     display: flex;
     justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    padding: 16px;
   }
-  .preview-iframe {
-    width: 620px;
+
+  .preview-modal-iframe {
+    background: #FFFFFF;
+    width: 600px;
     height: 100%;
     border: none;
     border-radius: 8px;
-    background: #FFFFFF;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
     transition: width 0.3s ease;
-  }
-  .view-toggle-btn {
-    background: #1E293B;
-    border: 1px solid #334155;
-    color: #94A3B8;
-    padding: 5px 12px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.15s ease;
-  }
-  .view-toggle-btn.active {
-    background: #1E8888;
-    color: #FFFFFF;
-    border-color: #1E8888;
   }
 </style>
 @endpush
 
 @section('content')
-<div class="page-container">
 
-  <!-- HEADER -->
-  <div class="presets-header">
-    <div>
-      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
-        <span style="font-size: 24px;">📚</span>
-        <h1 class="presets-title">Catálogo de 20 Presets de Correo Corporativo</h1>
-      </div>
-      <p class="presets-subtitle">
-        Estructuras B2B de alto impacto diseñadas para directores médicos, encargados de adquisiciones y comités de compras. Selecciona cualquier plantilla para lanzarla directamente en el Estudio IA.
-      </p>
-    </div>
-    <div style="display: flex; gap: 10px;">
-      <a href="{{ route('campaigns.index') }}" class="btn btn-secondary" style="font-weight: 700;">
-        ← Volver a Campañas
-      </a>
-      <a href="{{ route('campaigns.create') }}" class="btn btn-primary" style="background: #1E8888; border-color: #1E8888; font-weight: 700;">
-        + Crear en Blanco
-      </a>
-    </div>
+<!-- TOP TOOLBAR -->
+<div class="tpl-top-bar">
+  <div>
+    <h1 class="tpl-main-title">
+      <span>🎨</span>
+      <span>Mis plantillas</span>
+      <span class="tpl-count-badge" id="visible-count-badge">20 plantillas</span>
+    </h1>
+    <p style="margin: 4px 0 0 0; color: #64748B; font-size: 13.5px;">
+      Catálogo visual interactivo de correos corporativos listos para usar en campañas B2B y editor Brevo
+    </p>
   </div>
 
-  <!-- CATEGORY TABS -->
-  <div class="category-nav">
+  <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+    <div style="position: relative;">
+      <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94A3B8; font-size: 14px;">🔍</span>
+      <input type="text" id="tplSearchInput" class="tpl-search-input" placeholder="Buscar por nombre o especialidad..." oninput="handleFilterGrid()">
+    </div>
+
+    <a href="{{ route('campaigns.create') }}" class="btn btn-primary" style="background: #1E8888; display: inline-flex; align-items: center; gap: 6px; font-weight: 700; padding: 9px 16px; border-radius: 8px;">
+      <span>✨</span>
+      <span>Crear en Estudio IA</span>
+    </a>
+  </div>
+</div>
+
+<!-- MAIN GALLERY LAYOUT -->
+<div class="tpl-gallery-layout">
+
+  <!-- LEFT FILTER COLUMN -->
+  <aside class="tpl-sidebar">
+    <div class="tpl-sidebar-title">Categorías &amp; Filtros</div>
+
+    <button type="button" class="tpl-cat-btn {{ $selectedCategory === 'all' ? 'active' : '' }}" onclick="filterCategory('all', this)">
+      <span>📑 Todas las plantillas</span>
+      <span class="tpl-cat-pill">20</span>
+    </button>
+
     @foreach($categories as $cat)
-      <a href="javascript:void(0)" 
-         class="category-chip {{ $cat['slug'] === 'all' ? 'active' : '' }}" 
-         onclick="filterCategory('{{ $cat['slug'] }}', this)">
-        <span>{{ $cat['icon'] }}</span>
-        <span>{{ $cat['name'] }}</span>
-        <span class="chip-counter">{{ $cat['count'] }}</span>
-      </a>
+      @if($cat['slug'] !== 'all')
+        <button type="button" class="tpl-cat-btn {{ $selectedCategory === $cat['slug'] ? 'active' : '' }}" onclick="filterCategory('{{ $cat['slug'] }}', this)">
+          <span>{{ $cat['icon'] }} {{ $cat['name'] }}</span>
+          <span class="tpl-cat-pill">{{ $cat['count'] }}</span>
+        </button>
+      @endif
     @endforeach
-  </div>
 
-  <!-- SEARCH & STATS BAR -->
-  <div class="filter-bar">
-    <div class="search-box">
-      <span class="search-box-icon">🔍</span>
-      <input type="text" id="presetSearchInput" oninput="searchPresets()" placeholder="Buscar entre los 20 presets por palabra clave, especialidad...">
-    </div>
-    <div style="font-size: 13px; color: #64748B; font-weight: 600;" id="resultsCounter">
-      Mostrando <strong>20 presets</strong> disponibles para Suitable B2B
-    </div>
-  </div>
-
-  <!-- GRID DE 20 PRESETS -->
-  <div class="presets-grid" id="presetsGrid">
-    @foreach($allPresets as $p)
-      <div class="preset-card" data-category="{{ $p['category_slug'] ?? 'clinicas' }}" data-title="{{ strtolower($p['name'] . ' ' . $p['description'] . ' ' . $p['subject']) }}">
-        <div>
-          <div class="preset-top">
-            <span class="preset-category-tag">{{ $p['category'] }}</span>
-            <span class="preset-badge-tag">{{ $p['badge'] }}</span>
-          </div>
-          <h3 class="preset-title">
-            <span>{{ $p['icon'] }}</span>
-            <span>{{ $p['name'] }}</span>
-          </h3>
-          <p class="preset-desc">{{ $p['description'] }}</p>
-
-          <div class="preset-subject-preview">
-            <strong style="color: #0F172A; display: block; font-size: 10.5px; text-transform: uppercase; margin-bottom: 2px;">Asunto sugerido:</strong>
-            <span style="font-style: italic;">"{{ $p['subject'] }}"</span>
-          </div>
-        </div>
-
-        <div class="preset-actions">
-          <button type="button" class="btn-preview-modal" onclick="openLivePreview('{{ $p['id'] }}', '{{ addslashes($p['name']) }}')">
-            <span>👁️</span>
-            <span>Ver Diseño</span>
-          </button>
-          <a href="{{ route('campaigns.create', ['preset' => $p['id']]) }}" class="btn-use-preset">
-            <span>🚀</span>
-            <span>Usar Preset</span>
-          </a>
-        </div>
+    <div style="margin-top: 16px; padding-top: 14px; border-top: 1px solid #F1F5F9;">
+      <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 12px; font-size: 11.5px; color: #475569;">
+        <strong style="color: #0F172A; display: block; margin-bottom: 4px;">💡 ¿Cómo funciona?</strong>
+        Pasa el cursor sobre cualquier diseño para ver las acciones rápidas o haz clic para previsualizarlo en tamaño real.
       </div>
-    @endforeach
+    </div>
+  </aside>
+
+  <!-- MAIN TEMPLATES GRID -->
+  <div>
+    <div class="tpl-visual-grid" id="templatesGrid">
+      @foreach($allPresets as $p)
+        <div class="tpl-card" data-category="{{ $p['category_slug'] ?? 'clinicas' }}" data-name="{{ strtolower($p['name']) }} {{ strtolower($p['description']) }}">
+          
+          <!-- VIEWPORT CON IFRAME MINIATURA ESCALADO -->
+          <div class="tpl-viewport">
+            <iframe 
+              src="{{ route('campaigns.preset_html', ['preset' => $p['id']]) }}" 
+              class="tpl-mini-iframe" 
+              loading="lazy" 
+              scrolling="no" 
+              tabindex="-1"
+              title="{{ $p['name'] }}"
+            ></iframe>
+
+            <!-- HOVER OVERLAY -->
+            <div class="tpl-overlay">
+              <a href="{{ route('campaigns.create', ['preset' => $p['id']]) }}" class="btn-tpl-action-primary">
+                <span>🚀</span>
+                <span>Usar esta plantilla</span>
+              </a>
+              <button type="button" class="btn-tpl-action-secondary" onclick="openHdModal('{{ $p['id'] }}', '{{ addslashes($p['name']) }}')">
+                <span>👁️</span>
+                <span>Vista Previa HD</span>
+              </button>
+              <button type="button" class="btn-tpl-action-secondary" onclick="copyPresetHtmlDirect('{{ $p['id'] }}')" style="font-size: 11.5px; padding: 7px 14px;">
+                <span>📋</span>
+                <span>Copiar HTML Brevo</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- FOOTER DE LA TARJETA -->
+          <div class="tpl-card-info">
+            <div class="tpl-card-header">
+              <span class="tpl-name" title="{{ $p['name'] }}">{{ $p['icon'] }} {{ $p['name'] }}</span>
+              <span class="tpl-tag">{{ $p['category'] }}</span>
+            </div>
+            <p class="tpl-desc-mini">{{ $p['description'] }}</p>
+          </div>
+
+        </div>
+      @endforeach
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div id="noResultsMsg" style="display: none; text-align: center; padding: 60px 20px; background: white; border-radius: 12px; border: 1px dashed #CBD5E1;">
+      <span style="font-size: 40px; display: block; margin-bottom: 12px;">🔍</span>
+      <h3 style="font-size: 18px; font-weight: 800; color: #0F172A; margin: 0 0 6px 0;">No se encontraron plantillas</h3>
+      <p style="color: #64748B; font-size: 13px; margin: 0 0 16px 0;">Intenta con otros términos de búsqueda o selecciona otra categoría.</p>
+      <button type="button" class="btn btn-secondary btn-sm" onclick="resetFilters()">Restablecer Filtros</button>
+    </div>
   </div>
 
 </div>
 
-<!-- MODAL PREVIEW EN VIVO CON SWITCH MÓVIL / ESCRITORIO -->
-<div class="modal-overlay" id="previewModal">
-  <div class="modal-container">
-    <div class="modal-header-bar">
+<!-- MODAL DE VISTA PREVIA HD RESPONSIVE (DESKTOP / MOBILE) -->
+<div id="previewModalHd" class="preview-modal-bg" onclick="handleModalBgClick(event)">
+  <div class="preview-modal-box">
+    
+    <!-- HEADER -->
+    <div class="preview-modal-header">
       <div style="display: flex; align-items: center; gap: 10px;">
-        <span style="font-size: 18px;">✉️</span>
-        <strong id="modalPresetTitle" style="font-size: 15px;">Vista Previa del Preset</strong>
+        <span style="font-size: 20px;">📧</span>
+        <div>
+          <h3 id="modalPresetTitle" style="margin: 0; font-size: 16px; font-weight: 800; color: #FFFFFF;">Vista Previa</h3>
+          <span style="font-size: 11px; color: #94A3B8;">Editor HTML Brevo Responsive</span>
+        </div>
       </div>
-      
-      <!-- CONTROLES DESKTOP / MOBILE -->
+
+      <!-- DEVICE SWITCHER -->
+      <div style="display: inline-flex; background: rgba(255,255,255,0.1); border-radius: 6px; padding: 2px;">
+        <button type="button" id="btnModalDesktop" onclick="setModalDevice('desktop')" style="border: none; background: #FFFFFF; color: #0F172A; font-size: 11.5px; font-weight: 700; padding: 5px 12px; border-radius: 4px; cursor: pointer;">
+          🖥️ Desktop (600px)
+        </button>
+        <button type="button" id="btnModalMobile" onclick="setModalDevice('mobile')" style="border: none; background: transparent; color: #E2E8F0; font-size: 11.5px; font-weight: 700; padding: 5px 12px; border-radius: 4px; cursor: pointer;">
+          📱 Móvil (385px)
+        </button>
+      </div>
+
       <div style="display: flex; align-items: center; gap: 8px;">
-        <button type="button" class="view-toggle-btn active" id="btnDesk" onclick="setPreviewDevice('desktop')">
-          🖥️ Escritorio (620px)
-        </button>
-        <button type="button" class="view-toggle-btn" id="btnMob" onclick="setPreviewDevice('mobile')">
-          📱 Móvil (375px)
-        </button>
-        <a href="#" id="modalUseBtn" class="btn btn-sm btn-primary" style="background: #10B981; border-color: #10B981; font-weight: 700; margin-left: 10px;">
-          🚀 Usar este Preset en Estudio
+        <a id="modalUseBtn" href="#" class="btn btn-primary btn-sm" style="background: #1E8888; font-weight: 700; border: none;">
+          🚀 Usar y Editar en Estudio IA
         </a>
-        <button type="button" onclick="closeLivePreview()" style="background: none; border: none; color: #94A3B8; font-size: 18px; cursor: pointer; padding: 0 8px;">✕</button>
+        <button type="button" onclick="closeHdModal()" style="background: transparent; border: none; color: #94A3B8; font-size: 24px; cursor: pointer; line-height: 1;">
+          ✕
+        </button>
       </div>
     </div>
 
-    <div class="modal-body-frame">
-      <iframe src="about:blank" id="modalIframe" class="preview-iframe"></iframe>
+    <!-- BODY -->
+    <div class="preview-modal-body">
+      <iframe id="modalPreviewIframe" class="preview-modal-iframe" src="about:blank"></iframe>
     </div>
+
   </div>
 </div>
+
 @endsection
 
 @push('scripts')
 <script>
-  let currentActiveCategory = 'all';
+  let activeCategory = '{{ $selectedCategory }}' || 'all';
 
-  function filterCategory(categorySlug, element) {
-    currentActiveCategory = categorySlug;
-
-    document.querySelectorAll('.category-chip').forEach(el => el.classList.remove('active'));
-    if (element) element.classList.add('active');
-
-    searchPresets();
+  // Auto-escala los iframes para que quepan con precisión milimétrica en cualquier resolución
+  function autoScaleMiniIframes() {
+    document.querySelectorAll('.tpl-viewport').forEach(vp => {
+      const w = vp.clientWidth;
+      const iframe = vp.querySelector('.tpl-mini-iframe');
+      if (iframe && w > 0) {
+        const scale = w / 620;
+        iframe.style.transform = `scale(${scale})`;
+      }
+    });
   }
 
-  function searchPresets() {
-    const query = document.getElementById('presetSearchInput').value.toLowerCase().trim();
-    const cards = document.querySelectorAll('.preset-card');
+  window.addEventListener('resize', autoScaleMiniIframes);
+  window.addEventListener('load', autoScaleMiniIframes);
+  setTimeout(autoScaleMiniIframes, 200);
+
+  // Filtrado por categoría
+  function filterCategory(catSlug, btn) {
+    activeCategory = catSlug;
+    document.querySelectorAll('.tpl-cat-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    handleFilterGrid();
+  }
+
+  // Filtrado combinado categoría + búsqueda
+  function handleFilterGrid() {
+    const q = document.getElementById('tplSearchInput').value.toLowerCase().trim();
+    const cards = document.querySelectorAll('.tpl-card');
     let visibleCount = 0;
 
     cards.forEach(card => {
-      const cardCategory = card.getAttribute('data-category');
-      const cardText = card.getAttribute('data-title');
+      const cardCat = card.getAttribute('data-category');
+      const cardName = card.getAttribute('data-name');
 
-      const matchesCat = (currentActiveCategory === 'all' || cardCategory === currentActiveCategory);
-      const matchesQuery = (!query || cardText.includes(query));
+      const matchesCat = (activeCategory === 'all' || cardCat === activeCategory);
+      const matchesSearch = (!q || cardName.includes(q));
 
-      if (matchesCat && matchesQuery) {
+      if (matchesCat && matchesSearch) {
         card.style.display = 'flex';
         visibleCount++;
       } else {
@@ -452,43 +553,74 @@
       }
     });
 
-    document.getElementById('resultsCounter').innerHTML = `Mostrando <strong>${visibleCount} presets</strong> de 20`;
+    document.getElementById('visible-count-badge').innerText = `${visibleCount} plantillas`;
+    document.getElementById('noResultsMsg').style.display = (visibleCount === 0) ? 'block' : 'none';
+
+    setTimeout(autoScaleMiniIframes, 50);
   }
 
-  function openLivePreview(presetId, presetName) {
+  function resetFilters() {
+    document.getElementById('tplSearchInput').value = '';
+    const firstBtn = document.querySelector('.tpl-cat-btn');
+    filterCategory('all', firstBtn);
+  }
+
+  // MODAL HD
+  let currentModalPresetId = '';
+
+  function openHdModal(presetId, presetName) {
+    currentModalPresetId = presetId;
     document.getElementById('modalPresetTitle').innerText = presetName;
-    document.getElementById('modalIframe').src = "{{ url('/campaigns/presets') }}/" + presetId + "/preview";
-    document.getElementById('modalUseBtn').href = "{{ route('campaigns.create') }}?preset=" + presetId;
-    document.getElementById('previewModal').style.display = 'flex';
+    document.getElementById('modalUseBtn').href = "{{ url('/campaigns/create') }}?preset=" + presetId;
+    
+    const iframe = document.getElementById('modalPreviewIframe');
+    iframe.src = "{{ url('/campaigns/presets') }}/" + presetId + "/preview";
+
+    setModalDevice('desktop');
+    document.getElementById('previewModalHd').style.display = 'flex';
   }
 
-  function closeLivePreview() {
-    document.getElementById('previewModal').style.display = 'none';
-    document.getElementById('modalIframe').src = 'about:blank';
+  function closeHdModal() {
+    document.getElementById('previewModalHd').style.display = 'none';
+    document.getElementById('modalPreviewIframe').src = 'about:blank';
   }
 
-  function setPreviewDevice(device) {
-    const iframe = document.getElementById('modalIframe');
-    const btnDesk = document.getElementById('btnDesk');
-    const btnMob = document.getElementById('btnMob');
-
-    if (device === 'mobile') {
-      iframe.style.width = '375px';
-      btnMob.classList.add('active');
-      btnDesk.classList.remove('active');
-    } else {
-      iframe.style.width = '620px';
-      btnDesk.classList.add('active');
-      btnMob.classList.remove('active');
+  function handleModalBgClick(e) {
+    if (e.target.id === 'previewModalHd') {
+      closeHdModal();
     }
   }
 
-  // Cerrar modal al presionar ESC o fondo
-  document.getElementById('previewModal').addEventListener('click', function(e) {
-    if (e.target === this) closeLivePreview();
-  });
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') closeLivePreview();
-  });
+  function setModalDevice(device) {
+    const iframe = document.getElementById('modalPreviewIframe');
+    const btnD = document.getElementById('btnModalDesktop');
+    const btnM = document.getElementById('btnModalMobile');
+
+    if (device === 'mobile') {
+      iframe.style.width = '385px';
+      btnM.style.background = '#FFFFFF';
+      btnM.style.color = '#0F172A';
+      btnD.style.background = 'transparent';
+      btnD.style.color = '#E2E8F0';
+    } else {
+      iframe.style.width = '600px';
+      btnD.style.background = '#FFFFFF';
+      btnD.style.color = '#0F172A';
+      btnM.style.background = 'transparent';
+      btnM.style.color = '#E2E8F0';
+    }
+  }
+
+  // Copia directa de HTML de preset
+  async function copyPresetHtmlDirect(presetId) {
+    try {
+      const res = await fetch("{{ url('/campaigns/presets') }}/" + presetId + "/preview");
+      const html = await res.text();
+      await navigator.clipboard.writeText(html);
+      alert('✓ Código HTML de la plantilla copiado al portapapeles. ¡Listo para pegar en Brevo!');
+    } catch(e) {
+      alert('Error al copiar el código HTML');
+    }
+  }
 </script>
 @endpush

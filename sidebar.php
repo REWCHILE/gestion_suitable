@@ -413,9 +413,9 @@ body.sidebar-pinned .sidebar-logout-btn {
         </a>
       </li>
       <li>
-        <a href="templates_view.php" class="sidebar-link <?= $current_page === 'templates_view.php' ? 'active' : '' ?>" title="Plantillas Brevo">
-          <span class="sidebar-icon">📑</span>
-          <span class="sidebar-label">Plantillas Brevo</span>
+        <a href="templates_view.php" class="sidebar-link <?= $current_page === 'templates_view.php' ? 'active' : '' ?>" title="Mis Plantillas (20 Diseños Visuales)">
+          <span class="sidebar-icon">🎨</span>
+          <span class="sidebar-label">Mis Plantillas (20)</span>
         </a>
       </li>
       <li>

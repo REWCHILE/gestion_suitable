@@ -474,54 +474,199 @@ class CampaignController extends Controller
     public function generateAiImage(Request $request): JsonResponse
     {
         $prompt = trim($request->input('prompt', ''));
+        $theme = trim($request->input('theme', ''));
+        $color = trim($request->input('color', 'petroleo'));
         $section = $request->input('section', 'hero');
 
-        if (empty($prompt)) {
-            return response()->json(['success' => false, 'error' => 'Debe ingresar un prompt para la imagen.'], 422);
+        // Paleta de colores en inglés para IA fotográfica
+        $colorMap = [
+            'petroleo' => 'deep teal / petrol blue',
+            'marino' => 'classic navy blue',
+            'grafito' => 'dark charcoal graphite',
+            'verde' => 'surgical emerald green',
+            'burdeo' => 'deep wine burgundy',
+        ];
+        $colorDesc = $colorMap[$color] ?? 'deep teal';
+
+        // Prompts maestros hiperrealistas por temática clínica Suitable
+        $themePrompts = [
+            'equipo' => "Editorial high-end commercial photography of diverse group of healthcare professionals, doctors, nurses and surgeons standing confidently in bright modern hospital atrium, wearing bespoke tailor-fit {$colorDesc} medical scrubs with subtle Suitable branding, authentic warm smiles, cinematic rim lighting, shallow depth of field, 8k resolution, photorealistic",
+            'tela' => "Extreme macro close-up studio photography of Suitable flexible water-repellent medical scrub textile fabric in {$colorDesc} weave, crystalline water droplets rolling smoothly off the hydrophobic surface, hyper-detailed textile weave texture, elegant softbox studio rim lighting, razor sharp focus, 8k",
+            'tallaje' => "Authentic documentary corporate photography in upscale private clinic, mobile fitting service by Suitable uniforms, sleek minimalist garment rack with curated scrubs in full size curve from XS to 3XL, clinic nursing team testing sizing jackets, warm professional ambience, 8k resolution",
+            'dental' => "Editorial commercial photography of modern dental clinic team, dentist and dental assistant wearing contemporary {$colorDesc} medical scrub uniform, state-of-the-art dental facility in soft blurred background, approachable professional posture, 8k resolution",
+            'quirofano' => "Cinematic photography of surgical medical team in high-tech sterile operating theater, wearing {$colorDesc} scrub suits and surgical caps, intense focused overhead surgical lighting, ultra-clean clinical aesthetic, 8k resolution",
+            'estetica' => "Luxury aesthetic dermatology clinic interior, female medical practitioner wearing minimalist elegant {$colorDesc} clinical scrub tunic, clean warm luxury architectural interior with soft lighting, 8k photorealistic",
+            'pediatria' => "Warm welcoming pediatric clinic doctor and nurse wearing modern {$colorDesc} soft scrubs, child-friendly bright modern clinic office, cheerful caring expression, 8k resolution, photorealistic"
+        ];
+
+        // Determinar prompt en inglés
+        if (!empty($theme) && isset($themePrompts[$theme]) && empty($prompt)) {
+            $englishPrompt = $themePrompts[$theme];
+            $displayPrompt = ucfirst($theme) . " ({$colorDesc})";
+        } elseif (!empty($prompt)) {
+            $displayPrompt = $prompt;
+            try {
+                $provider = Setting::get('active_ai_provider', 'groq');
+                $translationSystem = "You are an expert AI photography director. Convert the following Spanish prompt into a concise, detailed, hyper-realistic English prompt for SDXL/FLUX image generation focused on medical uniforms, clinic environment, or textile details. Include scrub color: {$colorDesc}. Output ONLY the English prompt.";
+                $enhancedRes = AiService::generateCopy($provider, "Describe this visual: " . $prompt, $translationSystem);
+                $englishPrompt = trim(preg_replace('/^"|"$|^`|`$/', '', $enhancedRes['content'] ?? $prompt));
+            } catch (\Exception $e) {
+                $englishPrompt = $prompt . ", medical uniforms in modern clinic, {$colorDesc} color, professional photography, 8k";
+            }
+        } else {
+            $englishPrompt = $themePrompts['equipo'];
+            $displayPrompt = "Equipo Clínico ({$colorDesc})";
         }
 
-        try {
-            // Optimizar prompt a inglés fotográfico
-            $provider = Setting::get('active_ai_provider', 'groq');
-            $translationSystem = "You are an expert AI photography director. Convert the following Spanish prompt into a concise, detailed, hyper-realistic English prompt for FLUX/SDXL image generation focused on medical uniforms, clinic environment, or textile details. Output ONLY the English prompt.";
-            $enhancedRes = AiService::generateCopy($provider, "Describe this visual: " . $prompt, $translationSystem);
-            $englishPrompt = trim(preg_replace('/^"|"$|^`|`$/', '', $enhancedRes['content'] ?? $prompt));
-            if (strlen($englishPrompt) < 5 || str_contains($englishPrompt, '{')) {
-                $englishPrompt = "medical doctors and healthcare team in modern clinic wearing premium scrubs, professional photography, 8k resolution, cinematic lighting";
-            }
+        if (strlen($englishPrompt) < 5 || str_contains($englishPrompt, '{')) {
+            $englishPrompt = "medical doctors and healthcare team in modern clinic wearing premium {$colorDesc} scrubs, professional photography, 8k resolution, cinematic lighting";
+        }
 
-            // Generar imagen con FLUX vía Pollinations
-            $encoded = urlencode($englishPrompt);
-            $seed = rand(1000, 999999);
-            $pollinationsUrl = "https://image.pollinations.ai/prompt/{$encoded}?model=flux&width=800&height=450&nologo=true&seed={$seed}";
+        // Generar imagen con Pollinations (modelo turbo ultrarrápido 3-4s para evitar timeouts y colas)
+        $encoded = urlencode($englishPrompt);
+        $seed = rand(1000, 999999);
+        $modelsToTry = ['turbo', 'flux'];
+        $imageBody = null;
+        $client = new \GuzzleHttp\Client(['timeout' => 15]);
 
-            $client = new \GuzzleHttp\Client(['timeout' => 30]);
-            $res = $client->get($pollinationsUrl);
-
-            if ($res->getStatusCode() === 200 && strlen($res->getBody()) > 5000) {
-                $filename = 'ai_' . time() . '_' . substr(md5($prompt), 0, 6) . '.jpg';
-                $destPath = public_path('images/' . $filename);
-                
-                if (!file_exists(public_path('images'))) {
-                    mkdir(public_path('images'), 0777, true);
+        foreach ($modelsToTry as $model) {
+            try {
+                $pollinationsUrl = "https://image.pollinations.ai/prompt/{$encoded}?model={$model}&width=800&height=450&nologo=true&seed={$seed}";
+                $res = $client->get($pollinationsUrl);
+                if ($res->getStatusCode() === 200 && strlen($res->getBody()) > 5000) {
+                    $imageBody = $res->getBody();
+                    break;
                 }
-                
-                file_put_contents($destPath, $res->getBody());
-
-                return response()->json([
-                    'success' => true,
-                    'image_name' => $filename,
-                    'image_url' => asset('images/' . $filename),
-                    'prompt' => $prompt,
-                    'enhanced_prompt' => $englishPrompt
-                ]);
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::warning("Fallo Pollinations {$model}: " . $e->getMessage());
             }
+        }
 
-            return response()->json(['success' => false, 'error' => 'El motor no devolvió una imagen válida.'], 500);
+        if (!$imageBody) {
+            return response()->json(['success' => false, 'error' => 'El motor de generación no respondió a tiempo. Por favor intenta nuevamente.'], 500);
+        }
 
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error("Error en generateAiImage: " . $e->getMessage());
-            return response()->json(['success' => false, 'error' => 'Error al generar imagen: ' . $e->getMessage()], 500);
+        $filename = 'ai_' . time() . '_' . substr(md5($englishPrompt . $seed), 0, 6) . '.jpg';
+        $destPath = public_path('images/' . $filename);
+        
+        if (!file_exists(public_path('images'))) {
+            mkdir(public_path('images'), 0777, true);
+        }
+        
+        file_put_contents($destPath, $imageBody);
+
+        // Copys comerciales coherentes con la temática generada
+        $suggestedCopy = $this->getSuggestedCopyForTheme($theme ?: 'equipo', $color);
+
+        return response()->json([
+            'success' => true,
+            'image_name' => $filename,
+            'image_url' => asset('images/' . $filename),
+            'theme' => $theme,
+            'color' => $color,
+            'prompt' => $displayPrompt,
+            'suggested_copy' => $suggestedCopy
+        ]);
+    }
+
+    public function aiImageGallery(): JsonResponse
+    {
+        $dir = public_path('images');
+        $files = [];
+
+        if (file_exists($dir)) {
+            $scan = scandir($dir);
+            foreach ($scan as $file) {
+                if (in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'webp'])) {
+                    $fullPath = $dir . DIRECTORY_SEPARATOR . $file;
+                    $isAi = str_starts_with($file, 'ai_');
+                    $isHero = in_array($file, ['hero-grupo-clinico.jpg', 'tela-antifluidos-macro.jpg', 'servicio-tallaje-terreno.jpg']);
+                    
+                    if ($isAi || $isHero) {
+                        $files[] = [
+                            'filename' => $file,
+                            'url' => asset('images/' . $file),
+                            'is_ai' => $isAi,
+                            'title' => $isAi ? 'Generada por IA' : ($file === 'hero-grupo-clinico.jpg' ? 'Equipo Clínico' : ($file === 'tela-antifluidos-macro.jpg' ? 'Tela Antifluido' : 'Tallaje en Terreno')),
+                            'timestamp' => filemtime($fullPath)
+                        ];
+                    }
+                }
+            }
+        }
+
+        // Ordenar por más recientes primero
+        usort($files, fn($a, $b) => $b['timestamp'] <=> $a['timestamp']);
+
+        return response()->json([
+            'success' => true,
+            'images' => array_slice($files, 0, 24)
+        ]);
+    }
+
+    private function getSuggestedCopyForTheme(string $theme, string $color): array
+    {
+        switch ($theme) {
+            case 'tela':
+                return [
+                    'campaign_name' => 'Propuesta Bioseguridad Textil Antifluido Flex',
+                    'subject' => '🔬 [Bioseguridad de Alto Estándar] Uniformes con tecnología antifluido Flex 4-Way y 6 meses de garantía',
+                    'preheader' => 'Máxima protección contra salpicaduras y fluidos corporales con confección 100% chilena de fábrica.',
+                    'hero_title' => 'Tecnología textil antifluidos diseñada para la máxima exigencia clínica',
+                    'hero_desc' => 'Estimado/a <strong>{{ contact.NOMBRE | default: "Director/a o Encargado/a de Adquisiciones" }}</strong> de <strong>{{ contact.EMPRESA | default: "su institución" }}</strong>: Como fabricantes chilenos, en <strong>Suitable</strong> entendemos que la bioseguridad del equipo de salud no admite compromisos. Nuestras prendas integran acabado repelente a salpicaduras y elasticidad Flex 4-Way que aseguran frescura, higiene y total libertad de movimiento en turnos continuos.',
+                    'hero_cta_text' => 'Solicitar Muestrario de Telas Antifluido →',
+                    'pilar1_title' => '💧 Repelencia Total a Fluidos y Salpicaduras',
+                    'pilar1_desc' => 'Tejido de alta densidad que evita la absorción de líquidos, sangre y aerosoles médicos, manteniendo al profesional seco y protegido.',
+                    'pilar2_title' => '🏃 Flexibilidad Ergonómica 4-Way',
+                    'pilar2_desc' => 'Elasticidad multidireccional que acompaña cada movimiento en pabellón y box clínico sin deformarse.',
+                    'pilar3_title' => '🛡️ 6 Meses de Garantía Oficial de Fábrica',
+                    'pilar3_desc' => 'Costuras reforzadas y durabilidad comprobada tras decenas de ciclos de lavado industrial.',
+                ];
+            case 'tallaje':
+                return [
+                    'campaign_name' => 'Propuesta Servicio Exclusivo de Tallaje en Terreno',
+                    'subject' => '📏 [Cero Margen de Error] Llevamos el servicio de tallaje a su clínica sin costo ni compromiso | Suitable',
+                    'preheader' => 'Evite devoluciones y problemas de calce. Sesión de tallaje directo en sus dependencias con curva XS a 3XL.',
+                    'hero_title' => 'Calce perfecto garantizado para cada integrante de su equipo médico',
+                    'hero_desc' => 'Estimado/a <strong>{{ contact.NOMBRE | default: "Jefe/a de Adquisiciones" }}</strong> de <strong>{{ contact.EMPRESA | default: "su clínica" }}</strong>: Uno de los mayores dolores de cabeza en compras corporativas es la discrepancia de tallas. En <strong>Suitable</strong> lo resolvemos llevando nuestro <strong>Servicio de Tallaje en Terreno</strong> directamente a su institución, con percheros y prendas de prueba para cada profesional antes de confeccionar.',
+                    'hero_cta_text' => 'Coordinar Visita de Tallaje para mi Clínica →',
+                    'pilar1_title' => '📏 Percheros Móviles en su Institución',
+                    'pilar1_desc' => 'Llegamos a su clínica con percheros rodantes y muestras físicas para que cada profesional se pruebe su talla exacta.',
+                    'pilar2_title' => '📐 Curva Completa XS a 3XL y Medidas Especiales',
+                    'pilar2_desc' => 'Ajuste de basta y calce personalizado para que cada uniforme luzca impecable y corporativo.',
+                    'pilar3_title' => '⏱️ Cero Pérdida de Tiempo en Devoluciones',
+                    'pilar3_desc' => 'Entregas 100% conformes a la primera. Sin reclamos de personal ni retrasos de inventario.',
+                ];
+            case 'dental':
+                return [
+                    'campaign_name' => 'Propuesta Especial Clínicas Odontológicas',
+                    'subject' => '🦷 [Especial Odontología] Scrubs Flex 4-Way y tallaje gratuito en su clínica | Suitable',
+                    'preheader' => 'Confección médica chilena para equipos dentales con alta resistencia a desinfectantes y 6 meses de garantía.',
+                    'hero_title' => 'Ergonomía superior e imagen corporativa para su equipo odontológico',
+                    'hero_desc' => 'Estimado/a <strong>{{ contact.NOMBRE | default: "Director/a Odontológico/a" }}</strong> de <strong>{{ contact.EMPRESA | default: "su clínica dental" }}</strong>: En <strong>Suitable</strong> diseñamos uniformes clínicos que acompañan la postura ergonómica del odontólogo y su equipo asistente. Telas con resistencia al autoclave y repelencia a aerosoles clínicos.',
+                    'hero_cta_text' => 'Solicitar Propuesta para mi Equipo Odontológico →',
+                    'pilar1_title' => '🦷 Ergonomía para Postura en Sillón Dental',
+                    'pilar1_desc' => 'Cortes anatómicos diseñados para reducir la fatiga en hombros y espalda durante largas jornadas de atención.',
+                    'pilar2_title' => '🛡️ Resistencia a Manchas y Desinfectantes',
+                    'pilar2_desc' => 'Telas certificadas que mantienen su color y brillo frente a hipoclorito diluido y alcohol.',
+                    'pilar3_title' => '📏 Tallaje en su Box Dental sin Costo',
+                    'pilar3_desc' => 'Vamos a su consulta para que odontólogos y asistentes elijan su talle exacto sin interrumpir la agenda.',
+                ];
+            default: // equipo
+                return [
+                    'campaign_name' => 'Propuesta Identidad & Dotación Médica Corporativa',
+                    'subject' => '🏥 [Convenio Institucional] Equipe a su personal con uniformes clínicos de alta gama y garantía de fábrica',
+                    'preheader' => 'Diseño chileno de alto estándar, garantía de 6 meses y servicio de tallaje en terreno para instituciones de salud.',
+                    'hero_title' => 'Imagen corporativa y confort de alto rendimiento para su institución de salud',
+                    'hero_desc' => 'Estimado/a <strong>{{ contact.NOMBRE | default: "Director/a o Jefatura de Personas" }}</strong> de <strong>{{ contact.EMPRESA | default: "su institución de salud" }}</strong>: Una dotación clínica de alto nivel proyecta excelencia profesional y fortalece el sentido de pertenencia en su equipo médico. En <strong>Suitable</strong> confeccionamos uniformes clínicos con telas elastizadas Flex 4-Way, acabados antifluidos y <strong>garantía de 6 meses respaldada por fábrica chilena</strong>.',
+                    'hero_cta_text' => 'Cotizar Dotación para mi Equipo Clínico →',
+                    'pilar1_title' => '🛡️ 6 Meses de Garantía Oficial de Fábrica',
+                    'pilar1_desc' => 'Respaldo directo del fabricante chileno ante cualquier defecto de costura, cierre o desprendimiento.',
+                    'pilar2_title' => '📏 Servicio de Tallaje a su Equipo Clínico',
+                    'pilar2_desc' => 'Llevamos muestras físicas y percheros a su clínica para asegurar el calce perfecto de cada profesional.',
+                    'pilar3_title' => '💧 Telas Antifluidos Flex 4-Way Certificadas',
+                    'pilar3_desc' => 'Bioseguridad de alto estándar con elasticidad multidireccional que no restringe movimientos en turno.',
+                ];
         }
     }
 
@@ -554,6 +699,32 @@ class CampaignController extends Controller
             'success' => true,
             'section' => $section,
             'data' => $data
+        ]);
+    }
+
+    public function rewriteSnippet(Request $request): JsonResponse
+    {
+        $text = trim($request->input('text', ''));
+        $instruction = trim($request->input('instruction', 'Mejorar redacción persuasiva B2B'));
+        $provider = $request->input('provider', Setting::get('active_ai_provider', 'groq'));
+
+        if (empty($text)) {
+            return response()->json(['success' => false, 'error' => 'Texto vacío.'], 422);
+        }
+
+        $systemPrompt = "Eres un redactor senior de marketing B2B para 'Suitable' (fabricante chileno de uniformes clínicos y vestuario médico).\n" .
+            "Tu objetivo es reescribir el siguiente fragmento de texto según la instrucción.\n" .
+            "Mantén la extensión aproximada del texto original a menos que se pida acortar o alargar.\n" .
+            "Responde ÚNICAMENTE con el texto mejorado en español chileno profesional, sin comillas, sin introducciones ni explicaciones.";
+
+        $userPrompt = "Texto original: \"$text\"\nInstrucción: $instruction";
+        $result = AiService::generateCopy($provider, $userPrompt, $systemPrompt);
+        $improved = trim(preg_replace('/^"|"$|^`|`$/', '', $result['content'] ?? $text));
+
+        return response()->json([
+            'success' => true,
+            'improved_text' => $improved,
+            'original_text' => $text
         ]);
     }
 
