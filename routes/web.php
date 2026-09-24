@@ -33,6 +33,8 @@ Route::post('/campaigns/ai-generate', [CampaignController::class, 'generateAi'])
 
 // CSV & Brevo Importer
 Route::get('/import', [ImportController::class, 'index'])->name('import.index');
+Route::get('/import/template', [ImportController::class, 'downloadTemplate'])->name('import.template');
+Route::get('/import/export', [ImportController::class, 'exportClients'])->name('import.export');
 Route::post('/import', [ImportController::class, 'process'])->name('import.process');
 
 // Analytics & Metrics

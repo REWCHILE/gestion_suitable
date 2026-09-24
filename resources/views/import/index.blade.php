@@ -3,10 +3,20 @@
 @section('title', 'Importador de Contactos Brevo & CSV | Suitable')
 
 @section('content')
-<div class="page-header">
+<div class="page-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
   <div class="page-title-group">
     <h1>Importar Listas de Clínicas &amp; Prospectos</h1>
-    <p class="page-subtitle">Suba archivos CSV de salud o pegue directamente tablas copiadas desde Brevo</p>
+    <p class="page-subtitle">Suba archivos CSV de salud, descargue plantillas maestras o pegue tablas desde Brevo</p>
+  </div>
+  <div class="header-actions" style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+    <a href="{{ route('import.template') }}" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 600; padding: 10px 18px; box-shadow: 0 2px 4px rgba(30,136,136,0.2);">
+      <span>📥</span>
+      <span>Descargar Excel Maestro (.csv)</span>
+    </a>
+    <a href="{{ route('import.export') }}" class="btn btn-secondary" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 600; padding: 10px 18px;">
+      <span>📊</span>
+      <span>Exportar Base Actual</span>
+    </a>
   </div>
 </div>
 
@@ -60,7 +70,7 @@
         <div style="border: 2px dashed #CBD5E1; border-radius: 8px; padding: 25px; text-align: center; background: #F8FAFC; cursor: pointer;" onclick="document.getElementById('csv_file').click()">
           <div style="font-size: 30px; margin-bottom: 6px;">📁</div>
           <strong style="color: #0F172A; font-size: 14px;">Haga clic para seleccionar archivo CSV</strong>
-          <div style="font-size: 12px; color: #64748B; margin-top: 4px;">Compatible con Excel, HubSpot y exportaciones de Brevo</div>
+          <div style="font-size: 12px; color: #64748B; margin-top: 4px;">Compatible con Excel, Plantilla Maestra, HubSpot y exportaciones de Brevo</div>
           <div id="file_selected_name" style="margin-top: 8px; font-weight: 700; color: #1E8888;"></div>
           <input type="file" id="csv_file" name="csv_file" accept=".csv,text/csv" style="display: none;" onchange="handleFileSelected(this)">
         </div>
@@ -76,7 +86,7 @@
           <label class="form-label" style="margin-bottom: 0;">Opción B: Pegar datos CSV o Copiar y Pegar desde Brevo</label>
           <span class="badge" style="background: #E0F2FE; color: #0284C7; font-size: 11px; font-weight: 700;">✓ Soporte Brevo Copiar/Pegar</span>
         </div>
-        <textarea name="csv_text" id="csv_text" class="form-control" rows="6" placeholder="Pegue aquí:&#10;1) Archivo CSV tradicional (Clinica,Nombre,Email,Telefono...)&#10;2) O copie y pegue directamente la tabla de Brevo (LISTA ENCUESTA / Contactos con enlaces y correos). El importador extraerá y enriquecerá automáticamente nombres, cargos y clínicas de salud."></textarea>
+        <textarea name="csv_text" id="csv_text" class="form-control" rows="6" placeholder="Pegue aquí:&#10;1) Archivo CSV tradicional o Plantilla Maestra (Empresa,Contacto,Email,Telefono,Cargo,Comuna,Tamano_Equipo,Notas)&#10;2) O copie y pegue directamente la tabla de Brevo (LISTA ENCUESTA / Contactos con enlaces y correos)."></textarea>
       </div>
 
       <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; font-size: 14px;">
@@ -85,17 +95,54 @@
     </form>
   </div>
 
-  <!-- GUÍA DE FORMATO -->
+  <!-- GUÍA DE FORMATO Y PLANTILLA -->
   <div>
+    <!-- TARJETA EXCEL MAESTRO -->
+    <div class="table-card" style="padding: 22px; margin-bottom: 20px; background: linear-gradient(135deg, #F0FDF4 0%, #E6F4F4 100%); border: 1px solid #99F6E4;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+        <span style="font-weight: 700; color: #115E59; font-size: 13.5px; display: inline-flex; align-items: center; gap: 6px;">
+          <span style="font-size: 18px;">📑</span> Excel Maestro para Rellenar
+        </span>
+        <span class="badge" style="background: #0D9488; color: #FFFFFF; font-size: 10.5px; font-weight: 700; padding: 3px 8px;">Recomendado</span>
+      </div>
+      <p style="font-size: 12px; color: #134E4A; line-height: 1.5; margin-bottom: 14px;">
+        Descargue la plantilla oficial formateada con las columnas maestras que el sistema reconoce. Ideal para que el cliente rellene sus listas o para prospectar clínicas en internet.
+      </p>
+
+      <div style="background: #FFFFFF; border-radius: 6px; padding: 12px; border: 1px solid #CCFBF1; margin-bottom: 14px;">
+        <div style="font-size: 11px; font-weight: 700; color: #0F766E; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Columnas que el CRM entiende:</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+          <span style="background: #F0FDFA; color: #0F766E; border: 1px solid #99F6E4; padding: 2px 7px; border-radius: 4px; font-size: 11px; font-family: monospace; font-weight: 600;">Empresa</span>
+          <span style="background: #F0FDFA; color: #0F766E; border: 1px solid #99F6E4; padding: 2px 7px; border-radius: 4px; font-size: 11px; font-family: monospace; font-weight: 600;">Contacto</span>
+          <span style="background: #F0FDFA; color: #0F766E; border: 1px solid #99F6E4; padding: 2px 7px; border-radius: 4px; font-size: 11px; font-family: monospace; font-weight: 600;">Email*</span>
+          <span style="background: #F0FDFA; color: #0F766E; border: 1px solid #99F6E4; padding: 2px 7px; border-radius: 4px; font-size: 11px; font-family: monospace; font-weight: 600;">Telefono</span>
+          <span style="background: #F0FDFA; color: #0F766E; border: 1px solid #99F6E4; padding: 2px 7px; border-radius: 4px; font-size: 11px; font-family: monospace; font-weight: 600;">Cargo</span>
+          <span style="background: #F0FDFA; color: #0F766E; border: 1px solid #99F6E4; padding: 2px 7px; border-radius: 4px; font-size: 11px; font-family: monospace; font-weight: 600;">Comuna</span>
+          <span style="background: #F0FDFA; color: #0F766E; border: 1px solid #99F6E4; padding: 2px 7px; border-radius: 4px; font-size: 11px; font-family: monospace; font-weight: 600;">Tamano_Equipo</span>
+          <span style="background: #F0FDFA; color: #0F766E; border: 1px solid #99F6E4; padding: 2px 7px; border-radius: 4px; font-size: 11px; font-family: monospace; font-weight: 600;">Notas</span>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <a href="{{ route('import.template') }}" class="btn" style="background: #1E8888; color: white; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 12.5px; font-weight: 700; padding: 10px; border-radius: 6px; text-decoration: none;">
+          <span>📥</span> Descargar Plantilla Maestra (.csv)
+        </a>
+        <div style="font-size: 11px; color: #0F766E; text-align: center;">
+          ✓ Compatible con Excel (BOM UTF-8, tildes y caracteres chilenos)
+        </div>
+      </div>
+    </div>
+
+    <!-- GUÍA DE DETECCIÓN INTELIGENTE -->
     <div class="table-card" style="padding: 20px; background: #F8FAFC;">
       <div style="display: inline-flex; align-items: center; gap: 6px; background-color: #E6F4F4; color: #146161; font-weight: 700; font-size: 11px; padding: 4px 8px; border-radius: 4px; margin-bottom: 10px;">
         ⚡ Compatible con Brevo &amp; Excel
       </div>
-      <h3 style="font-size: 15px; font-weight: 700; color: #0F172A; margin-bottom: 10px;">
+      <h3 style="font-size: 15px; font-weight: 700; color: #0F766E; margin-bottom: 10px;">
         💡 Detección Inteligente de Contactos
       </h3>
-      <p style="color: #64748B; line-height: 1.5; font-size: 12.5px; margin-bottom: 12px;">
-        El motor en Laravel 11 mapea automáticamente columnas de CSV o interpreta tablas copiadas directamente desde el navegador en Brevo:
+      <p style="color: #64748B; line-height: 1.5; font-size: 12px; margin-bottom: 12px;">
+        El motor mapea automáticamente columnas de CSV o interpreta tablas copiadas directamente desde el navegador en Brevo:
       </p>
 
       <ul style="padding-left: 18px; color: #0F172A; font-size: 12px; line-height: 1.8;">
@@ -104,6 +151,7 @@
         <li><strong>Correo:</strong> Email validado (Requerido)</li>
         <li><strong>Teléfono:</strong> Teléfono / WhatsApp / SMS</li>
         <li><strong>Cargo:</strong> Especialidad (Dr., Ps., Kinesiólogo, etc.)</li>
+        <li><strong>Dotación / Notas:</strong> Número de equipo y observaciones</li>
       </ul>
 
       <div style="margin-top: 14px; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 6px; padding: 10px;">

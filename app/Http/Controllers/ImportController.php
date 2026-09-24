@@ -100,14 +100,25 @@ class ImportController extends Controller
                     $headers = str_getcsv(array_shift($lines), $delim);
                     $headers = array_map(fn($h) => strtolower(trim(str_replace(['"', "'", "\xEF\xBB\xBF"], '', $h))), $headers);
 
-                    $colMap = ['empresa' => -1, 'contacto' => -1, 'email' => -1, 'telefono' => -1, 'cargo' => -1, 'comuna' => -1];
+                    $colMap = [
+                        'empresa' => -1,
+                        'contacto' => -1,
+                        'email' => -1,
+                        'telefono' => -1,
+                        'cargo' => -1,
+                        'comuna' => -1,
+                        'tamano_equipo' => -1,
+                        'notas' => -1
+                    ];
                     foreach ($headers as $idx => $h) {
                         if (preg_match('/(empresa|clinica|centro|institucion)/i', $h)) $colMap['empresa'] = $idx;
                         if (preg_match('/(nombre|contacto|representante)/i', $h)) $colMap['contacto'] = $idx;
                         if (preg_match('/(email|correo|mail)/i', $h)) $colMap['email'] = $idx;
                         if (preg_match('/(tel|fono|whatsapp|celular)/i', $h)) $colMap['telefono'] = $idx;
-                        if (preg_match('/(cargo|puesto|rol)/i', $h)) $colMap['cargo'] = $idx;
-                        if (preg_match('/(comuna|ciudad|region)/i', $h)) $colMap['comuna'] = $idx;
+                        if (preg_match('/(cargo|puesto|rol|especialidad)/i', $h)) $colMap['cargo'] = $idx;
+                        if (preg_match('/(comuna|ciudad|region|ubicacion)/i', $h)) $colMap['comuna'] = $idx;
+                        if (preg_match('/(tamano|equipo|personal|dotacion|cantidad)/i', $h)) $colMap['tamano_equipo'] = $idx;
+                        if (preg_match('/(nota|observacion|comentario|detalle)/i', $h)) $colMap['notas'] = $idx;
                     }
                     if ($colMap['email'] === -1 && isset($headers[2])) $colMap['email'] = 2;
 
@@ -120,23 +131,33 @@ class ImportController extends Controller
                             continue;
                         }
 
-                        $rawEmpresa = trim($row[$colMap['empresa']] ?? '');
-                        $rawContacto = trim($row[$colMap['contacto']] ?? '');
-                        $rawCargo = trim($row[$colMap['cargo']] ?? '');
-                        $rawComuna = trim($row[$colMap['comuna']] ?? '');
-                        $telefono = trim($row[$colMap['telefono']] ?? '');
+                        $rawEmpresa = $colMap['empresa'] !== -1 ? trim($row[$colMap['empresa']] ?? '') : '';
+                        $rawContacto = $colMap['contacto'] !== -1 ? trim($row[$colMap['contacto']] ?? '') : '';
+                        $rawCargo = $colMap['cargo'] !== -1 ? trim($row[$colMap['cargo']] ?? '') : '';
+                        $rawComuna = $colMap['comuna'] !== -1 ? trim($row[$colMap['comuna']] ?? '') : '';
+                        $telefono = $colMap['telefono'] !== -1 ? trim($row[$colMap['telefono']] ?? '') : '';
+                        
+                        $rawTamano = $colMap['tamano_equipo'] !== -1 ? (int)preg_replace('/[^0-9]/', '', $row[$colMap['tamano_equipo']] ?? '') : 0;
+                        $rawNotas = $colMap['notas'] !== -1 ? trim($row[$colMap['notas']] ?? '') : '';
 
                         $enriched = self::enrichContact($rawEmail, $rawContacto, $rawEmpresa, $rawCargo, $rawComuna);
                         $client = Client::whereRaw('LOWER(email) = ?', [$enriched['email']])->first();
 
                         if ($client) {
-                            $client->update([
+                            $updateData = [
                                 'empresa' => $enriched['empresa'],
                                 'contacto_nombre' => $enriched['contacto'],
                                 'telefono' => $telefono ?: $client->telefono,
                                 'cargo' => $enriched['cargo'],
                                 'region_comuna' => $enriched['comuna'],
-                            ]);
+                            ];
+                            if ($rawTamano > 0) {
+                                $updateData['tamano_equipo'] = $rawTamano;
+                            }
+                            if ($rawNotas) {
+                                $updateData['notas'] = $client->notas ? ($client->notas . " | " . $rawNotas) : $rawNotas;
+                            }
+                            $client->update($updateData);
                             $updated++;
                         } else {
                             $client = Client::create([
@@ -146,9 +167,9 @@ class ImportController extends Controller
                                 'telefono' => $telefono,
                                 'cargo' => $enriched['cargo'],
                                 'region_comuna' => $enriched['comuna'],
-                                'tamano_equipo' => 20,
+                                'tamano_equipo' => $rawTamano > 0 ? $rawTamano : 20,
                                 'estado' => 'nuevo',
-                                'notas' => 'Importado desde CSV'
+                                'notas' => $rawNotas ?: 'Importado desde CSV'
                             ]);
                             $inserted++;
                         }
@@ -244,5 +265,152 @@ class ImportController extends Controller
             'cargo' => trim($cargo),
             'comuna' => $comuna
         ];
+    }
+
+    /**
+     * Descarga la Plantilla Excel Maestro (.csv con BOM UTF-8)
+     * Diseñada exactamente con los campos que el CRM entiende.
+     */
+    public function downloadTemplate()
+    {
+        $filename = 'Plantilla_Maestra_Contactos_Suitable.csv';
+
+        $headers = [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
+        ];
+
+        $callback = function () {
+            $handle = fopen('php://output', 'w');
+            
+            // BOM UTF-8 para que Microsoft Excel en Windows abra con tildes y ñ impecables
+            fprintf($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+            // Encabezados Maestros del CRM Suitable
+            fputcsv($handle, [
+                'Empresa',
+                'Contacto',
+                'Email',
+                'Telefono',
+                'Cargo',
+                'Comuna',
+                'Tamano_Equipo',
+                'Notas'
+            ], ';');
+
+            // Ejemplos representativos de instituciones de salud chilenas
+            $rows = [
+                [
+                    'Clínica RedSalud Providencia',
+                    'Dra. Marcela Contreras',
+                    'm.contreras@redsalud.cl',
+                    '+56991234567',
+                    'Directora Médica',
+                    'Providencia, RM',
+                    '35',
+                    'Interés en renovación de uniformes antifluidos corporativos con bordado institucional'
+                ],
+                [
+                    'Centro Odontológico Las Condes',
+                    'Dr. Felipe Soto',
+                    'contacto@odontolaser.cl',
+                    '+56987654321',
+                    'Jefe de Adquisiciones',
+                    'Las Condes, RM',
+                    '18',
+                    'Equipo dental busca uniformes tela Flex antimicrobial'
+                ],
+                [
+                    'Hospital Clínico del Sur',
+                    'Lic. Andrea Morales',
+                    'adquisiciones@hclinicosur.cl',
+                    '+56976543210',
+                    'Jefa de Enfermería',
+                    'Concepción, Biobío',
+                    '60',
+                    'Dotación anual de scrubs y delantales médicos para enfermería y pabellón'
+                ],
+                [
+                    'Clínica Veterinaria Bilbao',
+                    'Dr. Rodrigo Tapia',
+                    'rtapia@vetbilbao.cl',
+                    '+56965432109',
+                    'Médico Veterinario Jefe',
+                    'Providencia, RM',
+                    '12',
+                    'Bordado corporativo Suitable y uniformes repelentes a fluidos'
+                ],
+            ];
+
+            foreach ($rows as $row) {
+                fputcsv($handle, $row, ';');
+            }
+
+            fclose($handle);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    /**
+     * Exporta la base de datos actual de contactos al formato Excel Maestro
+     */
+    public function exportClients()
+    {
+        $filename = 'Base_Contactos_Suitable_' . date('Y-m-d') . '.csv';
+
+        $headers = [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
+        ];
+
+        $callback = function () {
+            $handle = fopen('php://output', 'w');
+            
+            // BOM UTF-8
+            fprintf($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+            fputcsv($handle, [
+                'ID',
+                'Empresa',
+                'Contacto',
+                'Email',
+                'Telefono',
+                'Cargo',
+                'Comuna',
+                'Tamano_Equipo',
+                'Estado',
+                'Notas',
+                'Grupos'
+            ], ';');
+
+            Client::with('groups')->orderBy('id')->chunk(200, function ($clients) use ($handle) {
+                foreach ($clients as $c) {
+                    fputcsv($handle, [
+                        $c->id,
+                        $c->empresa,
+                        $c->contacto_nombre,
+                        $c->email,
+                        $c->telefono,
+                        $c->cargo,
+                        $c->region_comuna,
+                        $c->tamano_equipo,
+                        $c->estado,
+                        $c->notas,
+                        $c->groups->pluck('name')->implode(', ')
+                    ], ';');
+                }
+            });
+
+            fclose($handle);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }
