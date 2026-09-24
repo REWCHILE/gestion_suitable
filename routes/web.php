@@ -27,6 +27,8 @@ Route::delete('/groups/{group}', [GroupController::class, 'destroy'])->name('gro
 
 // Campaigns & AI Studio
 Route::get('/campaigns', [CampaignController::class, 'index'])->name('campaigns.index');
+Route::get('/campaigns/presets', [CampaignController::class, 'presetsCatalog'])->name('campaigns.presets');
+Route::get('/campaigns/presets/{preset}/preview', [CampaignController::class, 'previewPresetHtml'])->name('campaigns.preset_html');
 Route::get('/campaigns/preview', [CampaignController::class, 'preview'])->name('campaigns.preview');
 Route::get('/campaigns/preview/html', [CampaignController::class, 'previewHtml'])->name('campaigns.preview_html');
 Route::get('/campaigns/{campaign}/preview', [CampaignController::class, 'previewCampaign'])->name('campaigns.preview_campaign');

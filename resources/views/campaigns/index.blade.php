@@ -46,6 +46,10 @@
   </div>
 
   <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+    <a href="{{ route('campaigns.presets') }}" class="btn btn-secondary btn-sm" style="background: #E6F4F4; color: #115E59; border: 1.5px solid #99F6E4; font-weight: 800; padding: 10px 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+      <span>📚</span>
+      <span>Catálogo de 20 Presets →</span>
+    </a>
     <a href="{{ route('campaigns.preview') }}" class="btn btn-secondary btn-sm" style="background: rgba(255,255,255,0.15); color: white; border: 1px solid rgba(255,255,255,0.3); font-weight: 700; padding: 10px 16px;">
       <span>👁️</span>
       <span>Simulador Móvil / Desktop</span>
@@ -64,111 +68,119 @@
       <h3 style="margin: 0; font-size: 15px; font-weight: 800; color: #0F172A;">Campañas Registradas en el Sistema</h3>
       <p style="margin: 2px 0 0 0; font-size: 12px; color: #64748B;">Lanza envíos masivos, previsualiza el diseño o dispara pruebas a tu correo</p>
     </div>
-    <span class="badge" style="background: #F1F5F9; color: #475569; font-weight: 700;">
-      {{ $campaigns->count() }} campañas • {{ $totalClients }} contactos en CRM
-    </span>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <a href="{{ route('campaigns.presets') }}" class="btn btn-sm btn-secondary" style="font-weight: 700; color: #1E8888; border-color: #1E8888; background: #F0FDFA;">
+        <span>📚 Explorar 20 Presets</span>
+      </a>
+      <span class="badge" style="background: #F1F5F9; color: #475569; font-weight: 700;">
+        {{ $campaigns->count() }} campañas • {{ $totalClients }} contactos en CRM
+      </span>
+    </div>
   </div>
 
-  <table class="crm-table">
-    <thead>
-      <tr>
-        <th>Nombre de Campaña</th>
-        <th>Segmento / Grupo</th>
-        <th>Asunto del Correo</th>
-        <th>Motor IA</th>
-        <th>Destinatarios</th>
-        <th>Estado</th>
-        <th>Fecha</th>
-        <th style="text-align: right; min-width: 240px;">Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      @forelse($campaigns as $camp)
-        <tr id="row_campaign_{{ $camp->id }}">
-          <td>
-            <strong style="color: #0F172A; font-size: 13px;">{{ $camp->name }}</strong>
-          </td>
-          <td>
-            @if($camp->group)
-              <span class="badge" style="background:#E6F4F4; color:#146161; font-weight:700;">
-                👥 {{ $camp->group->name }}
-              </span>
-            @else
-              <span class="badge" style="background:#F1F5F9; color:#475569;">Todos los clientes ({{ $totalClients }})</span>
-            @endif
-          </td>
-          <td>
-            <div style="font-size:12.5px; font-weight:600; color:#0F172A; max-width: 320px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-              {{ $camp->subject }}
-            </div>
-            <div style="font-size:11px; color:#64748B; max-width: 320px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-              {{ Str::limit($camp->preheader, 50) }}
-            </div>
-          </td>
-          <td>
-            <span class="badge" style="background:#F1F5F9; color:#475569; font-weight:800; text-transform:uppercase;">
-              {{ $camp->ai_provider ?: 'Groq' }}
-            </span>
-          </td>
-          <td>
-            <strong style="color: #0F172A;">{{ $camp->sent_count }} / {{ $camp->total_count ?: $totalClients }}</strong>
-          </td>
-          <td>
-            @if($camp->status === 'enviada')
-              <span class="badge badge-emerald" id="badge_status_{{ $camp->id }}">● Enviada</span>
-            @else
-              <span class="badge badge-blue" id="badge_status_{{ $camp->id }}">{{ ucfirst($camp->status) }}</span>
-            @endif
-          </td>
-          <td style="font-size:11.5px; color:#64748B; white-space: nowrap;">
-            {{ $camp->created_at ? $camp->created_at->format('d/m/Y H:i') : '-' }}
-          </td>
-          <td style="text-align: right; white-space: nowrap;">
-            <div style="display: inline-flex; gap: 6px; align-items: center;">
-              <!-- 1. PREVISUALIZAR -->
-              <a href="{{ route('campaigns.preview_campaign', $camp->id) }}" class="btn btn-secondary btn-sm" title="Previsualizar correo completo" style="padding: 5px 9px; font-size: 11.5px; font-weight: 700;">
-                <span>👁️</span>
-                <span>Ver</span>
-              </a>
-
-              <!-- 2. EDITAR -->
-              <a href="{{ route('campaigns.edit', $camp->id) }}" class="btn btn-secondary btn-sm" title="Editar campaña, textos e imagen" style="padding: 5px 9px; font-size: 11.5px; font-weight: 700; color: #1E8888; border-color: #1E8888;">
-                <span>✏️</span>
-                <span>Editar</span>
-              </a>
-
-              <!-- 3. LANZAR / ENVIAR -->
-              <button type="button" class="btn btn-primary btn-sm" onclick="openSendModal({{ $camp->id }}, '{{ addslashes($camp->name) }}', {{ $camp->total_count ?: $totalClients }})" style="padding: 5px 10px; font-size: 11.5px; font-weight: 700; background: #059669; border-color: #059669;">
-                <span>🚀</span>
-                <span>Lanzar</span>
-              </button>
-
-              <!-- 4. ENVIAR PRUEBA -->
-              <button type="button" class="btn btn-secondary btn-sm" onclick="openTestModal({{ $camp->id }})" title="Enviar correo de prueba a mi correo" style="padding: 5px 8px; font-size: 11.5px;">
-                <span>✉️</span>
-              </button>
-
-              <!-- 5. ELIMINAR -->
-              <button type="button" class="btn btn-secondary btn-sm" onclick="deleteCampaign({{ $camp->id }})" title="Eliminar campaña" style="padding: 5px 8px; font-size: 11.5px; color: #EF4444;">
-                <span>🗑️</span>
-              </button>
-            </div>
-          </td>
-        </tr>
-      @empty
+  <!-- CONTENEDOR CON SCROLL HORIZONTAL (EVITA QUE SE CORTEN LOS BOTONES A LA DERECHA) -->
+  <div style="overflow-x: auto; width: 100%; -webkit-overflow-scrolling: touch;">
+    <table class="crm-table">
+      <thead>
         <tr>
-          <td colspan="8" style="text-align: center; padding: 50px 20px; color: #64748B;">
-            <div style="font-size: 32px; margin-bottom: 8px;">🚀</div>
-            <div style="font-size: 14px; font-weight: 700; color: #0F172A;">No hay campañas creadas aún</div>
-            <p style="font-size: 12px; margin: 4px 0 16px 0;">Crea tu primera campaña asistida por IA o previsualiza la plantilla corporativa.</p>
-            <a href="{{ route('campaigns.create') }}" class="btn btn-primary btn-sm" style="font-weight: 700;">
-              + Crear Nueva Campaña con IA
-            </a>
-          </td>
+          <th style="min-width: 170px;">Nombre de Campaña</th>
+          <th style="min-width: 130px;">Segmento / Grupo</th>
+          <th style="min-width: 200px;">Asunto del Correo</th>
+          <th style="min-width: 80px;">Motor IA</th>
+          <th style="min-width: 90px;">Destinatarios</th>
+          <th style="min-width: 90px;">Estado</th>
+          <th style="min-width: 110px;">Fecha</th>
+          <th style="text-align: right; min-width: 250px;">Acciones</th>
         </tr>
-      @endforelse
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        @forelse($campaigns as $camp)
+          <tr id="row_campaign_{{ $camp->id }}">
+            <td>
+              <strong style="color: #0F172A; font-size: 13px;">{{ $camp->name }}</strong>
+            </td>
+            <td>
+              @if($camp->group)
+                <span class="badge" style="background:#E6F4F4; color:#146161; font-weight:700;">
+                  👥 {{ $camp->group->name }}
+                </span>
+              @else
+                <span class="badge" style="background:#F1F5F9; color:#475569;">Todos los clientes ({{ $totalClients }})</span>
+              @endif
+            </td>
+            <td>
+              <div style="font-size:12.5px; font-weight:600; color:#0F172A; max-width: 210px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $camp->subject }}">
+                {{ $camp->subject }}
+              </div>
+              <div style="font-size:11px; color:#64748B; max-width: 210px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                {{ Str::limit($camp->preheader, 45) }}
+              </div>
+            </td>
+            <td>
+              <span class="badge" style="background:#F1F5F9; color:#475569; font-weight:800; text-transform:uppercase;">
+                {{ $camp->ai_provider ?: 'Groq' }}
+              </span>
+            </td>
+            <td>
+              <strong style="color: #0F172A;">{{ $camp->sent_count }} / {{ $camp->total_count ?: $totalClients }}</strong>
+            </td>
+            <td>
+              @if($camp->status === 'enviada')
+                <span class="badge badge-emerald" id="badge_status_{{ $camp->id }}">● Enviada</span>
+              @else
+                <span class="badge badge-blue" id="badge_status_{{ $camp->id }}">{{ ucfirst($camp->status) }}</span>
+              @endif
+            </td>
+            <td style="font-size:11.5px; color:#64748B; white-space: nowrap;">
+              {{ $camp->created_at ? $camp->created_at->format('d/m/Y H:i') : '-' }}
+            </td>
+            <td style="text-align: right; white-space: nowrap;">
+              <div style="display: inline-flex; gap: 5px; align-items: center; justify-content: flex-end;">
+                <!-- 1. PREVISUALIZAR -->
+                <a href="{{ route('campaigns.preview_campaign', $camp->id) }}" class="btn btn-secondary btn-sm" title="Previsualizar correo completo" style="padding: 5px 8px; font-size: 11.5px; font-weight: 700;">
+                  <span>👁️</span>
+                  <span>Ver</span>
+                </a>
+
+                <!-- 2. EDITAR -->
+                <a href="{{ route('campaigns.edit', $camp->id) }}" class="btn btn-secondary btn-sm" title="Editar campaña, textos e imagen" style="padding: 5px 8px; font-size: 11.5px; font-weight: 700; color: #1E8888; border-color: #1E8888; background: #F0FDFA;">
+                  <span>✏️</span>
+                  <span>Editar</span>
+                </a>
+
+                <!-- 3. LANZAR / ENVIAR -->
+                <button type="button" class="btn btn-primary btn-sm" onclick="openSendModal({{ $camp->id }}, '{{ addslashes($camp->name) }}', {{ $camp->total_count ?: $totalClients }})" style="padding: 5px 9px; font-size: 11.5px; font-weight: 700; background: #059669; border-color: #059669;">
+                  <span>🚀</span>
+                  <span>Lanzar</span>
+                </button>
+
+                <!-- 4. ENVIAR PRUEBA -->
+                <button type="button" class="btn btn-secondary btn-sm" onclick="openTestModal({{ $camp->id }})" title="Enviar correo de prueba a mi correo" style="padding: 5px 7px; font-size: 11.5px;">
+                  <span>✉️</span>
+                </button>
+
+                <!-- 5. ELIMINAR -->
+                <button type="button" class="btn btn-secondary btn-sm" onclick="deleteCampaign({{ $camp->id }})" title="Eliminar campaña" style="padding: 5px 7px; font-size: 11.5px; color: #EF4444;">
+                  <span>🗑️</span>
+                </button>
+              </div>
+            </td>
+          </tr>
+        @empty
+          <tr>
+            <td colspan="8" style="text-align: center; padding: 50px 20px; color: #64748B;">
+              <div style="font-size: 32px; margin-bottom: 8px;">🚀</div>
+              <div style="font-size: 14px; font-weight: 700; color: #0F172A;">No hay campañas creadas aún</div>
+              <p style="font-size: 12px; margin: 4px 0 16px 0;">Crea tu primera campaña asistida por IA o elige uno de los 20 presets.</p>
+              <a href="{{ route('campaigns.presets') }}" class="btn btn-primary btn-sm" style="font-weight: 700;">
+                📚 Explorar 20 Presets Corporativos
+              </a>
+            </td>
+          </tr>
+        @endforelse
+      </tbody>
+    </table>
+  </div>
 </div>
 
 <!-- MODAL: ENVIAR CORREO DE PRUEBA -->

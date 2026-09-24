@@ -112,45 +112,48 @@
   <!-- LEFT COLUMN: CONTROLS & MODULAR BUILDER -->
   <div class="table-card" style="padding: 24px;">
 
-    <!-- PASO 1: SELECCIONAR PRESET DE ESTRUCTURA MODULAR -->
-    <div class="form-group" style="margin-bottom: 22px;">
-      <label class="form-label" style="font-weight: 800; color: #0F172A; display: flex; align-items: center; justify-content: space-between;">
-        <span>📐 1. Estructura y Preset del Correo (Tipo Brevo)</span>
-        <span style="font-size: 11px; color: #1E8888; font-weight: 700;">Selecciona una maqueta</span>
-      </label>
-      
-      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
-        <!-- PRESET 1: CLASICA B2B -->
-        <div class="preset-card active" id="preset_card_clasica" onclick="selectPreset('clasica')">
-          <div style="font-size: 20px; margin-bottom: 4px;">🏛️</div>
-          <strong style="font-size: 11.5px; color: #0F172A; display: block;">Clásica B2B</strong>
-          <span style="font-size: 10px; color: #64748B; display: block; line-height: 1.2; margin-top: 2px;">Hero + 3 Columnas</span>
-          <span class="preset-badge" style="display: block; position: absolute; top: 4px; right: 4px; background: #1E8888; color: white; font-size: 8px; font-weight: 800; padding: 1px 4px; border-radius: 4px;">ACTIVO</span>
+    <!-- PASO 1: SELECCIONAR PRESET DE ESTRUCTURA MODULAR (20 PRESETS B2B) -->
+    <div class="form-group" style="margin-bottom: 22px; background: #F8FAFC; border: 1.5px solid #E2E8F0; border-radius: 12px; padding: 18px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+        <div>
+          <label class="form-label" style="font-weight: 800; color: #0F172A; margin: 0; display: flex; align-items: center; gap: 8px; font-size: 13.5px;">
+            <span>📐</span> 1. Estructura y Preset B2B
+            <span style="font-size: 11px; background: #1E8888; color: white; padding: 2px 7px; border-radius: 10px; font-weight: 700;">20 Disponibles</span>
+          </label>
+          <div style="font-size: 11.5px; color: #64748B; margin-top: 2px;">
+            Preset activo: <strong id="active_preset_name_display" style="color: #1E8888;">{{ $initialPreset['name'] ?? 'Clásica B2B' }}</strong> ({{ $initialPreset['category'] ?? 'B2B & Clínicas' }})
+          </div>
         </div>
+        
+        <div style="display: flex; gap: 6px;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="scrollPresetsCarousel(-1)" title="Anterior preset" style="padding: 5px 9px;">◀</button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="scrollPresetsCarousel(1)" title="Siguiente preset" style="padding: 5px 9px;">▶</button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="openPresetsModal()" style="font-weight: 700; color: #1E8888; border-color: #1E8888; padding: 5px 10px; font-size: 11.5px; background: white;">
+            <span>📚</span> Ver los 20 Presets
+          </button>
+        </div>
+      </div>
 
-        <!-- PRESET 2: SPLIT 50/50 -->
-        <div class="preset-card" id="preset_card_split" onclick="selectPreset('split')">
-          <div style="font-size: 20px; margin-bottom: 4px;">⚖️</div>
-          <strong style="font-size: 11.5px; color: #0F172A; display: block;">Split 50/50</strong>
-          <span style="font-size: 10px; color: #64748B; display: block; line-height: 1.2; margin-top: 2px;">Foto Izq / Texto Der</span>
-          <span class="preset-badge" style="display: none; position: absolute; top: 4px; right: 4px; background: #1E8888; color: white; font-size: 8px; font-weight: 800; padding: 1px 4px; border-radius: 4px;">ACTIVO</span>
-        </div>
+      <!-- CAROUSEL TRACK CON LOS 20 PRESETS -->
+      <div id="presets_carousel_track" style="display: flex; gap: 10px; overflow-x: auto; scroll-behavior: smooth; padding-bottom: 8px; scrollbar-width: thin;">
+        @foreach($allPresets as $p)
+          <div class="preset-card {{ ($selectedPresetId ?? 'clasica') === $p['id'] ? 'active' : '' }}" 
+               id="preset_card_{{ $p['id'] }}" 
+               onclick="selectPreset('{{ $p['id'] }}')"
+               style="flex: 0 0 155px; min-width: 155px; padding: 12px 10px; border: 2px solid {{ ($selectedPresetId ?? 'clasica') === $p['id'] ? '#1E8888' : '#E2E8F0' }}; border-radius: 8px; background: white; cursor: pointer; text-align: center; position: relative; transition: all 0.2s ease;">
+            <div style="font-size: 22px; margin-bottom: 4px;">{{ $p['icon'] }}</div>
+            <strong style="font-size: 11.5px; color: #0F172A; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $p['name'] }}">{{ $p['name'] }}</strong>
+            <span style="font-size: 9.5px; color: #64748B; display: block; line-height: 1.2; margin-top: 2px;">{{ $p['category'] }}</span>
+            <span class="preset-badge" style="display: {{ ($selectedPresetId ?? 'clasica') === $p['id'] ? 'block' : 'none' }}; position: absolute; top: 4px; right: 4px; background: #1E8888; color: white; font-size: 8px; font-weight: 800; padding: 1px 4px; border-radius: 4px;">ACTIVO</span>
+          </div>
+        @endforeach
+      </div>
 
-        <!-- PRESET 3: SHOWCASE / GALERIA -->
-        <div class="preset-card" id="preset_card_showcase" onclick="selectPreset('showcase')">
-          <div style="font-size: 20px; margin-bottom: 4px;">🖼️</div>
-          <strong style="font-size: 11.5px; color: #0F172A; display: block;">Showcase 2x2</strong>
-          <span style="font-size: 10px; color: #64748B; display: block; line-height: 1.2; margin-top: 2px;">Catálogo 4 Modelos</span>
-          <span class="preset-badge" style="display: none; position: absolute; top: 4px; right: 4px; background: #1E8888; color: white; font-size: 8px; font-weight: 800; padding: 1px 4px; border-radius: 4px;">ACTIVO</span>
-        </div>
-
-        <!-- PRESET 4: TALLAJE 1-2-3 -->
-        <div class="preset-card" id="preset_card_tallaje" onclick="selectPreset('tallaje')">
-          <div style="font-size: 20px; margin-bottom: 4px;">📏</div>
-          <strong style="font-size: 11.5px; color: #0F172A; display: block;">Tallaje 1-2-3</strong>
-          <span style="font-size: 10px; color: #64748B; display: block; line-height: 1.2; margin-top: 2px;">Pasos en Terreno</span>
-          <span class="preset-badge" style="display: none; position: absolute; top: 4px; right: 4px; background: #1E8888; color: white; font-size: 8px; font-weight: 800; padding: 1px 4px; border-radius: 4px;">ACTIVO</span>
-        </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 8px; border-top: 1px solid #E2E8F0; flex-wrap: wrap; gap: 6px;">
+        <span style="font-size: 11px; color: #64748B;" id="preset_desc_display">{{ $initialPreset['description'] ?? '' }}</span>
+        <button type="button" class="btn btn-sm btn-secondary" onclick="applyPresetTexts()" style="font-size: 10.5px; padding: 3px 8px; white-space: nowrap; color: #0F766E; font-weight: 700;">
+          ⚡ Aplicar textos del Preset
+        </button>
       </div>
     </div>
 
@@ -591,6 +594,62 @@
   </div>
 </div>
 
+<!-- MODAL: CATÁLOGO DE 20 PRESETS EN CUADRÍCULA -->
+<div id="modal_presets_picker" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.75); z-index: 99999; align-items: center; justify-content: center; backdrop-filter: blur(4px); padding: 20px;">
+  <div style="background: white; border-radius: 14px; width: 100%; max-width: 980px; max-height: 88vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 25px 50px rgba(0,0,0,0.3);">
+    <div style="padding: 16px 22px; background: #0F172A; color: white; display: flex; justify-content: space-between; align-items: center;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="font-size: 22px;">📚</span>
+        <div>
+          <strong style="font-size: 16px;">Catálogo de 20 Presets de Correo B2B Suitable</strong>
+          <p style="font-size: 11.5px; color: #94A3B8; margin: 0;">Selecciona cualquier plantilla para cargar su diseño y textos recomendados</p>
+        </div>
+      </div>
+      <button type="button" onclick="closePresetsModal()" style="background: none; border: none; color: #94A3B8; font-size: 22px; cursor: pointer; padding: 0 8px;">✕</button>
+    </div>
+
+    <!-- SEARCH & FILTER TABS -->
+    <div style="padding: 12px 20px; background: #F8FAFC; border-bottom: 1px solid #E2E8F0; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+      <input type="text" id="modalPresetSearch" oninput="filterModalPresets()" placeholder="🔍 Buscar entre los 20 presets..." class="form-control" style="font-size: 12.5px; max-width: 280px; padding: 7px 12px;">
+      <div style="display: flex; gap: 6px; overflow-x: auto; flex: 1;">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="filterModalCategory('all', this)" style="font-size: 11px; padding: 5px 10px; background: #E6F4F4; color: #115E59; font-weight: 700;">Todos (20)</button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="filterModalCategory('clinicas', this)" style="font-size: 11px; padding: 5px 10px;">🏥 Clínicas</button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="filterModalCategory('tallaje', this)" style="font-size: 11px; padding: 5px 10px;">📏 Tallaje</button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="filterModalCategory('especialidades', this)" style="font-size: 11px; padding: 5px 10px;">🦷 Especialidades</button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="filterModalCategory('ofertas', this)" style="font-size: 11px; padding: 5px 10px;">⚡ Ofertas</button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="filterModalCategory('finanzas', this)" style="font-size: 11px; padding: 5px 10px;">📊 Finanzas</button>
+      </div>
+    </div>
+
+    <!-- PRESETS GRID -->
+    <div style="flex: 1; overflow-y: auto; padding: 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 14px;" id="modal_presets_grid">
+      @foreach($allPresets as $p)
+        <div class="modal-preset-item" 
+             data-category="{{ $p['category_slug'] ?? 'clinicas' }}" 
+             data-text="{{ strtolower($p['name'] . ' ' . $p['description'] . ' ' . $p['subject']) }}"
+             onclick="selectPreset('{{ $p['id'] }}'); applyPresetTexts(); closePresetsModal();"
+             style="border: 1.5px solid #E2E8F0; border-radius: 10px; padding: 14px; background: white; cursor: pointer; transition: all 0.2s ease; display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <span style="font-size: 10px; font-weight: 800; background: #F1F5F9; color: #475569; padding: 2px 6px; border-radius: 4px; text-transform: uppercase;">{{ $p['category'] }}</span>
+              <span style="font-size: 10px; font-weight: 700; background: #E6F4F4; color: #115E59; padding: 2px 6px; border-radius: 4px;">{{ $p['badge'] }}</span>
+            </div>
+            <strong style="font-size: 13.5px; color: #0F172A; display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+              <span>{{ $p['icon'] }}</span>
+              <span>{{ $p['name'] }}</span>
+            </strong>
+            <p style="font-size: 11.5px; color: #64748B; line-height: 1.4; margin: 0 0 10px 0;">{{ $p['description'] }}</p>
+          </div>
+          <div style="font-size: 10.5px; color: #1E8888; font-weight: 700; display: flex; align-items: center; justify-content: space-between; padding-top: 8px; border-top: 1px solid #F1F5F9;">
+            <span>Tipo: {{ ucfirst($p['layout_type']) }}</span>
+            <span style="background: #1E8888; color: white; padding: 3px 8px; border-radius: 4px;">Cargar Preset →</span>
+          </div>
+        </div>
+      @endforeach
+    </div>
+  </div>
+</div>
+
 <script>
   let activeSectionForRewrite = 'hero';
   let voiceRecognition = null;
@@ -598,37 +657,119 @@
   let activeVoiceTargetInput = null;
   let activeVoiceButton = null;
 
+  const ALL_PRESETS = @json($allPresets);
+
   const imageAssets = {
     'hero-grupo-clinico.jpg': "{{ asset('images/hero-grupo-clinico.jpg') }}",
     'tela-antifluidos-macro.jpg': "{{ asset('images/tela-antifluidos-macro.jpg') }}",
     'servicio-tallaje-terreno.jpg': "{{ asset('images/servicio-tallaje-terreno.jpg') }}"
   };
 
-  // --- 1. PRESET SELECTOR ---
+  // --- 1. PRESET SELECTOR (20 PRESETS B2B) ---
   function selectPreset(presetKey) {
     document.getElementById('preset_template').value = presetKey;
+    const preset = ALL_PRESETS.find(p => p.id === presetKey) || ALL_PRESETS[0];
 
-    // Actualizar cards
-    ['clasica', 'split', 'showcase', 'tallaje'].forEach(p => {
-      const card = document.getElementById('preset_card_' + p);
-      if (card) {
-        card.classList.toggle('active', p === presetKey);
+    // Actualizar labels en la UI
+    const nameDisplay = document.getElementById('active_preset_name_display');
+    if (nameDisplay) nameDisplay.innerText = preset.name;
+    const descDisplay = document.getElementById('preset_desc_display');
+    if (descDisplay) descDisplay.innerText = preset.description;
+
+    // Actualizar estilo en el carousel
+    document.querySelectorAll('#presets_carousel_track .preset-card').forEach(card => {
+      const isCur = (card.id === 'preset_card_' + presetKey);
+      card.classList.toggle('active', isCur);
+      card.style.borderColor = isCur ? '#1E8888' : '#E2E8F0';
+      const badge = card.querySelector('.preset-badge');
+      if (badge) badge.style.display = isCur ? 'block' : 'none';
+      if (isCur) {
+        card.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
       }
     });
 
+    const layoutType = preset.layout_type || 'pillars';
+
     // Mostrar formulario modular correspondiente
-    document.getElementById('modular_edit_clasica').style.display = (presetKey === 'clasica') ? 'block' : 'none';
-    document.getElementById('modular_edit_split').style.display = (presetKey === 'split') ? 'block' : 'none';
-    document.getElementById('modular_edit_showcase').style.display = (presetKey === 'showcase') ? 'block' : 'none';
-    document.getElementById('modular_edit_tallaje').style.display = (presetKey === 'tallaje') ? 'block' : 'none';
+    document.getElementById('modular_edit_clasica').style.display = (layoutType === 'pillars') ? 'block' : 'none';
+    document.getElementById('modular_edit_split').style.display = (layoutType === 'split') ? 'block' : 'none';
+    document.getElementById('modular_edit_showcase').style.display = (layoutType === 'showcase') ? 'block' : 'none';
+    document.getElementById('modular_edit_tallaje').style.display = (layoutType === 'process') ? 'block' : 'none';
 
     // Mostrar bloque correspondiente en la vista previa en vivo
-    document.getElementById('prev_block_clasica').style.display = (presetKey === 'clasica') ? 'grid' : 'none';
-    document.getElementById('prev_block_split').style.display = (presetKey === 'split') ? 'block' : 'none';
-    document.getElementById('prev_block_showcase').style.display = (presetKey === 'showcase') ? 'block' : 'none';
-    document.getElementById('prev_block_tallaje').style.display = (presetKey === 'tallaje') ? 'block' : 'none';
+    document.getElementById('prev_block_clasica').style.display = (layoutType === 'pillars') ? 'grid' : 'none';
+    document.getElementById('prev_block_split').style.display = (layoutType === 'split') ? 'block' : 'none';
+    document.getElementById('prev_block_showcase').style.display = (layoutType === 'showcase') ? 'block' : 'none';
+    document.getElementById('prev_block_tallaje').style.display = (layoutType === 'process') ? 'block' : 'none';
 
     updatePreview();
+  }
+
+  function applyPresetTexts() {
+    const presetKey = document.getElementById('preset_template').value;
+    const preset = ALL_PRESETS.find(p => p.id === presetKey) || ALL_PRESETS[0];
+
+    if (preset.subject) document.getElementById('subject').value = preset.subject;
+    if (preset.preheader) document.getElementById('preheader').value = preset.preheader;
+    if (preset.hero_title) document.getElementById('hero_title').value = preset.hero_title;
+    if (preset.hero_desc) document.getElementById('hero_desc').value = preset.hero_desc;
+
+    if (preset.pilar1_title) document.getElementById('pilar1_title').value = preset.pilar1_title;
+    if (preset.pilar1_desc) document.getElementById('pilar1_desc').value = preset.pilar1_desc;
+    if (preset.pilar2_title) document.getElementById('pilar2_title').value = preset.pilar2_title;
+    if (preset.pilar2_desc) document.getElementById('pilar2_desc').value = preset.pilar2_desc;
+    if (preset.pilar3_title) document.getElementById('pilar3_title').value = preset.pilar3_title;
+    if (preset.pilar3_desc) document.getElementById('pilar3_desc').value = preset.pilar3_desc;
+
+    if (preset.hero_image) {
+      const imgKey = preset.hero_image.includes('tela') ? 'card_img_tela' : (preset.hero_image.includes('tallaje') ? 'card_img_tallaje' : 'card_img_equipo');
+      selectHeroImage(preset.hero_image, imgKey);
+    }
+
+    updatePreview();
+    showToast(`✓ Textos recomendados del preset "${preset.name}" aplicados`, 'success');
+  }
+
+  function scrollPresetsCarousel(dir) {
+    const track = document.getElementById('presets_carousel_track');
+    if (track) {
+      track.scrollBy({ left: dir * 260, behavior: 'smooth' });
+    }
+  }
+
+  function openPresetsModal() {
+    document.getElementById('modal_presets_picker').style.display = 'flex';
+  }
+
+  function closePresetsModal() {
+    document.getElementById('modal_presets_picker').style.display = 'none';
+  }
+
+  function filterModalCategory(category, btn) {
+    document.querySelectorAll('#modal_presets_picker .btn-secondary').forEach(b => {
+      b.style.background = '';
+      b.style.color = '';
+    });
+    if (btn) {
+      btn.style.background = '#E6F4F4';
+      btn.style.color = '#115E59';
+      btn.style.fontWeight = '700';
+    }
+
+    const items = document.querySelectorAll('.modal-preset-item');
+    items.forEach(it => {
+      const cat = it.getAttribute('data-category');
+      it.style.display = (category === 'all' || cat === category) ? 'flex' : 'none';
+    });
+  }
+
+  function filterModalPresets() {
+    const q = document.getElementById('modalPresetSearch').value.toLowerCase().trim();
+    const items = document.querySelectorAll('.modal-preset-item');
+    items.forEach(it => {
+      const text = it.getAttribute('data-text');
+      it.style.display = (!q || text.includes(q)) ? 'flex' : 'none';
+    });
   }
 
   // --- 2. TABS DE IMÁGENES: STOCK VS IA ---

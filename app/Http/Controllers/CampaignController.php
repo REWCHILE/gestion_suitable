@@ -8,6 +8,7 @@ use App\Models\Client;
 use App\Models\EmailLog;
 use App\Models\Setting;
 use App\Services\AiService;
+use App\Services\CampaignPresetService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
@@ -25,6 +26,48 @@ class CampaignController extends Controller
         $totalClients = Client::count();
 
         return view('campaigns.index', compact('campaigns', 'totalClients'));
+    }
+
+    public function presetsCatalog(Request $request): View
+    {
+        $allPresets = CampaignPresetService::all();
+        $categories = CampaignPresetService::categories();
+        $selectedCategory = $request->query('category', 'all');
+
+        $presets = $allPresets;
+        if ($selectedCategory !== 'all') {
+            $presets = array_values(array_filter($allPresets, fn($p) => ($p['category_slug'] ?? '') === $selectedCategory));
+        }
+
+        return view('campaigns.presets', compact('presets', 'categories', 'selectedCategory', 'allPresets'));
+    }
+
+    public function previewPresetHtml(string $preset): Response
+    {
+        $presetData = CampaignPresetService::find($preset);
+        if (!$presetData) {
+            abort(404, 'Preset no encontrado');
+        }
+
+        $dummyCampaign = new Campaign([
+            'id' => 99999,
+            'name' => $presetData['name'],
+            'subject' => $presetData['subject'],
+            'preheader' => $presetData['preheader'],
+            'hero_title' => $presetData['hero_title'],
+            'hero_desc' => $presetData['hero_desc'],
+            'hero_image' => $presetData['hero_image'],
+            'pilar1_title' => $presetData['pilar1_title'],
+            'pilar1_desc' => $presetData['pilar1_desc'],
+            'pilar2_title' => $presetData['pilar2_title'],
+            'pilar2_desc' => $presetData['pilar2_desc'],
+            'pilar3_title' => $presetData['pilar3_title'],
+            'pilar3_desc' => $presetData['pilar3_desc'],
+            'preset_template' => $presetData['id'],
+            'split_content' => $presetData['pilar1_desc'] ?? '',
+        ]);
+
+        return $this->campaignHtml($dummyCampaign);
     }
 
     public function preview(): View
@@ -133,10 +176,19 @@ class CampaignController extends Controller
             $html = str_replace('Tallaje en Clínica', htmlspecialchars($campaign->pilar3_title), $html);
         }
 
-        // 5. Inyectar Bloque según Preset de Estructura
+        // 5. Inyectar Bloque según Preset de Estructura (20 Presets B2B)
         $preset = $campaign->preset_template ?: 'clasica';
-        if ($preset === 'split') {
+        $presetInfo = CampaignPresetService::find($preset);
+        $layoutType = $presetInfo['layout_type'] ?? ($preset === 'split' ? 'split' : ($preset === 'showcase' ? 'showcase' : ($preset === 'tallaje' ? 'process' : 'pillars')));
+
+        if ($layoutType === 'split') {
             $splitImg = $campaign->hero_image ? asset('images/' . $campaign->hero_image) : asset('images/tela-antifluidos-macro.jpg');
+            $badgeText = htmlspecialchars($presetInfo['badge'] ?? '✦ CONFECCIÓN DIRECTA');
+            $splitTitle = htmlspecialchars($campaign->pilar1_title ?: ($presetInfo['pilar1_title'] ?? 'Ingeniería Textil a su Medida'));
+            $splitDesc = htmlspecialchars($campaign->split_content ?: ($campaign->pilar1_desc ?: ($presetInfo['pilar1_desc'] ?? 'Nuestros uniformes clínicos combinan tecnología Flex 4-Way y repelencia a fluidos con garantía directa de fábrica.')));
+            $ctaText = htmlspecialchars($presetInfo['cta_text'] ?? 'Solicitar Muestra Textil →');
+            $ctaUrl = htmlspecialchars($presetInfo['cta_url'] ?? 'https://suitable.cl/clinicas-y-centros/');
+
             $splitHtml = '
             <!-- PRESET: SPLIT 50/50 -->
             <tr>
@@ -147,23 +199,25 @@ class CampaignController extends Controller
                       <img src="' . $splitImg . '" alt="Suitable Detalle Textil" style="width: 100%; border-radius: 8px; box-shadow: 0 4px 14px rgba(0,0,0,0.1); display: block;" />
                     </td>
                     <td class="stack-column" width="50%" valign="middle" style="padding: 10px 18px;">
-                      <span style="display: inline-block; background: #E6F4F4; color: #146161; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 12px; margin-bottom: 8px;">✦ CONFECCIÓN DIRECTA</span>
-                      <h3 style="font-size: 18px; font-weight: 800; color: #0F172A; margin: 0 0 10px 0;">' . htmlspecialchars($campaign->pilar1_title ?: 'Ingeniería Textil a su Medida') . '</h3>
-                      <p style="font-size: 13.5px; line-height: 20px; color: #475569; margin: 0 0 16px 0;">' . htmlspecialchars($campaign->split_content ?: ($campaign->pilar1_desc ?: 'Nuestros uniformes clínicos combinan tecnología Flex 4-Way y repelencia a fluidos con garantía directa de fábrica.')) . '</p>
-                      <a href="https://suitable.cl/clinicas-y-centros/" target="_blank" style="background: #1E8888; color: white; padding: 10px 20px; border-radius: 6px; font-size: 12.5px; font-weight: 700; text-decoration: none; display: inline-block;">Solicitar Muestra Textil →</a>
+                      <span style="display: inline-block; background: #E6F4F4; color: #146161; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 12px; margin-bottom: 8px;">' . $badgeText . '</span>
+                      <h3 style="font-size: 18px; font-weight: 800; color: #0F172A; margin: 0 0 10px 0;">' . $splitTitle . '</h3>
+                      <p style="font-size: 13.5px; line-height: 20px; color: #475569; margin: 0 0 16px 0;">' . $splitDesc . '</p>
+                      <a href="' . $ctaUrl . '" target="_blank" style="background: #1E8888; color: white; padding: 10px 20px; border-radius: 6px; font-size: 12.5px; font-weight: 700; text-decoration: none; display: inline-block;">' . $ctaText . '</a>
                     </td>
                   </tr>
                 </table>
               </td>
             </tr>';
             $html = preg_replace('/<!-- VALUE PROPOSITION INTRO -->.*?<!-- PRODUCT SPOTLIGHT \/ SHOWCASE -->/s', $splitHtml . "\n<!-- PRODUCT SPOTLIGHT / SHOWCASE -->", $html);
-        } elseif ($preset === 'showcase') {
+        } elseif ($layoutType === 'showcase') {
+            $showcaseTitle = htmlspecialchars($presetInfo['hero_title'] ?? 'Líneas Destacadas de Uniformes Clínicos');
+            $showcaseDesc = htmlspecialchars($presetInfo['hero_desc'] ?? 'Modelos de confección chilena disponibles para dotación institucional.');
             $showcaseHtml = '
             <!-- PRESET: SHOWCASE 2x2 -->
             <tr>
               <td class="mobile-padding" style="padding: 30px 24px; background-color: #FFFFFF; text-align: center;">
-                <h2 style="font-size: 20px; font-weight: 800; color: #0F172A; margin: 0 0 8px 0;">Líneas Destacadas de Uniformes Clínicos</h2>
-                <p style="font-size: 13.5px; color: #64748B; margin: 0 auto 20px auto; max-width: 460px;">Modelos de confección chilena disponibles para dotación institucional.</p>
+                <h2 style="font-size: 20px; font-weight: 800; color: #0F172A; margin: 0 0 8px 0;">' . $showcaseTitle . '</h2>
+                <p style="font-size: 13.5px; color: #64748B; margin: 0 auto 20px auto; max-width: 460px;">' . $showcaseDesc . '</p>
                 <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0">
                   <tr>
                     <td class="stack-column" width="50%" style="padding: 8px;">
@@ -201,35 +255,44 @@ class CampaignController extends Controller
               </td>
             </tr>';
             $html = preg_replace('/<!-- VALUE PROPOSITION INTRO -->.*?<!-- PRODUCT SPOTLIGHT \/ SHOWCASE -->/s', $showcaseHtml . "\n<!-- PRODUCT SPOTLIGHT / SHOWCASE -->", $html);
-        } elseif ($preset === 'tallaje') {
+        } elseif ($layoutType === 'process') {
+            $badge = htmlspecialchars($presetInfo['badge'] ?? 'PROCESO EN TERRENO');
+            $pTitle = htmlspecialchars($presetInfo['hero_title'] ?? 'Proceso Simple y Garantizado');
+            $s1Title = htmlspecialchars($campaign->pilar1_title ?: ($presetInfo['pilar1_title'] ?? '1. Coordinamos Visita'));
+            $s1Desc = htmlspecialchars($campaign->pilar1_desc ?: ($presetInfo['pilar1_desc'] ?? 'Agendamos fecha y hora.'));
+            $s2Title = htmlspecialchars($campaign->pilar2_title ?: ($presetInfo['pilar2_title'] ?? '2. Llevamos Percheros'));
+            $s2Desc = htmlspecialchars($campaign->pilar2_desc ?: ($presetInfo['pilar2_desc'] ?? 'Prueba de tallas XS a 3XL.'));
+            $s3Title = htmlspecialchars($campaign->pilar3_title ?: ($presetInfo['pilar3_title'] ?? '3. Entrega & Garantía'));
+            $s3Desc = htmlspecialchars($campaign->pilar3_desc ?: ($presetInfo['pilar3_desc'] ?? '6 meses de garantía directa.'));
+
             $tallajeHtml = '
-            <!-- PRESET: TALLAJE 1-2-3 -->
+            <!-- PRESET: PROCESO 1-2-3 -->
             <tr>
               <td class="mobile-padding" style="padding: 32px 24px; background-color: #FFFFFF; text-align: center;">
-                <span style="background: #E6F4F4; color: #146161; font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 12px;">PROCESO SIN COSTO</span>
-                <h2 style="font-size: 20px; font-weight: 800; color: #0F172A; margin: 8px 0 6px 0;">3 Pasos para Renovar los Uniformes de su Clínica</h2>
+                <span style="background: #E6F4F4; color: #146161; font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 12px;">' . $badge . '</span>
+                <h2 style="font-size: 20px; font-weight: 800; color: #0F172A; margin: 8px 0 6px 0;">' . $pTitle . '</h2>
                 <p style="font-size: 13px; color: #64748B; margin: 0 auto 24px auto; max-width: 480px;">Sin pérdidas de tiempo en cambios de talla ni intermediarios.</p>
                 <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0">
                   <tr>
                     <td class="stack-column" width="33.3%" style="padding: 10px; text-align: center;">
                       <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px; padding: 18px 12px;">
                         <div style="width: 36px; height: 36px; line-height: 36px; border-radius: 50%; background: #1E8888; color: white; font-weight: 800; margin: 0 auto 10px auto; font-size: 15px;">1</div>
-                        <strong style="font-size: 13px; color: #0F172A; display: block;">Coordinamos Visita</strong>
-                        <span style="font-size: 11px; color: #64748B; display: block; margin-top: 4px;">Agendamos según turnos médicos.</span>
+                        <strong style="font-size: 13px; color: #0F172A; display: block;">' . $s1Title . '</strong>
+                        <span style="font-size: 11px; color: #64748B; display: block; margin-top: 4px;">' . $s1Desc . '</span>
                       </div>
                     </td>
                     <td class="stack-column" width="33.3%" style="padding: 10px; text-align: center;">
                       <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px; padding: 18px 12px;">
                         <div style="width: 36px; height: 36px; line-height: 36px; border-radius: 50%; background: #1E8888; color: white; font-weight: 800; margin: 0 auto 10px auto; font-size: 15px;">2</div>
-                        <strong style="font-size: 13px; color: #0F172A; display: block;">Llevamos Percheros</strong>
-                        <span style="font-size: 11px; color: #64748B; display: block; margin-top: 4px;">Pruebas en vivo (curva XS-3XL).</span>
+                        <strong style="font-size: 13px; color: #0F172A; display: block;">' . $s2Title . '</strong>
+                        <span style="font-size: 11px; color: #64748B; display: block; margin-top: 4px;">' . $s2Desc . '</span>
                       </div>
                     </td>
                     <td class="stack-column" width="33.3%" style="padding: 10px; text-align: center;">
                       <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px; padding: 18px 12px;">
                         <div style="width: 36px; height: 36px; line-height: 36px; border-radius: 50%; background: #1E8888; color: white; font-weight: 800; margin: 0 auto 10px auto; font-size: 15px;">3</div>
-                        <strong style="font-size: 13px; color: #0F172A; display: block;">Entrega &amp; Garantía</strong>
-                        <span style="font-size: 11px; color: #64748B; display: block; margin-top: 4px;">6 meses de garantía de fábrica.</span>
+                        <strong style="font-size: 13px; color: #0F172A; display: block;">' . $s3Title . '</strong>
+                        <span style="font-size: 11px; color: #64748B; display: block; margin-top: 4px;">' . $s3Desc . '</span>
                       </div>
                     </td>
                   </tr>
@@ -248,7 +311,7 @@ class CampaignController extends Controller
         $html = str_replace('{{ contact.EMAIL }}', 'adquisiciones@clinica.cl', $html);
         $html = str_replace('{{ contact.EMPRESA }}', 'Institución de Salud', $html);
 
-        $mirrorUrl = route('campaigns.html', ['campaign' => $campaign->id]);
+        $mirrorUrl = (!empty($campaign->id) && $campaign->exists) ? route('campaigns.html', ['campaign' => $campaign->id]) : route('campaigns.preview_html');
         $html = str_replace(['{{ mirror }}', 'href="{{ mirror }}"'], [$mirrorUrl, 'href="' . $mirrorUrl . '"'], $html);
         $html = str_replace(['{{ unsubscribe }}', 'href="{{ unsubscribe }}"'], ['#unsubscribe', 'href="#unsubscribe"'], $html);
 
@@ -272,13 +335,20 @@ class CampaignController extends Controller
         $aiProviders = AiService::getAvailableProviders();
         $activeAiProvider = Setting::get('active_ai_provider', 'groq');
 
+        $allPresets = CampaignPresetService::all();
+        $selectedPresetId = $request->query('preset', 'clasica');
+        $initialPreset = CampaignPresetService::find($selectedPresetId) ?? $allPresets[0];
+
         return view('campaigns.create', compact(
             'groups',
             'clients',
             'selectedGroupId',
             'targetCount',
             'aiProviders',
-            'activeAiProvider'
+            'activeAiProvider',
+            'allPresets',
+            'selectedPresetId',
+            'initialPreset'
         ));
     }
 
@@ -299,6 +369,10 @@ class CampaignController extends Controller
         $aiProviders = AiService::getAvailableProviders();
         $activeAiProvider = $campaign->ai_provider ?: Setting::get('active_ai_provider', 'groq');
 
+        $allPresets = CampaignPresetService::all();
+        $selectedPresetId = $campaign->preset_template ?: 'clasica';
+        $initialPreset = CampaignPresetService::find($selectedPresetId) ?? $allPresets[0];
+
         return view('campaigns.edit', compact(
             'campaign',
             'groups',
@@ -306,7 +380,10 @@ class CampaignController extends Controller
             'selectedGroupId',
             'targetCount',
             'aiProviders',
-            'activeAiProvider'
+            'activeAiProvider',
+            'allPresets',
+            'selectedPresetId',
+            'initialPreset'
         ));
     }
 
