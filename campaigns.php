@@ -45,10 +45,31 @@ $logs = $db->query("
       </div>
 
       <div class="header-actions">
-        <a href="send_outreach.php" class="btn btn-primary">
-          ✨ Lanzar Nueva Campaña con IA
+        <a href="send_outreach.php" class="btn btn-primary" style="font-weight: 700; padding: 10px 18px; box-shadow: 0 4px 14px rgba(30, 136, 136, 0.3);">
+          ✨ Crear Nueva Campaña con IA (Paso a Paso)
         </a>
       </div>
+    </div>
+
+    <!-- AI AGENT HIGHLIGHT CARD -->
+    <div style="background: linear-gradient(135deg, #0F2B2B 0%, #174E4E 100%); color: #FFFFFF; border-radius: 12px; padding: 18px 24px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; gap: 20px; box-shadow: 0 4px 15px rgba(15, 43, 43, 0.2);">
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(30, 136, 136, 0.4); display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.2);">
+          🤖
+        </div>
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <strong style="font-size: 15px; letter-spacing: 0.2px;">Nuevo: Agente y Arquitecto de Campañas B2B</strong>
+            <span style="background: #10B981; color: white; font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 10px; text-transform: uppercase;">Paso a Paso</span>
+          </div>
+          <p style="font-size: 12px; color: #BEE3E3; margin: 4px 0 0 0; max-width: 650px;">
+            El agente te pide el concepto, redacta la estructura de correo B2B, selecciona las imágenes del muestrario/telas y te muestra la vista previa en vivo mientras conversas con él hasta tu aprobación final.
+          </p>
+        </div>
+      </div>
+      <a href="send_outreach.php" class="btn btn-primary btn-sm" style="background: #1E8888; border-color: #1E8888; font-weight: 700; white-space: nowrap; padding: 10px 16px;">
+        Iniciar Asistente IA →
+      </a>
     </div>
 
     <!-- CAMPAIGNS TABLE -->

@@ -25,6 +25,28 @@ switch ($action) {
         json_response($res);
         break;
 
+    // 1.1 AI CAMPAIGN ARCHITECT CHAT (Step-by-Step Interactive Wizard)
+    case 'ai_campaign_chat':
+        $provider = trim($_POST['provider'] ?? get_setting('active_ai_provider', 'groq'));
+        $message = trim($_POST['message'] ?? '');
+        $history = json_decode($_POST['history'] ?? '[]', true) ?: [];
+        $currentDraft = json_decode($_POST['draft'] ?? '{}', true) ?: [];
+
+        $chatRes = AIService::campaignAgentChat($history, $message, $currentDraft, $provider);
+        $htmlPreview = AIService::renderCampaignHtml($chatRes['email_draft']);
+        $chatRes['html_preview'] = $htmlPreview;
+        json_response($chatRes);
+        break;
+
+    // 1.2 RENDER EMAIL PREVIEW
+    case 'render_campaign_preview':
+        $draft = json_decode($_POST['draft'] ?? '{}', true) ?: [];
+        $html = AIService::renderCampaignHtml($draft);
+        header('Content-Type: text/html; charset=utf-8');
+        echo $html;
+        exit;
+        break;
+
     // 2. TEST AI CONNECTION
     case 'test_ai_key':
         $provider = trim($_POST['provider'] ?? '');
