@@ -43,45 +43,59 @@ class AiService
 
     public static function generateCopy(string $provider, string $prompt, string $systemPrompt = '', string $model = ''): array
     {
-        $startTime = microtime(true);
-        $provider = strtolower(trim($provider));
-
         if (!$systemPrompt) {
             $systemPrompt = "Eres el estratega senior de Email Marketing B2B de 'SUITABLE' (suitable.cl), fabricante chileno de uniformes clínicos de alta gama. Tus propuestas de valor obligatorias son: 1) Fabricación 100% chilena sin intermediarios, 2) Telas antifluidos con tecnología Flex 4-Way, 3) 6 meses de garantía con la marca, y 4) Servicio exclusivo de tallaje a domicilio en la clínica. Tu objetivo es conectar con directores médicos, jefes de enfermería y encargados de adquisiciones en Chile.";
         }
 
+        return self::chat($provider, [
+            ['role' => 'user', 'content' => $prompt]
+        ], $systemPrompt, $model);
+    }
+
+    public static function chat(string $provider, array $messages, string $systemPrompt = '', string $model = ''): array
+    {
+        $startTime = microtime(true);
+        $provider = strtolower(trim($provider));
+
         $apiKey = Setting::get("{$provider}_api_key");
 
         if (empty($apiKey)) {
-            $fallback = self::smartFallback($prompt);
+            $lastUserMsg = '';
+            foreach (array_reverse($messages) as $m) {
+                if ($m['role'] === 'user') {
+                    $lastUserMsg = $m['content'];
+                    break;
+                }
+            }
+            $fallback = self::smartFallback($lastUserMsg ?: 'Consulta sobre uniformes Suitable');
             return [
-                'success' => true,
+                'success' => false,
                 'provider' => $provider,
-                'model' => 'local-fallback',
+                'model' => 'sin-configurar',
+                'error' => 'API Key no configurada para ' . strtoupper($provider) . '. Puede configurarla en Ajustes.',
                 'content' => $fallback,
                 'latency_ms' => round((microtime(true) - $startTime) * 1000),
                 'is_fallback' => true,
-                'note' => 'Generado con el motor local de contingencia. Ingrese su API Key en Ajustes para conectar directamente con ' . strtoupper($provider) . '.'
             ];
         }
 
         try {
             switch ($provider) {
                 case 'groq':
-                    $m = $model ?: Setting::get('groq_model', 'llama-3.3-70b-versatile');
-                    $content = self::callGroq($apiKey, $m, $prompt, $systemPrompt);
+                    $m = $model ?: Setting::get('groq_model', 'openai/gpt-oss-120b');
+                    $content = self::callGroqChat($apiKey, $m, $messages, $systemPrompt);
                     break;
                 case 'openai':
                     $m = $model ?: Setting::get('openai_model', 'gpt-4o-mini');
-                    $content = self::callOpenAI($apiKey, $m, $prompt, $systemPrompt);
+                    $content = self::callOpenAIChat($apiKey, $m, $messages, $systemPrompt);
                     break;
                 case 'claude':
                     $m = $model ?: Setting::get('claude_model', 'claude-3-5-sonnet-20241022');
-                    $content = self::callClaude($apiKey, $m, $prompt, $systemPrompt);
+                    $content = self::callClaudeChat($apiKey, $m, $messages, $systemPrompt);
                     break;
                 case 'gemini':
                     $m = $model ?: Setting::get('gemini_model', 'gemini-1.5-flash');
-                    $content = self::callGemini($apiKey, $m, $prompt, $systemPrompt);
+                    $content = self::callGeminiChat($apiKey, $m, $messages, $systemPrompt);
                     break;
                 default:
                     throw new Exception("Proveedor no soportado: $provider");
@@ -100,23 +114,31 @@ class AiService
                 'success' => false,
                 'provider' => $provider,
                 'error' => $e->getMessage(),
-                'content' => self::smartFallback($prompt),
+                'content' => null,
                 'is_fallback' => true,
                 'latency_ms' => round((microtime(true) - $startTime) * 1000),
             ];
         }
     }
 
-    private static function callGroq(string $apiKey, string $model, string $prompt, string $systemPrompt): string
+    private static function callGroqChat(string $apiKey, string $model, array $messages, string $systemPrompt): string
     {
+        $formatted = [];
+        if (!empty($systemPrompt)) {
+            $formatted[] = ['role' => 'system', 'content' => $systemPrompt];
+        }
+        foreach ($messages as $m) {
+            $formatted[] = [
+                'role' => in_array($m['role'], ['user', 'assistant', 'system']) ? $m['role'] : 'user',
+                'content' => (string)$m['content']
+            ];
+        }
+
         $payload = [
             'model' => $model,
-            'messages' => [
-                ['role' => 'system', 'content' => $systemPrompt],
-                ['role' => 'user', 'content' => $prompt]
-            ],
+            'messages' => $formatted,
             'temperature' => 0.65,
-            'max_tokens' => 1200
+            'max_tokens' => 2048
         ];
 
         return self::postJson('https://api.groq.com/openai/v1/chat/completions', $payload, [
@@ -124,16 +146,24 @@ class AiService
         ], 'choices.0.message.content');
     }
 
-    private static function callOpenAI(string $apiKey, string $model, string $prompt, string $systemPrompt): string
+    private static function callOpenAIChat(string $apiKey, string $model, array $messages, string $systemPrompt): string
     {
+        $formatted = [];
+        if (!empty($systemPrompt)) {
+            $formatted[] = ['role' => 'system', 'content' => $systemPrompt];
+        }
+        foreach ($messages as $m) {
+            $formatted[] = [
+                'role' => in_array($m['role'], ['user', 'assistant', 'system']) ? $m['role'] : 'user',
+                'content' => (string)$m['content']
+            ];
+        }
+
         $payload = [
             'model' => $model,
-            'messages' => [
-                ['role' => 'system', 'content' => $systemPrompt],
-                ['role' => 'user', 'content' => $prompt]
-            ],
+            'messages' => $formatted,
             'temperature' => 0.7,
-            'max_tokens' => 1200
+            'max_tokens' => 2048
         ];
 
         return self::postJson('https://api.openai.com/v1/chat/completions', $payload, [
@@ -141,16 +171,25 @@ class AiService
         ], 'choices.0.message.content');
     }
 
-    private static function callClaude(string $apiKey, string $model, string $prompt, string $systemPrompt): string
+    private static function callClaudeChat(string $apiKey, string $model, array $messages, string $systemPrompt): string
     {
+        $formatted = [];
+        foreach ($messages as $m) {
+            $role = $m['role'] === 'assistant' ? 'assistant' : 'user';
+            $formatted[] = [
+                'role' => $role,
+                'content' => (string)$m['content']
+            ];
+        }
+
         $payload = [
             'model' => $model,
-            'system' => $systemPrompt,
-            'messages' => [
-                ['role' => 'user', 'content' => $prompt]
-            ],
-            'max_tokens' => 1200
+            'max_tokens' => 2048,
+            'messages' => $formatted
         ];
+        if (!empty($systemPrompt)) {
+            $payload['system'] = $systemPrompt;
+        }
 
         return self::postJson('https://api.anthropic.com/v1/messages', $payload, [
             "x-api-key: $apiKey",
@@ -158,24 +197,30 @@ class AiService
         ], 'content.0.text');
     }
 
-    private static function callGemini(string $apiKey, string $model, string $prompt, string $systemPrompt): string
+    private static function callGeminiChat(string $apiKey, string $model, array $messages, string $systemPrompt): string
     {
         $url = "https://generativelanguage.googleapis.com/v1beta/models/{$model}:generateContent?key={$apiKey}";
+        $contents = [];
+        foreach ($messages as $m) {
+            $role = ($m['role'] === 'assistant' || $m['role'] === 'model') ? 'model' : 'user';
+            $contents[] = [
+                'role' => $role,
+                'parts' => [['text' => (string)$m['content']]]
+            ];
+        }
+
         $payload = [
-            'system_instruction' => [
-                'parts' => [['text' => $systemPrompt]]
-            ],
-            'contents' => [
-                [
-                    'role' => 'user',
-                    'parts' => [['text' => $prompt]]
-                ]
-            ],
+            'contents' => $contents,
             'generationConfig' => [
-                'temperature' => 0.6,
-                'maxOutputTokens' => 1500
+                'temperature' => 0.65,
+                'maxOutputTokens' => 2048
             ]
         ];
+        if (!empty($systemPrompt)) {
+            $payload['system_instruction'] = [
+                'parts' => [['text' => $systemPrompt]]
+            ];
+        }
 
         return self::postJson($url, $payload, [], 'candidates.0.content.parts.0.text');
     }

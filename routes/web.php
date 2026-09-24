@@ -40,10 +40,15 @@ Route::post('/import', [ImportController::class, 'process'])->name('import.proce
 // Analytics & Metrics
 Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
 
-// Cerebro Suitable (ML & Inteligencia de Negocio)
+// Cerebro Suitable (ML & Inteligencia de Negocio & Pensamientos AI)
 Route::get('/ml-brain', [MlBrainController::class, 'index'])->name('ml_brain.index');
 Route::get('/cerebro-suitable', [MlBrainController::class, 'index'])->name('cerebro_suitable.index');
 Route::post('/ml-brain/diagnostic', [MlBrainController::class, 'diagnostic'])->name('ml_brain.diagnostic');
+Route::get('/ml-brain/conversations', [MlBrainController::class, 'getConversations'])->name('ml_brain.conversations');
+Route::post('/ml-brain/conversations', [MlBrainController::class, 'createConversation'])->name('ml_brain.create_conversation');
+Route::get('/ml-brain/conversations/{id}', [MlBrainController::class, 'getConversation'])->name('ml_brain.get_conversation');
+Route::post('/ml-brain/conversations/{id}/messages', [MlBrainController::class, 'sendMessage'])->name('ml_brain.send_message');
+Route::delete('/ml-brain/conversations/{id}', [MlBrainController::class, 'deleteConversation'])->name('ml_brain.delete_conversation');
 
 // WooCommerce Sync
 Route::get('/woocommerce', [WooCommerceController::class, 'index'])->name('woocommerce.index');
