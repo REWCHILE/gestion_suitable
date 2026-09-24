@@ -5,10 +5,10 @@ require_auth();
 $user = current_user();
 $db = get_db();
 
-// Filter parameters
+// Filter parameters: DEFAULT VIEW IS 'table' AS REQUESTED
 $status_filter = $_GET['status'] ?? '';
 $search = trim($_GET['search'] ?? '');
-$view_mode = $_GET['view'] ?? 'kanban'; // 'kanban' or 'table'
+$view_mode = $_GET['view'] ?? 'table'; // 'table' by default
 
 // Base query
 $query = "SELECT * FROM clients WHERE 1=1";
@@ -138,6 +138,28 @@ foreach ($clients as $c) {
   <title>Pipeline de Clínicas &amp; Embudo B2B | Suitable</title>
   <link rel="stylesheet" href="assets/css/app.css?v=<?= time() ?>">
   <style>
+    /* CUSTOM BRAND SCROLLBARS (SUITABLE TEAL #1E8888) */
+    ::-webkit-scrollbar {
+      width: 9px;
+      height: 9px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #E6F4F4;
+      border-radius: 6px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1E8888;
+      border-radius: 6px;
+      border: 2px solid #E6F4F4;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #156B6B;
+    }
+    * {
+      scrollbar-color: #1E8888 #E6F4F4;
+      scrollbar-width: thin;
+    }
+
     /* View switcher */
     .view-switcher {
       display: flex;
@@ -165,14 +187,15 @@ foreach ($clients as $c) {
       box-shadow: var(--shadow-sm);
     }
 
-    /* Process Flow Hero Card */
+    /* Process Flow Hero Card (PLACED BELOW THE TABLE) */
     .pipeline-guide-card {
       background: #FFFFFF;
       border: 1px solid #E2E8F0;
       border-top: 4px solid var(--primary);
       border-radius: var(--radius-lg);
       padding: 22px 24px;
-      margin-bottom: 24px;
+      margin-top: 28px;
+      margin-bottom: 30px;
       box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
       position: relative;
     }
@@ -347,19 +370,24 @@ foreach ($clients as $c) {
       overflow-y: hidden !important;
       padding-bottom: 24px !important;
       align-items: flex-start !important;
+      scrollbar-color: #1E8888 #E6F4F4 !important;
       scrollbar-width: thin !important;
     }
 
     .kanban-board-wrapper::-webkit-scrollbar {
-      height: 8px;
+      height: 9px;
     }
     .kanban-board-wrapper::-webkit-scrollbar-track {
-      background: #E2E8F0;
-      border-radius: 4px;
+      background: #E6F4F4;
+      border-radius: 6px;
     }
     .kanban-board-wrapper::-webkit-scrollbar-thumb {
-      background: #94A3B8;
-      border-radius: 4px;
+      background: #1E8888;
+      border-radius: 6px;
+      border: 2px solid #E6F4F4;
+    }
+    .kanban-board-wrapper::-webkit-scrollbar-thumb:hover {
+      background: #156B6B;
     }
 
     /* KANBAN COLUMN - ABSOLUTELY NO INTERNAL HORIZONTAL SCROLLBAR */
@@ -630,11 +658,11 @@ foreach ($clients as $c) {
       <div class="header-actions">
         <!-- View switcher -->
         <div class="view-switcher">
-          <a href="clients.php?view=kanban<?= $search ? '&search='.urlencode($search) : '' ?>" class="view-btn <?= $view_mode === 'kanban' ? 'active' : '' ?>">
-            📋 Tablero
-          </a>
           <a href="clients.php?view=table<?= $search ? '&search='.urlencode($search) : '' ?>" class="view-btn <?= $view_mode === 'table' ? 'active' : '' ?>">
             📑 Tabla
+          </a>
+          <a href="clients.php?view=kanban<?= $search ? '&search='.urlencode($search) : '' ?>" class="view-btn <?= $view_mode === 'kanban' ? 'active' : '' ?>">
+            📋 Tablero
           </a>
         </div>
 
@@ -642,117 +670,6 @@ foreach ($clients as $c) {
           + Nueva Clínica
         </button>
       </div>
-    </div>
-
-    <!-- DETALLE GRÁFICO DEL EMBUDO COMERCIAL: CÓMO FUNCIONA ESTA PESTAÑA -->
-    <div class="pipeline-guide-card" id="pipeline-guide-box">
-      
-      <div class="pipeline-guide-header">
-        <div>
-          <span class="guide-tag">🏥 METODOLOGÍA COMERCIAL B2B SUITABLE</span>
-          <div class="guide-title">
-            <span>Ruta del Embudo de Ventas: ¿Qué se hace en cada etapa?</span>
-          </div>
-          <p class="guide-subtitle">
-            Cada prospecto médico avanza en 6 pasos estratégicos: desde el primer correo hasta la prueba presencial de tallas y la orden corporativa.
-          </p>
-        </div>
-
-        <!-- KPI SUMMARY PILLS -->
-        <div class="guide-stats-row">
-          <div class="guide-stat-pill">
-            <span class="guide-stat-val" style="color: #059669;">$<?= number_format($total_pipeline_monto, 0, ',', '.') ?> CLP</span>
-            <span class="guide-stat-lbl">💰 Monto en Pipeline</span>
-          </div>
-          <div class="guide-stat-pill">
-            <span class="guide-stat-val" style="color: #7E22CE;"><?= $total_tallajes ?> agendados</span>
-            <span class="guide-stat-lbl">📏 Tallajes en Terreno</span>
-          </div>
-          <div class="guide-stat-pill">
-            <span class="guide-stat-val" style="color: var(--primary);"><?= number_format($total_personal, 0, ',', '.') ?> pers.</span>
-            <span class="guide-stat-lbl">👥 Equipo a Uniformar</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 6-STEP PROCESS GRID -->
-      <div class="pipeline-steps-grid">
-        
-        <!-- PASO 1 -->
-        <div class="pipeline-step-box" style="--step-accent: #3B82F6;" onclick="filterOrScroll('nuevo')">
-          <span class="step-number-tag" style="background: #EFF6FF; color: #1D4ED8;">Paso 1 • Entrada</span>
-          <div class="step-box-title">📥 1. Prospección</div>
-          <p class="step-box-desc">
-            Carga de bases clínicas (CSV o manual). Identificación de jefaturas médicas, adquisiciones o RRHH.
-          </p>
-          <div class="step-box-action">
-            <span>🎯</span> Acción: Calificar datos
-          </div>
-        </div>
-
-        <!-- PASO 2 -->
-        <div class="pipeline-step-box" style="--step-accent: #6366F1;" onclick="filterOrScroll('correo_1_enviado')">
-          <span class="step-number-tag" style="background: #EEF2FF; color: #4338CA;">Paso 2 • Primer Contacto</span>
-          <div class="step-box-title">✉️ 2. Presentación Flex</div>
-          <p class="step-box-desc">
-            Envío de <strong>Plantilla 1 Brevo</strong>. Foco en telas con elastano (Flex), repelencia a fluidos y catálogo clínico.
-          </p>
-          <div class="step-box-action">
-            <span>📩</span> Acción: Enviar Correo 1
-          </div>
-        </div>
-
-        <!-- PASO 3 -->
-        <div class="pipeline-step-box" style="--step-accent: #8B5CF6;" onclick="filterOrScroll('correo_2_enviado')">
-          <span class="step-number-tag" style="background: #F5F3FF; color: #6D28D9;">Paso 3 • Propuesta Valor</span>
-          <div class="step-box-title">🚀 3. Propuesta B2B</div>
-          <p class="step-box-desc">
-            Envío de <strong>Plantilla 2 con IA</strong>. Enfoque: <em>Fabricación 100% Chilena</em>, <em>6 Meses de Garantía</em> y propuesta de tallaje.
-          </p>
-          <div class="step-box-action">
-            <span>✨</span> Acción: Ofrecer Tallaje
-          </div>
-        </div>
-
-        <!-- PASO 4: TALLAJE EN TERRENO (⭐ CLAVE DE VENTA) -->
-        <div class="pipeline-step-box step-key-highlight" style="--step-accent: #F59E0B;" onclick="filterOrScroll('tallaje_agendado')">
-          <span class="step-badge-key">⭐ CLAVE SUITABLE</span>
-          <span class="step-number-tag" style="background: #FEF3C7; color: #B45309;">Paso 4 • En Terreno</span>
-          <div class="step-box-title">📏 4. Tallaje Clínico</div>
-          <p class="step-box-desc">
-            <strong>Visita presencial a la clínica</strong> con percheros y talleros (XS a 3XL). Los médicos se prueban en vivo asegurando calce perfecto.
-          </p>
-          <div class="step-box-action" style="background: #FEF3C7; color: #B45309; border-color: #FDE68A;">
-            <span>🗓️</span> Acción: Agendar Visita
-          </div>
-        </div>
-
-        <!-- PASO 5 -->
-        <div class="pipeline-step-box" style="--step-accent: #10B981;" onclick="filterOrScroll('cotizacion_enviada')">
-          <span class="step-number-tag" style="background: #ECFDF5; color: #047857;">Paso 5 • Propuesta</span>
-          <div class="step-box-title">💼 5. Cotización Formal</div>
-          <p class="step-box-desc">
-            Emisión de cotización consolidada con precios por volumen corporativo, desglose de tallas y bordado institucional.
-          </p>
-          <div class="step-box-action">
-            <span>📄</span> Acción: Enviar Cotización
-          </div>
-        </div>
-
-        <!-- PASO 6 -->
-        <div class="pipeline-step-box" style="--step-accent: #059669;" onclick="filterOrScroll('ganado')">
-          <span class="step-number-tag" style="background: #ECFDF5; color: #065F46;">Paso 6 • Cierre</span>
-          <div class="step-box-title">🏆 6. Convenio Cerrado</div>
-          <p class="step-box-desc">
-            Venta ganada con orden de compra. Confección en taller Las Condes, entrega y seguimiento para ciclo de recompra (114 días).
-          </p>
-          <div class="step-box-action" style="background: #DCFCE7; color: #15803D; border-color: #BBF7D0;">
-            <span>🎉</span> Acción: Producción y Entrega
-          </div>
-        </div>
-
-      </div>
-
     </div>
 
     <!-- FILTER BAR -->
@@ -777,7 +694,90 @@ foreach ($clients as $c) {
       </div>
     </div>
 
-    <?php if ($view_mode === 'kanban'): ?>
+    <!-- MAIN VIEW: TABLE (DEFAULT) OR KANBAN -->
+    <?php if ($view_mode === 'table'): ?>
+      
+      <!-- TABLE VIEW (NOW DEFAULT) -->
+      <div class="table-card" style="margin-bottom: 24px;">
+        <table class="crm-table">
+          <thead>
+            <tr>
+              <th>Institución / Clínica</th>
+              <th>Contacto</th>
+              <th>Teléfono / WhatsApp</th>
+              <th>Estado Actual</th>
+              <th>Tallaje / Cotización</th>
+              <th>Último Envío</th>
+              <th style="text-align: right;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php foreach ($clients as $cli): 
+              $st_info = get_status_info($cli['estado']);
+              $phone_clean = preg_replace('/[^0-9]/', '', $cli['telefono'] ?? '');
+            ?>
+              <tr>
+                <td>
+                  <div class="client-name-bold">🏥 <?= htmlspecialchars($cli['empresa']) ?></div>
+                  <div class="client-meta">📍 <?= htmlspecialchars($cli['region_comuna'] ?: 'RM') ?> • 👥 <?= $cli['tamano_equipo'] ?> profesionales</div>
+                </td>
+                <td>
+                  <div style="font-weight: 700; color: #0F172A;"><?= htmlspecialchars($cli['contacto_nombre']) ?></div>
+                  <div class="client-meta"><?= htmlspecialchars($cli['cargo']) ?> • <?= htmlspecialchars($cli['email']) ?></div>
+                </td>
+                <td>
+                  <?php if ($phone_clean): ?>
+                    <a href="https://wa.me/<?= $phone_clean ?>?text=Hola%20<?= urlencode($cli['contacto_nombre']) ?>,%20le%20escribo%20de%20Suitable" target="_blank" class="btn-wa-pill" style="display: inline-flex; padding: 4px 10px;">
+                      💬 <?= htmlspecialchars($cli['telefono']) ?>
+                    </a>
+                  <?php else: ?>
+                    <span style="color: var(--text-subtle);">No registrado</span>
+                  <?php endif; ?>
+                </td>
+                <td>
+                  <span class="badge <?= $st_info['badge'] ?>"><?= $st_info['label'] ?></span>
+                </td>
+                <td>
+                  <?php if ($cli['fecha_tallaje']): ?>
+                    <div style="font-size: 12px; color: #7E22CE; font-weight: 700;">
+                      📏 Tallaje: <?= date('d/m/Y', strtotime($cli['fecha_tallaje'])) ?>
+                    </div>
+                  <?php endif; ?>
+                  <?php if ($cli['monto_cotizacion']): ?>
+                    <div style="font-size: 12px; color: #059669; font-weight: 800;">
+                      💰 $<?= number_format($cli['monto_cotizacion'], 0, ',', '.') ?> CLP
+                    </div>
+                  <?php endif; ?>
+                  <?php if (!$cli['fecha_tallaje'] && !$cli['monto_cotizacion']): ?>
+                    <span style="color: var(--text-subtle); font-size: 12px;">Sin agendar</span>
+                  <?php endif; ?>
+                </td>
+                <td>
+                  <div style="font-size: 12px;">
+                    <?= $cli['ultimo_envio_fecha'] ? date('d/m/Y H:i', strtotime($cli['ultimo_envio_fecha'])) : 'Pendiente' ?>
+                  </div>
+                  <?php if ($cli['ultimo_envio_tipo']): ?>
+                    <span style="font-size: 10px; font-weight: 700; color: #0F766E;">
+                      <?= $cli['ultimo_envio_tipo'] === 'plantilla_2' ? 'Plantilla 2 B2B' : 'Plantilla 1' ?>
+                    </span>
+                  <?php endif; ?>
+                </td>
+                <td style="text-align: right;">
+                  <button type="button" class="btn btn-secondary btn-sm" onclick='editClient(<?= json_encode($cli) ?>)'>
+                    ✏️ Editar
+                  </button>
+                  <a href="send_outreach.php?client_id=<?= $cli['id'] ?>" class="btn btn-primary btn-sm">
+                    ✉️ Enviar
+                  </a>
+                </td>
+              </tr>
+            <?php endforeach; ?>
+          </tbody>
+        </table>
+      </div>
+
+    <?php else: ?>
+
       <!-- KANBAN BOARD CONTAINER -->
       <div class="kanban-board-wrapper">
         <?php foreach ($columns as $status_key => $col): ?>
@@ -895,86 +895,118 @@ foreach ($clients as $c) {
         <?php endforeach; ?>
       </div>
 
-    <?php else: ?>
-      <!-- TABLE VIEW -->
-      <div class="table-card">
-        <table class="crm-table">
-          <thead>
-            <tr>
-              <th>Institución / Clínica</th>
-              <th>Contacto</th>
-              <th>Teléfono / WhatsApp</th>
-              <th>Estado Actual</th>
-              <th>Tallaje / Cotización</th>
-              <th>Último Envío</th>
-              <th style="text-align: right;">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php foreach ($clients as $cli): 
-              $st_info = get_status_info($cli['estado']);
-              $phone_clean = preg_replace('/[^0-9]/', '', $cli['telefono'] ?? '');
-            ?>
-              <tr>
-                <td>
-                  <div class="client-name-bold">🏥 <?= htmlspecialchars($cli['empresa']) ?></div>
-                  <div class="client-meta">📍 <?= htmlspecialchars($cli['region_comuna'] ?: 'RM') ?> • 👥 <?= $cli['tamano_equipo'] ?> profesionales</div>
-                </td>
-                <td>
-                  <div style="font-weight: 700; color: #0F172A;"><?= htmlspecialchars($cli['contacto_nombre']) ?></div>
-                  <div class="client-meta"><?= htmlspecialchars($cli['cargo']) ?> • <?= htmlspecialchars($cli['email']) ?></div>
-                </td>
-                <td>
-                  <?php if ($phone_clean): ?>
-                    <a href="https://wa.me/<?= $phone_clean ?>?text=Hola%20<?= urlencode($cli['contacto_nombre']) ?>,%20le%20escribo%20de%20Suitable" target="_blank" class="btn-wa-pill" style="display: inline-flex;">
-                      💬 <?= htmlspecialchars($cli['telefono']) ?>
-                    </a>
-                  <?php else: ?>
-                    <span style="color: var(--text-subtle);">No registrado</span>
-                  <?php endif; ?>
-                </td>
-                <td>
-                  <span class="badge <?= $st_info['badge'] ?>"><?= $st_info['label'] ?></span>
-                </td>
-                <td>
-                  <?php if ($cli['fecha_tallaje']): ?>
-                    <div style="font-size: 12px; color: #7E22CE; font-weight: 700;">
-                      📏 Tallaje: <?= date('d/m/Y', strtotime($cli['fecha_tallaje'])) ?>
-                    </div>
-                  <?php endif; ?>
-                  <?php if ($cli['monto_cotizacion']): ?>
-                    <div style="font-size: 12px; color: #059669; font-weight: 800;">
-                      💰 $<?= number_format($cli['monto_cotizacion'], 0, ',', '.') ?> CLP
-                    </div>
-                  <?php endif; ?>
-                  <?php if (!$cli['fecha_tallaje'] && !$cli['monto_cotizacion']): ?>
-                    <span style="color: var(--text-subtle); font-size: 12px;">Sin agendar</span>
-                  <?php endif; ?>
-                </td>
-                <td>
-                  <div style="font-size: 12px;">
-                    <?= $cli['ultimo_envio_fecha'] ? date('d/m/Y H:i', strtotime($cli['ultimo_envio_fecha'])) : 'Pendiente' ?>
-                  </div>
-                  <?php if ($cli['ultimo_envio_tipo']): ?>
-                    <span style="font-size: 10px; font-weight: 700; color: #0F766E;">
-                      <?= $cli['ultimo_envio_tipo'] === 'plantilla_2' ? 'Plantilla 2 B2B' : 'Plantilla 1' ?>
-                    </span>
-                  <?php endif; ?>
-                </td>
-                <td style="text-align: right;">
-                  <button type="button" class="btn btn-secondary btn-sm" onclick='editClient(<?= json_encode($cli) ?>)'>
-                    ✏️ Editar
-                  </button>
-                  <a href="send_outreach.php?client_id=<?= $cli['id'] ?>" class="btn btn-primary btn-sm">
-                    ✉️ Enviar
-                  </a>
-                </td>
-              </tr>
-            <?php endforeach; ?>
-          </tbody>
-        </table>
-      </div>
     <?php endif; ?>
+
+    <!-- DETALLE GRÁFICO DEL EMBUDO COMERCIAL: UBICADO ABAJO DE LA TABLA COMO FUE SOLICITADO -->
+    <div class="pipeline-guide-card" id="pipeline-guide-box">
+      
+      <div class="pipeline-guide-header">
+        <div>
+          <span class="guide-tag">🏥 METODOLOGÍA COMERCIAL B2B SUITABLE</span>
+          <div class="guide-title">
+            <span>Ruta del Embudo de Ventas: ¿Qué se hace en cada etapa?</span>
+          </div>
+          <p class="guide-subtitle">
+            Cada prospecto médico avanza en 6 pasos estratégicos: desde el primer correo hasta la prueba presencial de tallas y la orden corporativa.
+          </p>
+        </div>
+
+        <!-- KPI SUMMARY PILLS -->
+        <div class="guide-stats-row">
+          <div class="guide-stat-pill">
+            <span class="guide-stat-val" style="color: #059669;">$<?= number_format($total_pipeline_monto, 0, ',', '.') ?> CLP</span>
+            <span class="guide-stat-lbl">💰 Monto en Pipeline</span>
+          </div>
+          <div class="guide-stat-pill">
+            <span class="guide-stat-val" style="color: #7E22CE;"><?= $total_tallajes ?> agendados</span>
+            <span class="guide-stat-lbl">📏 Tallajes en Terreno</span>
+          </div>
+          <div class="guide-stat-pill">
+            <span class="guide-stat-val" style="color: var(--primary);"><?= number_format($total_personal, 0, ',', '.') ?> pers.</span>
+            <span class="guide-stat-lbl">👥 Equipo a Uniformar</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6-STEP PROCESS GRID -->
+      <div class="pipeline-steps-grid">
+        
+        <!-- PASO 1 -->
+        <div class="pipeline-step-box" style="--step-accent: #3B82F6;" onclick="filterOrScroll('nuevo')">
+          <span class="step-number-tag" style="background: #EFF6FF; color: #1D4ED8;">Paso 1 • Entrada</span>
+          <div class="step-box-title">📥 1. Prospección</div>
+          <p class="step-box-desc">
+            Carga de bases clínicas (CSV o manual). Identificación de jefaturas médicas, adquisiciones o RRHH.
+          </p>
+          <div class="step-box-action">
+            <span>🎯</span> Acción: Calificar datos
+          </div>
+        </div>
+
+        <!-- PASO 2 -->
+        <div class="pipeline-step-box" style="--step-accent: #6366F1;" onclick="filterOrScroll('correo_1_enviado')">
+          <span class="step-number-tag" style="background: #EEF2FF; color: #4338CA;">Paso 2 • Primer Contacto</span>
+          <div class="step-box-title">✉️ 2. Presentación Flex</div>
+          <p class="step-box-desc">
+            Envío de <strong>Plantilla 1 Brevo</strong>. Foco en telas con elastano (Flex), repelencia a fluidos y catálogo clínico.
+          </p>
+          <div class="step-box-action">
+            <span>📩</span> Acción: Enviar Correo 1
+          </div>
+        </div>
+
+        <!-- PASO 3 -->
+        <div class="pipeline-step-box" style="--step-accent: #8B5CF6;" onclick="filterOrScroll('correo_2_enviado')">
+          <span class="step-number-tag" style="background: #F5F3FF; color: #6D28D9;">Paso 3 • Propuesta Valor</span>
+          <div class="step-box-title">🚀 3. Propuesta B2B</div>
+          <p class="step-box-desc">
+            Envío de <strong>Plantilla 2 con IA</strong>. Enfoque: <em>Fabricación 100% Chilena</em>, <em>6 Meses de Garantía</em> y propuesta de tallaje.
+          </p>
+          <div class="step-box-action">
+            <span>✨</span> Acción: Ofrecer Tallaje
+          </div>
+        </div>
+
+        <!-- PASO 4: TALLAJE EN TERRENO (⭐ CLAVE DE VENTA) -->
+        <div class="pipeline-step-box step-key-highlight" style="--step-accent: #F59E0B;" onclick="filterOrScroll('tallaje_agendado')">
+          <span class="step-badge-key">⭐ CLAVE SUITABLE</span>
+          <span class="step-number-tag" style="background: #FEF3C7; color: #B45309;">Paso 4 • En Terreno</span>
+          <div class="step-box-title">📏 4. Tallaje Clínico</div>
+          <p class="step-box-desc">
+            <strong>Visita presencial a la clínica</strong> con percheros y talleros (XS a 3XL). Los médicos se prueban en vivo asegurando calce perfecto.
+          </p>
+          <div class="step-box-action" style="background: #FEF3C7; color: #B45309; border-color: #FDE68A;">
+            <span>🗓️</span> Acción: Agendar Visita
+          </div>
+        </div>
+
+        <!-- PASO 5 -->
+        <div class="pipeline-step-box" style="--step-accent: #10B981;" onclick="filterOrScroll('cotizacion_enviada')">
+          <span class="step-number-tag" style="background: #ECFDF5; color: #047857;">Paso 5 • Propuesta</span>
+          <div class="step-box-title">💼 5. Cotización Formal</div>
+          <p class="step-box-desc">
+            Emisión de cotización consolidada con precios por volumen corporativo, desglose de tallas y bordado institucional.
+          </p>
+          <div class="step-box-action">
+            <span>📄</span> Acción: Enviar Cotización
+          </div>
+        </div>
+
+        <!-- PASO 6 -->
+        <div class="pipeline-step-box" style="--step-accent: #059669;" onclick="filterOrScroll('ganado')">
+          <span class="step-number-tag" style="background: #ECFDF5; color: #065F46;">Paso 6 • Cierre</span>
+          <div class="step-box-title">🏆 6. Convenio Cerrado</div>
+          <p class="step-box-desc">
+            Venta ganada con orden de compra. Confección en taller Las Condes, entrega y seguimiento para ciclo de recompra (114 días).
+          </p>
+          <div class="step-box-action" style="background: #DCFCE7; color: #15803D; border-color: #BBF7D0;">
+            <span>🎉</span> Acción: Producción y Entrega
+          </div>
+        </div>
+
+      </div>
+
+    </div>
 
   </main>
 
@@ -1123,6 +1155,13 @@ foreach ($clients as $c) {
   <script src="assets/js/app.js"></script>
   <script>
     function filterOrScroll(statusKey) {
+      // If we are in table mode, switch to kanban or filter
+      const currentUrl = new URL(window.location.href);
+      if (currentUrl.searchParams.get('view') === 'table' || !currentUrl.searchParams.get('view')) {
+        window.location.href = 'clients.php?view=kanban#col-' + statusKey;
+        return;
+      }
+
       const col = document.getElementById('col-' + statusKey);
       if (col) {
         col.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
