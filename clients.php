@@ -33,20 +33,100 @@ $stmt = $db->prepare($query);
 $stmt->execute($params);
 $clients = $stmt->fetchAll();
 
-// Group clients by status for Kanban
+// Group clients by status for Kanban & stage definitions
 $columns = [
-    'nuevo' => ['title' => 'Nuevos', 'badge' => 'badge-gray', 'clients' => []],
-    'correo_1_enviado' => ['title' => 'Correo 1 Enviado', 'badge' => 'badge-blue', 'clients' => []],
-    'correo_2_enviado' => ['title' => 'Correo 2 (B2B)', 'badge' => 'badge-teal', 'clients' => []],
-    'tallaje_agendado' => ['title' => 'Tallaje Agendado', 'badge' => 'badge-purple', 'clients' => []],
-    'cotizacion_enviada' => ['title' => 'Cotización Enviada', 'badge' => 'badge-amber', 'clients' => []],
-    'ganado' => ['title' => 'Venta Ganada', 'badge' => 'badge-emerald', 'clients' => []],
+    'nuevo' => [
+        'title' => 'Nuevos',
+        'icon' => '📥',
+        'color' => '#3B82F6',
+        'step_num' => 1,
+        'step_name' => '1. Prospección',
+        'step_desc' => 'Entrada y calificación de clínicas o mutuales.',
+        'step_action' => 'Verificar encargado de compras',
+        'badge' => 'badge-blue',
+        'clients' => [],
+        'total_monto' => 0
+    ],
+    'correo_1_enviado' => [
+        'title' => 'Correo 1 Enviado',
+        'icon' => '✉️',
+        'color' => '#6366F1',
+        'step_num' => 2,
+        'step_name' => '2. Presentación Flex',
+        'step_desc' => 'Envío Plantilla 1: Antifluidos y catálogo clínico.',
+        'step_action' => 'Presentar telas y tecnología',
+        'badge' => 'badge-indigo',
+        'clients' => [],
+        'total_monto' => 0
+    ],
+    'correo_2_enviado' => [
+        'title' => 'Correo 2 (B2B)',
+        'icon' => '🚀',
+        'color' => '#8B5CF6',
+        'step_num' => 3,
+        'step_name' => '3. Propuesta B2B',
+        'step_desc' => 'Envío Plantilla 2: Fábrica chilena y 6M garantía.',
+        'step_action' => 'Ofrecer servicio de tallaje',
+        'badge' => 'badge-purple',
+        'clients' => [],
+        'total_monto' => 0
+    ],
+    'tallaje_agendado' => [
+        'title' => 'Tallaje en Terreno',
+        'icon' => '📏',
+        'color' => '#F59E0B',
+        'step_num' => 4,
+        'step_name' => '4. Tallaje en Terreno',
+        'step_desc' => '¡Diferenciador Clave! Muestras y percheros in situ.',
+        'step_action' => 'Prueba en vivo de médicos (XS-3XL)',
+        'badge' => 'badge-amber',
+        'clients' => [],
+        'total_monto' => 0
+    ],
+    'cotizacion_enviada' => [
+        'title' => 'Cotización Enviada',
+        'icon' => '💼',
+        'color' => '#10B981',
+        'step_num' => 5,
+        'step_name' => '5. Cotización Formal',
+        'step_desc' => 'Propuesta económica por volumen y bordados.',
+        'step_action' => 'Seguimiento de orden de compra',
+        'badge' => 'badge-teal',
+        'clients' => [],
+        'total_monto' => 0
+    ],
+    'ganado' => [
+        'title' => 'Venta Ganada',
+        'icon' => '🏆',
+        'color' => '#059669',
+        'step_num' => 6,
+        'step_name' => '6. Convenio Cerrado',
+        'step_desc' => 'Contrato firmado. Confección en taller y entrega.',
+        'step_action' => 'Recompra a 114 días',
+        'badge' => 'badge-emerald',
+        'clients' => [],
+        'total_monto' => 0
+    ],
 ];
+
+$total_pipeline_monto = 0;
+$total_personal = 0;
+$total_tallajes = 0;
 
 foreach ($clients as $c) {
     $st = $c['estado'];
     if (isset($columns[$st])) {
         $columns[$st]['clients'][] = $c;
+        if (!empty($c['monto_cotizacion'])) {
+            $columns[$st]['total_monto'] += floatval($c['monto_cotizacion']);
+            $total_pipeline_monto += floatval($c['monto_cotizacion']);
+        }
+    }
+    if (!empty($c['tamano_equipo'])) {
+        $total_personal += intval($c['tamano_equipo']);
+    }
+    if (!empty($c['fecha_tallaje']) || $c['estado'] === 'tallaje_agendado') {
+        $total_tallajes++;
     }
 }
 ?>
@@ -55,16 +135,17 @@ foreach ($clients as $c) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pipeline de Clínicas | Suitable Outreach</title>
+  <title>Pipeline de Clínicas &amp; Embudo B2B | Suitable</title>
   <link rel="stylesheet" href="assets/css/app.css?v=<?= time() ?>">
   <style>
+    /* View switcher */
     .view-switcher {
       display: flex;
-      background-color: var(--bg-subtle);
+      background-color: #F1F5F9;
       border: 1px solid var(--border-light);
       border-radius: var(--radius-sm);
       padding: 3px;
-      gap: 2px;
+      gap: 3px;
     }
     .view-btn {
       padding: 6px 14px;
@@ -76,11 +157,411 @@ foreach ($clients as $c) {
       cursor: pointer;
       color: var(--text-muted);
       text-decoration: none;
+      transition: all 0.15s ease;
     }
     .view-btn.active {
       background-color: white;
       color: var(--primary);
       box-shadow: var(--shadow-sm);
+    }
+
+    /* Process Flow Hero Card */
+    .pipeline-guide-card {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-top: 4px solid var(--primary);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
+      position: relative;
+    }
+
+    .pipeline-guide-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .guide-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--primary);
+      background: #E6F4F4;
+      padding: 4px 10px;
+      border-radius: 4px;
+      margin-bottom: 6px;
+    }
+
+    .guide-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #0F172A;
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .guide-subtitle {
+      font-size: 13px;
+      color: #64748B;
+    }
+
+    .guide-stats-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .guide-stat-pill {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 8px;
+      padding: 8px 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      min-width: 140px;
+    }
+
+    .guide-stat-val {
+      font-size: 16px;
+      font-weight: 800;
+      color: #0F172A;
+      line-height: 1.2;
+    }
+
+    .guide-stat-lbl {
+      font-size: 11px;
+      color: #64748B;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    /* Graphic Step Flow Grid */
+    .pipeline-steps-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+      position: relative;
+    }
+
+    .pipeline-step-box {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 10px;
+      padding: 14px 12px;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      cursor: pointer;
+    }
+
+    .pipeline-step-box:hover {
+      background: #FFFFFF;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+      border-color: var(--step-accent, var(--primary));
+    }
+
+    .step-number-tag {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 6px;
+      align-self: flex-start;
+    }
+
+    .step-box-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #0F172A;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .step-box-desc {
+      font-size: 11px;
+      color: #475569;
+      line-height: 1.4;
+      margin-bottom: 8px;
+      flex-grow: 1;
+    }
+
+    .step-box-action {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #0F766E;
+      background: #F0FDFA;
+      border: 1px solid #CCFBF1;
+      padding: 4px 6px;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Key step highlight */
+    .step-key-highlight {
+      border: 2px solid #F59E0B !important;
+      background: #FFFBEB !important;
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15) !important;
+    }
+
+    .step-badge-key {
+      position: absolute;
+      top: -10px;
+      right: 10px;
+      background: #F59E0B;
+      color: #FFFFFF;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 6px rgba(245, 158, 11, 0.35);
+    }
+
+    /* Kanban Grid */
+    .kanban-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 14px;
+      overflow-x: auto;
+      padding-bottom: 20px;
+      align-items: flex-start;
+    }
+
+    .kanban-col {
+      background-color: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 12px;
+      min-width: 240px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .kanban-col-header {
+      padding: 10px 12px;
+      background: #FFFFFF;
+      border-radius: 8px;
+      border: 1px solid #E2E8F0;
+      border-left: 4px solid var(--col-color, var(--primary));
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .kanban-col-header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .kanban-col-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: #0F172A;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .kanban-count {
+      background-color: #F1F5F9;
+      color: #475569;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .kanban-col-amount {
+      font-size: 11px;
+      font-weight: 700;
+      color: #059669;
+    }
+
+    .kanban-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* Kanban Cards */
+    .kanban-card {
+      background-color: #FFFFFF;
+      border-radius: 10px;
+      padding: 14px;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+      border: 1px solid #E2E8F0;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+
+    .kanban-card:hover {
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.09);
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .card-clinic-title {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #0F172A;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      line-height: 1.3;
+    }
+
+    .card-contact-row {
+      font-size: 12px;
+      color: #475569;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card-tags-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-bottom: 10px;
+    }
+
+    .card-pill-tag {
+      font-size: 10.5px;
+      font-weight: 600;
+      background: #F1F5F9;
+      color: #475569;
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+
+    .card-tallaje-box {
+      background-color: #FAF5FF;
+      border: 1px solid #E9D5FF;
+      color: #7E22CE;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 8px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .card-monto-box {
+      background-color: #ECFDF5;
+      border: 1px solid #A7F3D0;
+      color: #047857;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 5px 8px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Actions Bar on Card */
+    .kanban-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      border-top: 1px solid #F1F5F9;
+      padding-top: 10px;
+      margin-top: 6px;
+    }
+
+    .btn-wa-pill {
+      background: #25D366;
+      color: white !important;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 14px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+      box-shadow: 0 2px 5px rgba(37, 211, 102, 0.25);
+    }
+    .btn-wa-pill:hover {
+      background: #1EBE5D;
+      transform: scale(1.03);
+    }
+
+    .btn-email-pill {
+      background: var(--primary);
+      color: white !important;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 14px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+      box-shadow: 0 2px 5px rgba(30, 136, 136, 0.25);
+    }
+    .btn-email-pill:hover {
+      background: var(--primary-hover);
+      transform: scale(1.03);
+    }
+
+    .quick-stage-select {
+      font-size: 11px;
+      padding: 3px 6px;
+      border-radius: 6px;
+      border: 1px solid #CBD5E1;
+      background: #FFFFFF;
+      color: #475569;
+      font-weight: 600;
+      cursor: pointer;
+      max-width: 110px;
+    }
+
+    @media (max-width: 1200px) {
+      .pipeline-steps-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    @media (max-width: 768px) {
+      .pipeline-steps-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -92,10 +573,11 @@ foreach ($clients as $c) {
   <!-- MAIN -->
   <main class="main-container">
     
+    <!-- PAGE TITLE -->
     <div class="page-header">
       <div class="page-title-group">
         <h1>Pipeline Comercial de Clínicas &amp; Hospitales</h1>
-        <p class="page-subtitle">Gestione el embudo de ventas, agendamiento de tallaje y seguimiento corporativo</p>
+        <p class="page-subtitle">Gestión del embudo de prospección, agendamiento de tallaje en clínica y cotizaciones corporativas</p>
       </div>
 
       <div class="header-actions">
@@ -115,22 +597,136 @@ foreach ($clients as $c) {
       </div>
     </div>
 
+    <!-- DETALLE GRÁFICO DEL EMBUDO COMERCIAL: CÓMO FUNCIONA ESTA PESTAÑA -->
+    <div class="pipeline-guide-card" id="pipeline-guide-box">
+      
+      <div class="pipeline-guide-header">
+        <div>
+          <span class="guide-tag">🏥 METODOLOGÍA COMERCIAL B2B SUITABLE</span>
+          <div class="guide-title">
+            <span>Ruta del Embudo de Ventas: ¿Qué se hace en cada etapa?</span>
+          </div>
+          <p class="guide-subtitle">
+            Cada prospecto médico avanza en 6 pasos estratégicos: desde el impacto inicial hasta la prueba presencial de tallas y la orden corporativa.
+          </p>
+        </div>
+
+        <!-- KPI SUMMARY PILLS -->
+        <div class="guide-stats-row">
+          <div class="guide-stat-pill">
+            <span class="guide-stat-val" style="color: #059669;">$<?= number_format($total_pipeline_monto, 0, ',', '.') ?> CLP</span>
+            <span class="guide-stat-lbl">💰 Monto en Pipeline</span>
+          </div>
+          <div class="guide-stat-pill">
+            <span class="guide-stat-val" style="color: #7E22CE;"><?= $total_tallajes ?> agendados</span>
+            <span class="guide-stat-lbl">📏 Tallajes en Terreno</span>
+          </div>
+          <div class="guide-stat-pill">
+            <span class="guide-stat-val" style="color: var(--primary);"><?= number_format($total_personal, 0, ',', '.') ?> pers.</span>
+            <span class="guide-stat-lbl">👥 Equipo a Uniformar</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6-STEP PROCESS GRID -->
+      <div class="pipeline-steps-grid">
+        
+        <!-- PASO 1 -->
+        <div class="pipeline-step-box" style="--step-accent: #3B82F6;" onclick="filterOrScroll('nuevo')">
+          <span class="step-number-tag" style="background: #EFF6FF; color: #1D4ED8;">Paso 1 • Entrada</span>
+          <div class="step-box-title">📥 1. Prospección</div>
+          <p class="step-box-desc">
+            Carga de bases clínicas (CSV o manual). Identificación de jefaturas médicas, adquisiciones o RRHH.
+          </p>
+          <div class="step-box-action">
+            <span>🎯</span> Acción: Calificar datos
+          </div>
+        </div>
+
+        <!-- PASO 2 -->
+        <div class="pipeline-step-box" style="--step-accent: #6366F1;" onclick="filterOrScroll('correo_1_enviado')">
+          <span class="step-number-tag" style="background: #EEF2FF; color: #4338CA;">Paso 2 • Primer Contacto</span>
+          <div class="step-box-title">✉️ 2. Presentación Flex</div>
+          <p class="step-box-desc">
+            Envío de <strong>Plantilla 1 Brevo</strong>. Foco en telas con elastano (Flex), repelencia a fluidos y catálogo clínico.
+          </p>
+          <div class="step-box-action">
+            <span>📩</span> Acción: Enviar Correo 1
+          </div>
+        </div>
+
+        <!-- PASO 3 -->
+        <div class="pipeline-step-box" style="--step-accent: #8B5CF6;" onclick="filterOrScroll('correo_2_enviado')">
+          <span class="step-number-tag" style="background: #F5F3FF; color: #6D28D9;">Paso 3 • Propuesta Valor</span>
+          <div class="step-box-title">🚀 3. Propuesta B2B</div>
+          <p class="step-box-desc">
+            Envío de <strong>Plantilla 2 con IA</strong>. Enfoque: <em>Fabricación 100% Chilena</em>, <em>6 Meses de Garantía</em> y propuesta de tallaje.
+          </p>
+          <div class="step-box-action">
+            <span>✨</span> Acción: Ofrecer Tallaje
+          </div>
+        </div>
+
+        <!-- PASO 4: TALLAJE EN TERRENO (⭐ CLAVE DE VENTA) -->
+        <div class="pipeline-step-box step-key-highlight" style="--step-accent: #F59E0B;" onclick="filterOrScroll('tallaje_agendado')">
+          <span class="step-badge-key">⭐ CLAVE SUITABLE</span>
+          <span class="step-number-tag" style="background: #FEF3C7; color: #B45309;">Paso 4 • En Terreno</span>
+          <div class="step-box-title">📏 4. Tallaje Clínico</div>
+          <p class="step-box-desc">
+            <strong>Visita presencial a la clínica</strong> con percheros y talleros (XS a 3XL). Los médicos se prueban en vivo asegurando calce perfecto.
+          </p>
+          <div class="step-box-action" style="background: #FEF3C7; color: #B45309; border-color: #FDE68A;">
+            <span>🗓️</span> Acción: Agendar Visita
+          </div>
+        </div>
+
+        <!-- PASO 5 -->
+        <div class="pipeline-step-box" style="--step-accent: #10B981;" onclick="filterOrScroll('cotizacion_enviada')">
+          <span class="step-number-tag" style="background: #ECFDF5; color: #047857;">Paso 5 • Propuesta</span>
+          <div class="step-box-title">💼 5. Cotización Formal</div>
+          <p class="step-box-desc">
+            Emisión de cotización consolidada con precios por volumen corporativo, desglose de tallas y bordado institucional.
+          </p>
+          <div class="step-box-action">
+            <span>📄</span> Acción: Enviar Cotización
+          </div>
+        </div>
+
+        <!-- PASO 6 -->
+        <div class="pipeline-step-box" style="--step-accent: #059669;" onclick="filterOrScroll('ganado')">
+          <span class="step-number-tag" style="background: #ECFDF5; color: #065F46;">Paso 6 • Cierre</span>
+          <div class="step-box-title">🏆 6. Convenio Cerrado</div>
+          <p class="step-box-desc">
+            Venta ganada con orden de compra. Confección en taller Las Condes, entrega y seguimiento para ciclo de recompra (114 días).
+          </p>
+          <div class="step-box-action" style="background: #DCFCE7; color: #15803D; border-color: #BBF7D0;">
+            <span>🎉</span> Acción: Producción y Entrega
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
     <!-- FILTER BAR -->
     <div class="table-card" style="padding: 14px 20px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap;">
-      <form method="GET" action="clients.php" style="display: flex; gap: 10px; align-items: center; flex-grow: 1; max-width: 500px;">
+      <form method="GET" action="clients.php" style="display: flex; gap: 10px; align-items: center; flex-grow: 1; max-width: 540px;">
         <input type="hidden" name="view" value="<?= htmlspecialchars($view_mode) ?>">
         <div class="search-input-wrap" style="flex-grow: 1;">
           <span class="search-icon">🔍</span>
-          <input type="text" name="search" class="search-input" placeholder="Buscar clínica, contacto o comuna..." value="<?= htmlspecialchars($search) ?>">
+          <input type="text" name="search" class="search-input" placeholder="Buscar por clínica, doctor/contacto o comuna..." value="<?= htmlspecialchars($search) ?>">
         </div>
-        <button type="submit" class="btn btn-secondary btn-sm">Buscar</button>
+        <button type="submit" class="btn btn-secondary btn-sm" style="font-weight: 700;">Buscar</button>
         <?php if ($search): ?>
           <a href="clients.php?view=<?= $view_mode ?>" class="btn btn-secondary btn-sm" style="color: var(--text-muted);">Limpiar</a>
         <?php endif; ?>
       </form>
 
-      <div style="font-size: 13px; color: var(--text-muted);">
-        Mostrando <strong><?= count($clients) ?></strong> instituciones
+      <div style="font-size: 13px; color: var(--text-muted); display: flex; align-items: center; gap: 8px;">
+        <span>Mostrando <strong><?= count($clients) ?></strong> instituciones registradas</span>
+        <?php if ($search): ?>
+          <span class="badge badge-teal">Filtrado por: "<?= htmlspecialchars($search) ?>"</span>
+        <?php endif; ?>
       </div>
     </div>
 
@@ -138,57 +734,109 @@ foreach ($clients as $c) {
       <!-- KANBAN BOARD -->
       <div class="kanban-grid">
         <?php foreach ($columns as $status_key => $col): ?>
-          <div class="kanban-col">
+          <div class="kanban-col" id="col-<?= $status_key ?>" style="--col-color: <?= $col['color'] ?>;">
+            
             <div class="kanban-col-header">
-              <span class="kanban-col-title"><?= $col['title'] ?></span>
-              <span class="kanban-count"><?= count($col['clients']) ?></span>
+              <div class="kanban-col-header-top">
+                <span class="kanban-col-title">
+                  <span><?= $col['icon'] ?></span>
+                  <span><?= $col['title'] ?></span>
+                </span>
+                <span class="kanban-count"><?= count($col['clients']) ?></span>
+              </div>
+              <?php if ($col['total_monto'] > 0): ?>
+                <div class="kanban-col-amount">
+                  💰 $<?= number_format($col['total_monto'], 0, ',', '.') ?> CLP
+                </div>
+              <?php endif; ?>
             </div>
 
             <div class="kanban-cards">
               <?php if (empty($col['clients'])): ?>
-                <div style="font-size: 12px; color: var(--text-subtle); text-align: center; padding: 24px 0;">
+                <div style="font-size: 12px; color: var(--text-subtle); text-align: center; padding: 28px 10px; background: #FFFFFF; border-radius: 8px; border: 1px dashed #CBD5E1;">
                   Sin clínicas en esta etapa
                 </div>
               <?php else: ?>
-                <?php foreach ($col['clients'] as $cli): ?>
+                <?php foreach ($col['clients'] as $cli): 
+                  $phone_clean = preg_replace('/[^0-9]/', '', $cli['telefono'] ?? '');
+                ?>
                   <div class="kanban-card" onclick="editClient(<?= htmlspecialchars(json_encode($cli)) ?>)">
-                    <div class="kanban-card-title"><?= htmlspecialchars($cli['empresa']) ?></div>
-                    <div class="kanban-card-sub">
-                      👤 <?= htmlspecialchars($cli['contacto_nombre']) ?><br>
-                      📍 <?= htmlspecialchars($cli['region_comuna']) ?> • 👥 <?= $cli['tamano_equipo'] ?> personas
+                    
+                    <!-- CLINIC NAME -->
+                    <div class="card-clinic-title">
+                      <span>🏥</span>
+                      <span><?= htmlspecialchars($cli['empresa']) ?></span>
                     </div>
 
+                    <!-- CONTACT PERSON -->
+                    <div class="card-contact-row">
+                      <span>👤</span>
+                      <div>
+                        <strong><?= htmlspecialchars($cli['contacto_nombre']) ?></strong>
+                        <?php if ($cli['cargo']): ?>
+                          <span style="font-size: 11px; color: var(--text-muted); display: block;"><?= htmlspecialchars($cli['cargo']) ?></span>
+                        <?php endif; ?>
+                      </div>
+                    </div>
+
+                    <!-- TAGS: COMUNA & TEAM -->
+                    <div class="card-tags-row">
+                      <span class="card-pill-tag">📍 <?= htmlspecialchars($cli['region_comuna'] ?: 'RM') ?></span>
+                      <span class="card-pill-tag">👥 <?= $cli['tamano_equipo'] ?> profesionales</span>
+                    </div>
+
+                    <!-- TALLAJE SCHEDULED BOX -->
                     <?php if ($cli['fecha_tallaje']): ?>
-                      <div style="font-size: 11px; background-color: #F3E8FF; color: #7E22CE; padding: 3px 6px; border-radius: 4px; margin-bottom: 8px; font-weight: 600;">
-                        📏 Tallaje: <?= date('d/m/Y', strtotime($cli['fecha_tallaje'])) ?>
+                      <div class="card-tallaje-box">
+                        <span>🗓️</span>
+                        <span><strong>Tallaje en Clínica:</strong> <?= date('d/m/Y', strtotime($cli['fecha_tallaje'])) ?></span>
                       </div>
                     <?php endif; ?>
 
+                    <!-- QUOTE AMOUNT BOX -->
                     <?php if ($cli['monto_cotizacion']): ?>
-                      <div style="font-size: 11px; font-weight: 700; color: #059669; margin-bottom: 6px;">
-                        💰 $<?= number_format($cli['monto_cotizacion'], 0, ',', '.') ?> CLP
+                      <div class="card-monto-box">
+                        <span>💰 Cotización:</span>
+                        <span>$<?= number_format($cli['monto_cotizacion'], 0, ',', '.') ?> CLP</span>
                       </div>
                     <?php endif; ?>
 
+                    <!-- CARD ACTION BAR -->
                     <div class="kanban-card-footer" onclick="event.stopPropagation();">
-                      <?php if ($cli['telefono']): 
-                        $phone_clean = preg_replace('/[^0-9]/', '', $cli['telefono']);
-                      ?>
-                        <a href="https://wa.me/<?= $phone_clean ?>?text=Hola%20<?= urlencode($cli['contacto_nombre']) ?>,%20le%20escribo%20de%20Suitable%20Uniformes%20Cl%C3%ADnicos" target="_blank" style="color: #25D366; font-weight: 700; font-size: 12px;" title="Chatear por WhatsApp">
-                          💬 WhatsApp
-                        </a>
-                      <?php else: ?>
-                        <span></span>
-                      <?php endif; ?>
+                      
+                      <div style="display: flex; gap: 5px; align-items: center;">
+                        <!-- WHATSAPP BUTTON -->
+                        <?php if ($phone_clean): ?>
+                          <a href="https://wa.me/<?= $phone_clean ?>?text=Hola%20<?= urlencode($cli['contacto_nombre']) ?>,%20le%20escribo%20de%20Suitable%20Uniformes%20Cl%C3%ADnicos" target="_blank" class="btn-wa-pill" title="Conversar por WhatsApp">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
+                            WhatsApp
+                          </a>
+                        <?php endif; ?>
 
-                      <a href="send_outreach.php?client_id=<?= $cli['id'] ?>" class="btn btn-outline-primary btn-sm" style="padding: 3px 8px; font-size: 11px;">
-                        ✉️ Enviar Correo
-                      </a>
+                        <!-- EMAIL OUTREACH BUTTON -->
+                        <a href="send_outreach.php?client_id=<?= $cli['id'] ?>" class="btn-email-pill" title="Impactar con Campaña o Correo Brevo">
+                          ✉️ Correo
+                        </a>
+                      </div>
+
+                      <!-- QUICK MOVE STAGE SELECT -->
+                      <select class="quick-stage-select" title="Mover rápidamente de etapa" onchange="quickMoveStage(<?= $cli['id'] ?>, this.value)">
+                        <option value="" disabled selected>Mover a...</option>
+                        <option value="nuevo">1. Nuevos</option>
+                        <option value="correo_1_enviado">2. Correo 1</option>
+                        <option value="correo_2_enviado">3. Correo 2</option>
+                        <option value="tallaje_agendado">4. Tallaje</option>
+                        <option value="cotizacion_enviada">5. Cotización</option>
+                        <option value="ganado">6. Venta Ganada</option>
+                      </select>
+
                     </div>
+
                   </div>
                 <?php endforeach; ?>
               <?php endif; ?>
             </div>
+
           </div>
         <?php endforeach; ?>
       </div>
@@ -211,20 +859,20 @@ foreach ($clients as $c) {
           <tbody>
             <?php foreach ($clients as $cli): 
               $st_info = get_status_info($cli['estado']);
-              $phone_clean = preg_replace('/[^0-9]/', '', $cli['telefono']);
+              $phone_clean = preg_replace('/[^0-9]/', '', $cli['telefono'] ?? '');
             ?>
               <tr>
                 <td>
-                  <div class="client-name-bold"><?= htmlspecialchars($cli['empresa']) ?></div>
-                  <div class="client-meta">📍 <?= htmlspecialchars($cli['region_comuna']) ?> • 👥 <?= $cli['tamano_equipo'] ?> profesionales</div>
+                  <div class="client-name-bold">🏥 <?= htmlspecialchars($cli['empresa']) ?></div>
+                  <div class="client-meta">📍 <?= htmlspecialchars($cli['region_comuna'] ?: 'RM') ?> • 👥 <?= $cli['tamano_equipo'] ?> profesionales</div>
                 </td>
                 <td>
-                  <div style="font-weight: 600;"><?= htmlspecialchars($cli['contacto_nombre']) ?></div>
+                  <div style="font-weight: 700; color: #0F172A;"><?= htmlspecialchars($cli['contacto_nombre']) ?></div>
                   <div class="client-meta"><?= htmlspecialchars($cli['cargo']) ?> • <?= htmlspecialchars($cli['email']) ?></div>
                 </td>
                 <td>
-                  <?php if ($cli['telefono']): ?>
-                    <a href="https://wa.me/<?= $phone_clean ?>" target="_blank" style="color: #25D366; font-weight: 700;">
+                  <?php if ($phone_clean): ?>
+                    <a href="https://wa.me/<?= $phone_clean ?>?text=Hola%20<?= urlencode($cli['contacto_nombre']) ?>,%20le%20escribo%20de%20Suitable" target="_blank" class="btn-wa-pill">
                       💬 <?= htmlspecialchars($cli['telefono']) ?>
                     </a>
                   <?php else: ?>
@@ -236,12 +884,12 @@ foreach ($clients as $c) {
                 </td>
                 <td>
                   <?php if ($cli['fecha_tallaje']): ?>
-                    <div style="font-size: 12px; color: #7E22CE; font-weight: 600;">
-                      📏 <?= date('d/m/Y', strtotime($cli['fecha_tallaje'])) ?>
+                    <div style="font-size: 12px; color: #7E22CE; font-weight: 700;">
+                      📏 Tallaje: <?= date('d/m/Y', strtotime($cli['fecha_tallaje'])) ?>
                     </div>
                   <?php endif; ?>
                   <?php if ($cli['monto_cotizacion']): ?>
-                    <div style="font-size: 12px; color: #059669; font-weight: 700;">
+                    <div style="font-size: 12px; color: #059669; font-weight: 800;">
                       💰 $<?= number_format($cli['monto_cotizacion'], 0, ',', '.') ?> CLP
                     </div>
                   <?php endif; ?>
@@ -355,12 +1003,12 @@ foreach ($clients as $c) {
             <div class="form-group">
               <label class="form-label">Estado en Pipeline</label>
               <select name="estado" id="edit-estado" class="form-control">
-                <option value="nuevo">Nuevo Prospecto</option>
-                <option value="correo_1_enviado">Correo 1 Enviado</option>
-                <option value="correo_2_enviado">Correo 2 (B2B) Enviado</option>
-                <option value="tallaje_agendado">Tallaje en Terreno Agendado</option>
-                <option value="cotizacion_enviada">Cotización Enviada</option>
-                <option value="ganado">Venta Ganada (Garantía 6 Meses)</option>
+                <option value="nuevo">1. Nuevos Leads</option>
+                <option value="correo_1_enviado">2. Correo 1 Enviado (Flex)</option>
+                <option value="correo_2_enviado">3. Correo 2 Enviado (B2B)</option>
+                <option value="tallaje_agendado">4. Tallaje en Terreno Agendado</option>
+                <option value="cotizacion_enviada">5. Cotización Enviada</option>
+                <option value="ganado">6. Venta Ganada (Garantía 6M)</option>
                 <option value="perdido">Descartado / Pausado</option>
               </select>
             </div>
@@ -383,7 +1031,7 @@ foreach ($clients as $c) {
               <input type="text" name="telefono" id="edit-telefono" class="form-control">
             </div>
             <div class="form-group">
-              <label class="form-label">Fecha de Sesión de Tallaje</label>
+              <label class="form-label">Fecha de Sesión de Tallaje (En Terreno)</label>
               <input type="date" name="fecha_tallaje" id="edit-tallaje" class="form-control">
             </div>
           </div>
@@ -420,6 +1068,41 @@ foreach ($clients as $c) {
 
   <script src="assets/js/app.js"></script>
   <script>
+    function filterOrScroll(statusKey) {
+      const col = document.getElementById('col-' + statusKey);
+      if (col) {
+        col.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        col.style.transition = 'all 0.3s ease';
+        col.style.transform = 'scale(1.02)';
+        col.style.boxShadow = '0 0 0 3px var(--primary)';
+        setTimeout(() => {
+          col.style.transform = '';
+          col.style.boxShadow = '';
+        }, 1200);
+      }
+    }
+
+    async function quickMoveStage(clientId, newStage) {
+      if (!newStage) return;
+      const formData = new FormData();
+      formData.append('action', 'update_status');
+      formData.append('client_id', clientId);
+      formData.append('status', newStage);
+
+      try {
+        const res = await fetch('api.php', { method: 'POST', body: formData });
+        const data = await res.json();
+        if (data.success) {
+          showToast('✓ ' + data.message, 'success');
+          setTimeout(() => location.reload(), 450);
+        } else {
+          showToast(data.error || 'Error al actualizar', 'error');
+        }
+      } catch (err) {
+        showToast('Error de conexión', 'error');
+      }
+    }
+
     function editClient(client) {
       document.getElementById('edit-id').value = client.id;
       document.getElementById('edit-empresa').value = client.empresa || '';
@@ -482,6 +1165,5 @@ foreach ($clients as $c) {
       openModal('modal-new-client');
     }
   </script>
-  <script src="assets/js/app.js"></script>
 </body>
 </html>
