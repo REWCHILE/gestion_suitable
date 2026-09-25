@@ -291,49 +291,94 @@ class WooCommerceController extends Controller
             $totalRevenue = 0;
 
             // 1. MODO HPOS (High-Performance Order Storage WooCommerce 8+)
+            // 1. INTENTO MODO HPOS (High-Performance Order Storage WooCommerce 8+)
             if ($hasHpos) {
-                $ordersStmt = $pdo->query("
-                    SELECT 
-                        o.id as wc_order_id,
-                        o.status,
-                        o.total_amount,
-                        o.date_created_gmt as date_created,
-                        o.billing_email,
-                        CONCAT(COALESCE(a.first_name, ''), ' ', COALESCE(a.last_name, '')) as customer_name,
-                        COALESCE(a.city, 'Santiago') as customer_city,
-                        COALESCE(op.payment_method_title, 'Webpay Plus') as payment_method,
-                        COALESCE(op.shipping_total_amount, 0) as shipping_amount
-                    FROM `{$hposTable}` o
-                    LEFT JOIN `{$prefix}wc_order_addresses` a ON o.id = a.order_id AND a.address_type = 'billing'
-                    LEFT JOIN `{$prefix}wc_order_operational_data` op ON o.id = op.order_id
-                    WHERE o.type = 'shop_order'
-                    ORDER BY o.id DESC
-                    LIMIT 400
-                ");
-                $ordersData = $ordersStmt->fetchAll();
+                try {
+                    $hposCols = $pdo->query("SHOW COLUMNS FROM `{$hposTable}`")->fetchAll(PDO::FETCH_COLUMN);
 
-                foreach ($ordersData as $row) {
-                    $order = Order::updateOrCreate(
-                        ['wc_order_id' => $row['wc_order_id']],
-                        [
-                            'customer_name' => trim($row['customer_name']) ?: ($row['billing_email'] ?: 'Cliente Suitable'),
-                            'customer_email' => $row['billing_email'] ?: 'contacto@suitable.cl',
-                            'customer_city' => $row['customer_city'] ?: 'Santiago',
-                            'total_amount' => (float)$row['total_amount'],
-                            'shipping_amount' => (float)$row['shipping_amount'],
-                            'status' => str_replace('wc-', '', $row['status']),
-                            'payment_method' => $row['payment_method'] ?: 'Webpay Plus',
-                            'items_count' => 1,
-                            'date_created' => $row['date_created'] ?: now()
-                        ]
-                    );
+                    $paymentSelect = in_array('payment_method_title', $hposCols)
+                        ? "COALESCE(o.payment_method_title, o.payment_method, 'Webpay Plus')"
+                        : (in_array('payment_method', $hposCols) ? "COALESCE(o.payment_method, 'Webpay Plus')" : "'Webpay Plus'");
 
-                    $syncedOrders++;
-                    $totalRevenue += (float)$row['total_amount'];
+                    $dateSelect = in_array('date_created_gmt', $hposCols)
+                        ? "o.date_created_gmt"
+                        : (in_array('date_created', $hposCols) ? "o.date_created" : "NOW()");
+
+                    $shippingSelect = "0";
+                    $joinOp = "";
+                    if (in_array($prefix . 'wc_order_operational_data', $tables)) {
+                        $opCols = $pdo->query("SHOW COLUMNS FROM `{$prefix}wc_order_operational_data`")->fetchAll(PDO::FETCH_COLUMN);
+                        if (in_array('shipping_total_amount', $opCols)) {
+                            $shippingSelect = "COALESCE(op.shipping_total_amount, 0)";
+                            $joinOp = "LEFT JOIN `{$prefix}wc_order_operational_data` op ON o.id = op.order_id";
+                        }
+                    }
+
+                    $nameSelect = "o.billing_email";
+                    $citySelect = "'Santiago'";
+                    $joinAddr = "";
+                    if (in_array($prefix . 'wc_order_addresses', $tables)) {
+                        $nameSelect = "CONCAT(COALESCE(a.first_name, ''), ' ', COALESCE(a.last_name, ''))";
+                        $citySelect = "COALESCE(a.city, 'Santiago')";
+                        $joinAddr = "LEFT JOIN `{$prefix}wc_order_addresses` a ON o.id = a.order_id AND a.address_type = 'billing'";
+                    }
+
+                    $ordersStmt = $pdo->query("
+                        SELECT 
+                            o.id as wc_order_id,
+                            o.status,
+                            o.total_amount,
+                            {$dateSelect} as date_created,
+                            o.billing_email,
+                            {$nameSelect} as customer_name,
+                            {$citySelect} as customer_city,
+                            {$paymentSelect} as payment_method,
+                            {$shippingSelect} as shipping_amount
+                        FROM `{$hposTable}` o
+                        {$joinAddr}
+                        {$joinOp}
+                        WHERE o.type = 'shop_order'
+                        ORDER BY o.id DESC
+                        LIMIT 400
+                    ");
+                    $ordersData = $ordersStmt->fetchAll();
+
+                    foreach ($ordersData as $row) {
+                        $customerName = trim($row['customer_name'] ?? '');
+                        if (empty($customerName)) {
+                            $customerName = $row['billing_email'] ?: 'Cliente Suitable';
+                        }
+
+                        $order = Order::updateOrCreate(
+                            ['wc_order_id' => $row['wc_order_id']],
+                            [
+                                'customer_name' => $customerName,
+                                'customer_email' => $row['billing_email'] ?: 'contacto@suitable.cl',
+                                'customer_city' => $row['customer_city'] ?: 'Santiago',
+                                'total_amount' => (float)$row['total_amount'],
+                                'shipping_amount' => (float)$row['shipping_amount'],
+                                'status' => str_replace('wc-', '', $row['status']),
+                                'payment_method' => $row['payment_method'] ?: 'Webpay Plus',
+                                'items_count' => 1,
+                                'date_created' => $row['date_created'] ?: now()
+                            ]
+                        );
+
+                        if ($hasOrderItems && $hasOrderItemMeta) {
+                            $this->syncOrderItems($pdo, $order->id, (int)$row['wc_order_id'], $orderItemsTable, $orderItemMetaTable);
+                        }
+
+                        $syncedOrders++;
+                        $totalRevenue += (float)$row['total_amount'];
+                    }
+                } catch (Throwable $hposEx) {
+                    // Si ocurre cualquier discrepancia en HPOS, continuará al modo clásico
                 }
-            } 
+            }
+
             // 2. MODO CLÁSICO WORDPRESS (wp8q_posts + wp8q_postmeta)
-            elseif ($hasPosts) {
+            // Se ejecuta si HPOS no arrojó pedidos o si los pedidos están en posts
+            if ($syncedOrders === 0 && $hasPosts) {
                 $postsStmt = $pdo->query("
                     SELECT ID, post_status, post_date
                     FROM `{$postsTable}`
@@ -369,14 +414,6 @@ class WooCommerceController extends Controller
                     $status = str_replace('wc-', '', $p['post_status']);
                     $paymentMethod = $meta['_payment_method_title'] ?? ($meta['_payment_method'] ?? 'Transbank Webpay');
 
-                    // Contar ítems reales si existe la tabla
-                    $itemsCount = 1;
-                    if ($hasOrderItems) {
-                        $itemsCountStmt = $pdo->prepare("SELECT COUNT(*) FROM `{$orderItemsTable}` WHERE order_id = :order_id AND order_item_type = 'line_item'");
-                        $itemsCountStmt->execute(['order_id' => $orderId]);
-                        $itemsCount = max(1, (int)$itemsCountStmt->fetchColumn());
-                    }
-
                     $order = Order::updateOrCreate(
                         ['wc_order_id' => $orderId],
                         [
@@ -387,59 +424,21 @@ class WooCommerceController extends Controller
                             'shipping_amount' => $shipping,
                             'status' => $status,
                             'payment_method' => $paymentMethod,
-                            'items_count' => $itemsCount,
+                            'items_count' => 1,
                             'date_created' => $p['post_date']
                         ]
                     );
 
-                    // Sincronizar ítems de la orden si existen
                     if ($hasOrderItems && $hasOrderItemMeta) {
-                        $itemsStmt = $pdo->prepare("
-                            SELECT order_item_id, order_item_name 
-                            FROM `{$orderItemsTable}` 
-                            WHERE order_id = :order_id AND order_item_type = 'line_item'
-                        ");
-                        $itemsStmt->execute(['order_id' => $orderId]);
-                        $items = $itemsStmt->fetchAll();
-
-                        if (!empty($items)) {
-                            OrderItem::where('order_id', $order->id)->delete();
-
-                            foreach ($items as $it) {
-                                $itemId = $it['order_item_id'];
-                                $imStmt = $pdo->prepare("
-                                    SELECT meta_key, meta_value 
-                                    FROM `{$orderItemMetaTable}` 
-                                    WHERE order_item_id = :item_id 
-                                      AND meta_key IN ('_qty', '_line_total', '_line_subtotal', 'pa_color', 'color', 'pa_talla', 'talla', 'pa_size', 'size')
-                                ");
-                                $imStmt->execute(['item_id' => $itemId]);
-                                $itemMeta = $imStmt->fetchAll(PDO::FETCH_KEY_PAIR);
-
-                                $qty = max(1, (int)($itemMeta['_qty'] ?? 1));
-                                $lineTotal = (float)($itemMeta['_line_total'] ?? ($itemMeta['_line_subtotal'] ?? 0));
-                                $unitPrice = $qty > 0 ? ($lineTotal / $qty) : $lineTotal;
-                                $color = $itemMeta['pa_color'] ?? ($itemMeta['color'] ?? 'Estándar');
-                                $size = $itemMeta['pa_talla'] ?? ($itemMeta['talla'] ?? ($itemMeta['pa_size'] ?? ($itemMeta['size'] ?? 'M')));
-
-                                OrderItem::create([
-                                    'order_id' => $order->id,
-                                    'product_name' => $it['order_item_name'] ?: 'Uniforme Clínico Suitable',
-                                    'category' => 'Vestuario Clínico',
-                                    'variation_color' => $color,
-                                    'variation_size' => $size,
-                                    'quantity' => $qty,
-                                    'price' => $unitPrice,
-                                    'subtotal' => $lineTotal
-                                ]);
-                            }
-                        }
+                        $this->syncOrderItems($pdo, $order->id, (int)$orderId, $orderItemsTable, $orderItemMetaTable);
                     }
 
                     $syncedOrders++;
                     $totalRevenue += $total;
                 }
-            } else {
+            }
+
+            if ($syncedOrders === 0 && !$hasPosts && !$hasHpos) {
                 return response()->json([
                     'success' => false,
                     'message' => "No se encontraron las tablas de pedidos de WooCommerce (`{$postsTable}` o `{$hposTable}`) en la base de datos '{$database}'."
@@ -470,6 +469,63 @@ class WooCommerceController extends Controller
                 'success' => false,
                 'message' => 'Error durante la sincronización: ' . $e->getMessage()
             ]);
+        }
+    }
+
+    /**
+     * Sincroniza los ítems y prendas de una orden específica
+     */
+    private function syncOrderItems(PDO $pdo, int $internalOrderId, int $wcOrderId, string $orderItemsTable, string $orderItemMetaTable): void
+    {
+        try {
+            $itemsStmt = $pdo->prepare("
+                SELECT order_item_id, order_item_name 
+                FROM `{$orderItemsTable}` 
+                WHERE order_id = :order_id AND order_item_type = 'line_item'
+            ");
+            $itemsStmt->execute(['order_id' => $wcOrderId]);
+            $items = $itemsStmt->fetchAll();
+
+            if (!empty($items)) {
+                OrderItem::where('order_id', $internalOrderId)->delete();
+
+                $totalQty = 0;
+                foreach ($items as $it) {
+                    $itemId = $it['order_item_id'];
+                    $imStmt = $pdo->prepare("
+                        SELECT meta_key, meta_value 
+                        FROM `{$orderItemMetaTable}` 
+                        WHERE order_item_id = :item_id 
+                          AND meta_key IN ('_qty', '_line_total', '_line_subtotal', 'pa_color', 'color', 'pa_talla', 'talla', 'pa_size', 'size')
+                    ");
+                    $imStmt->execute(['item_id' => $itemId]);
+                    $itemMeta = $imStmt->fetchAll(PDO::FETCH_KEY_PAIR);
+
+                    $qty = max(1, (int)($itemMeta['_qty'] ?? 1));
+                    $totalQty += $qty;
+                    $lineTotal = (float)($itemMeta['_line_total'] ?? ($itemMeta['_line_subtotal'] ?? 0));
+                    $unitPrice = $qty > 0 ? ($lineTotal / $qty) : $lineTotal;
+                    $color = $itemMeta['pa_color'] ?? ($itemMeta['color'] ?? 'Estándar');
+                    $size = $itemMeta['pa_talla'] ?? ($itemMeta['talla'] ?? ($itemMeta['pa_size'] ?? ($itemMeta['size'] ?? 'M')));
+
+                    OrderItem::create([
+                        'order_id' => $internalOrderId,
+                        'product_name' => $it['order_item_name'] ?: 'Uniforme Clínico Suitable',
+                        'category' => 'Vestuario Clínico',
+                        'variation_color' => $color,
+                        'variation_size' => $size,
+                        'quantity' => $qty,
+                        'price' => $unitPrice,
+                        'subtotal' => $lineTotal
+                    ]);
+                }
+
+                if ($totalQty > 0) {
+                    Order::where('id', $internalOrderId)->update(['items_count' => $totalQty]);
+                }
+            }
+        } catch (Throwable $e) {
+            // Silencioso
         }
     }
 
