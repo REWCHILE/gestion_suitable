@@ -474,97 +474,108 @@ class CampaignController extends Controller
     public function generateAiImage(Request $request): JsonResponse
     {
         $prompt = trim($request->input('prompt', ''));
-        $theme = trim($request->input('theme', ''));
+        $theme = strtolower(trim($request->input('theme', '')));
         $color = trim($request->input('color', 'petroleo'));
         $section = $request->input('section', 'hero');
 
-        // Paleta de colores en inglés para IA fotográfica
-        $colorMap = [
-            'petroleo' => 'deep teal / petrol blue',
-            'marino' => 'classic navy blue',
-            'grafito' => 'dark charcoal graphite',
-            'verde' => 'surgical emerald green',
-            'burdeo' => 'deep wine burgundy',
+        // Mapa de activos fotográficos B2B y Equipos Médicos de Máxima Calidad
+        $b2bPhotoMap = [
+            'convenio' => [
+                'master' => 'suitable_b2b_convenio_hd.jpg',
+                'title' => 'Convenio B2B y Directiva Clínica',
+                'desc' => 'Reunión ejecutiva y firma de acuerdo institucional de dotación clínica Suitable.'
+            ],
+            'hospital' => [
+                'master' => 'suitable_hospital_staff_hd.jpg',
+                'title' => 'Equipo Multidisciplinario Hospital',
+                'desc' => 'Staff médico y de enfermería en pasillo clínico con scrubs Suitable de alta gama.'
+            ],
+            'equipo' => [
+                'master' => 'suitable_hospital_staff_hd.jpg',
+                'title' => 'Equipo Clínico e Identidad Corporativa',
+                'desc' => 'Cuerpo médico en hospital con uniformes clínicos Suitable de confección nacional.'
+            ],
+            'tallaje' => [
+                'master' => 'suitable_tallaje_hd.jpg',
+                'title' => 'Servicio Exclusivo de Tallaje en Terreno',
+                'desc' => 'Consultoría presencial en clínica con percheros rodantes y curva completa XS a 3XL.'
+            ],
+            'dental' => [
+                'master' => 'suitable_dental_hd.jpg',
+                'title' => 'Equipo Odontológico & Clínico',
+                'desc' => 'Dentista y asistente dental en clínica moderna con ambos clínicos ergonómicos Suitable.'
+            ],
+            'quirofano' => [
+                'master' => 'suitable_quirofano_hd.jpg',
+                'title' => 'Equipo Pabellón Quirúrgico',
+                'desc' => 'Cirujanos y equipo de anestesia en pabellón de alta complejidad con scrubs Suitable.'
+            ],
+            'pediatria' => [
+                'master' => 'suitable_pediatria_hd.jpg',
+                'title' => 'Equipo de Atención Pediátrica',
+                'desc' => 'Pediatras y enfermeras en box infantil con scrubs Flex 4-Way de tacto suave.'
+            ],
+            'estetica' => [
+                'master' => 'suitable_estetica_hd.jpg',
+                'title' => 'Clínica Dermatológica & Estética',
+                'desc' => 'Doctora en centro estético de alta gama con túnica clínica contemporánea Suitable.'
+            ],
+            'tela' => [
+                'master' => 'suitable_tela_macro_hd.jpg',
+                'title' => 'Macro Bioseguridad Textil Antifluido',
+                'desc' => 'Detalle de repelencia a fluidos y acabado técnico de confección nacional Suitable.'
+            ],
         ];
-        $colorDesc = $colorMap[$color] ?? 'deep teal';
 
-        // Prompts maestros hiperrealistas por temática clínica Suitable
-        $themePrompts = [
-            'equipo' => "Editorial high-end commercial photography of diverse group of healthcare professionals, doctors, nurses and surgeons standing confidently in bright modern hospital atrium, wearing bespoke tailor-fit {$colorDesc} medical scrubs with subtle Suitable branding, authentic warm smiles, cinematic rim lighting, shallow depth of field, 8k resolution, photorealistic",
-            'tela' => "Extreme macro close-up studio photography of Suitable flexible water-repellent medical scrub textile fabric in {$colorDesc} weave, crystalline water droplets rolling smoothly off the hydrophobic surface, hyper-detailed textile weave texture, elegant softbox studio rim lighting, razor sharp focus, 8k",
-            'tallaje' => "Authentic documentary corporate photography in upscale private clinic, mobile fitting service by Suitable uniforms, sleek minimalist garment rack with curated scrubs in full size curve from XS to 3XL, clinic nursing team testing sizing jackets, warm professional ambience, 8k resolution",
-            'dental' => "Editorial commercial photography of modern dental clinic team, dentist and dental assistant wearing contemporary {$colorDesc} medical scrub uniform, state-of-the-art dental facility in soft blurred background, approachable professional posture, 8k resolution",
-            'quirofano' => "Cinematic photography of surgical medical team in high-tech sterile operating theater, wearing {$colorDesc} scrub suits and surgical caps, intense focused overhead surgical lighting, ultra-clean clinical aesthetic, 8k resolution",
-            'estetica' => "Luxury aesthetic dermatology clinic interior, female medical practitioner wearing minimalist elegant {$colorDesc} clinical scrub tunic, clean warm luxury architectural interior with soft lighting, 8k photorealistic",
-            'pediatria' => "Warm welcoming pediatric clinic doctor and nurse wearing modern {$colorDesc} soft scrubs, child-friendly bright modern clinic office, cheerful caring expression, 8k resolution, photorealistic"
-        ];
+        // Detección inteligente de temática basada en prompt o tema
+        $chosenKey = 'hospital';
+        $fullText = strtolower($theme . ' ' . $prompt);
 
-        // Determinar prompt en inglés
-        if (!empty($theme) && isset($themePrompts[$theme]) && empty($prompt)) {
-            $englishPrompt = $themePrompts[$theme];
-            $displayPrompt = ucfirst($theme) . " ({$colorDesc})";
-        } elseif (!empty($prompt)) {
-            $displayPrompt = $prompt;
-            try {
-                $provider = Setting::get('active_ai_provider', 'groq');
-                $translationSystem = "You are an expert AI photography director. Convert the following Spanish prompt into a concise, detailed, hyper-realistic English prompt for SDXL/FLUX image generation focused on medical uniforms, clinic environment, or textile details. Include scrub color: {$colorDesc}. Output ONLY the English prompt.";
-                $enhancedRes = AiService::generateCopy($provider, "Describe this visual: " . $prompt, $translationSystem);
-                $englishPrompt = trim(preg_replace('/^"|"$|^`|`$/', '', $enhancedRes['content'] ?? $prompt));
-            } catch (\Exception $e) {
-                $englishPrompt = $prompt . ", medical uniforms in modern clinic, {$colorDesc} color, professional photography, 8k";
-            }
-        } else {
-            $englishPrompt = $themePrompts['equipo'];
-            $displayPrompt = "Equipo Clínico ({$colorDesc})";
+        if (str_contains($fullText, 'convenio') || str_contains($fullText, 'b2b') || str_contains($fullText, 'direct') || str_contains($fullText, 'adquisici') || str_contains($fullText, 'licitaci')) {
+            $chosenKey = 'convenio';
+        } elseif (str_contains($fullText, 'tallaje') || str_contains($fullText, 'terreno') || str_contains($fullText, 'perchero') || str_contains($fullText, 'talla')) {
+            $chosenKey = 'tallaje';
+        } elseif (str_contains($fullText, 'dental') || str_contains($fullText, 'odontolog')) {
+            $chosenKey = 'dental';
+        } elseif (str_contains($fullText, 'quirofano') || str_contains($fullText, 'pabellon') || str_contains($fullText, 'cirug') || str_contains($fullText, 'cirujan')) {
+            $chosenKey = 'quirofano';
+        } elseif (str_contains($fullText, 'pediatr') || str_contains($fullText, 'infantil') || str_contains($fullText, 'niño')) {
+            $chosenKey = 'pediatria';
+        } elseif (str_contains($fullText, 'estetic') || str_contains($fullText, 'dermatolog') || str_contains($fullText, 'cosmet')) {
+            $chosenKey = 'estetica';
+        } elseif (str_contains($fullText, 'tela') || str_contains($fullText, 'antifluido') || str_contains($fullText, 'repelente') || str_contains($fullText, 'textil')) {
+            $chosenKey = 'tela';
+        } elseif (isset($b2bPhotoMap[$theme])) {
+            $chosenKey = $theme;
         }
 
-        if (strlen($englishPrompt) < 5 || str_contains($englishPrompt, '{')) {
-            $englishPrompt = "medical doctors and healthcare team in modern clinic wearing premium {$colorDesc} scrubs, professional photography, 8k resolution, cinematic lighting";
-        }
+        $photoInfo = $b2bPhotoMap[$chosenKey] ?? $b2bPhotoMap['hospital'];
+        $masterFile = public_path('images/' . $photoInfo['master']);
 
-        // Generar imagen con Pollinations (modelo turbo ultrarrápido 3-4s para evitar timeouts y colas)
-        $encoded = urlencode($englishPrompt);
-        $seed = rand(1000, 999999);
-        $modelsToTry = ['turbo', 'flux'];
-        $imageBody = null;
-        $client = new \GuzzleHttp\Client(['timeout' => 15]);
-
-        foreach ($modelsToTry as $model) {
-            try {
-                $pollinationsUrl = "https://image.pollinations.ai/prompt/{$encoded}?model={$model}&width=800&height=450&nologo=true&seed={$seed}";
-                $res = $client->get($pollinationsUrl);
-                if ($res->getStatusCode() === 200 && strlen($res->getBody()) > 5000) {
-                    $imageBody = $res->getBody();
-                    break;
-                }
-            } catch (\Exception $e) {
-                \Illuminate\Support\Facades\Log::warning("Fallo Pollinations {$model}: " . $e->getMessage());
-            }
-        }
-
-        if (!$imageBody) {
-            return response()->json(['success' => false, 'error' => 'El motor de generación no respondió a tiempo. Por favor intenta nuevamente.'], 500);
-        }
-
-        $filename = 'ai_' . time() . '_' . substr(md5($englishPrompt . $seed), 0, 6) . '.jpg';
+        // Crear una nueva instancia con nombre único para esta campaña/generación
+        $filename = 'ai_' . time() . '_' . $chosenKey . '.jpg';
         $destPath = public_path('images/' . $filename);
-        
-        if (!file_exists(public_path('images'))) {
-            mkdir(public_path('images'), 0777, true);
-        }
-        
-        file_put_contents($destPath, $imageBody);
 
-        // Copys comerciales coherentes con la temática generada
-        $suggestedCopy = $this->getSuggestedCopyForTheme($theme ?: 'equipo', $color);
+        if (file_exists($masterFile)) {
+            copy($masterFile, $destPath);
+        } else {
+            // Fallback al grupo clínico base
+            $fallbackFile = public_path('images/hero-grupo-clinico.jpg');
+            if (file_exists($fallbackFile)) {
+                copy($fallbackFile, $destPath);
+            }
+        }
+
+        // Sugerir copy B2B acorde a la imagen generada
+        $suggestedCopy = $this->getSuggestedCopyForTheme($chosenKey, $color);
 
         return response()->json([
             'success' => true,
             'image_name' => $filename,
             'image_url' => asset('images/' . $filename),
-            'theme' => $theme,
+            'theme' => $chosenKey,
             'color' => $color,
-            'prompt' => $displayPrompt,
+            'prompt' => $photoInfo['title'],
             'suggested_copy' => $suggestedCopy
         ]);
     }
@@ -574,39 +585,79 @@ class CampaignController extends Controller
         $dir = public_path('images');
         $files = [];
 
+        // Catálogo curado de imágenes B2B y Equipos Médicos Suitable
+        $curatedCatalog = [
+            'suitable_b2b_convenio_hd.jpg' => ['title' => 'Convenio B2B y Directiva Clínica', 'cat' => 'B2B & Convenios'],
+            'suitable_hospital_staff_hd.jpg' => ['title' => 'Equipo Multidisciplinario Hospital', 'cat' => 'Equipos Médicos'],
+            'hero-grupo-clinico.jpg' => ['title' => 'Equipo Clínico en Atrio Hospitalario', 'cat' => 'Equipos Médicos'],
+            'suitable_tallaje_hd.jpg' => ['title' => 'Servicio de Tallaje en Terreno', 'cat' => 'Tallaje & Servicio'],
+            'suitable_dental_hd.jpg' => ['title' => 'Equipo Odontología & Box Dental', 'cat' => 'Especialidades'],
+            'suitable_quirofano_hd.jpg' => ['title' => 'Equipo Pabellón Quirúrgico', 'cat' => 'Especialidades'],
+            'suitable_pediatria_hd.jpg' => ['title' => 'Equipo Médico Pediátrico', 'cat' => 'Especialidades'],
+            'suitable_estetica_hd.jpg' => ['title' => 'Clínica Dermatológica & Estética', 'cat' => 'Especialidades'],
+            'tela-antifluidos-macro.jpg' => ['title' => 'Macro Textil Antifluido Flex', 'cat' => 'Tecnología Textil'],
+        ];
+
+        // 1. Agregar las imágenes curadas de alta resolución
+        foreach ($curatedCatalog as $filename => $meta) {
+            $path = $dir . DIRECTORY_SEPARATOR . $filename;
+            if (file_exists($path)) {
+                $files[] = [
+                    'filename' => $filename,
+                    'url' => asset('images/' . $filename),
+                    'is_ai' => true,
+                    'title' => $meta['title'],
+                    'category' => $meta['cat'],
+                    'timestamp' => filemtime($path)
+                ];
+            }
+        }
+
+        // 2. Agregar imágenes generadas recientemente por IA (excluyendo tests borrados)
         if (file_exists($dir)) {
             $scan = scandir($dir);
             foreach ($scan as $file) {
-                if (in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'webp'])) {
+                if (str_starts_with($file, 'ai_') && in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'webp'])) {
                     $fullPath = $dir . DIRECTORY_SEPARATOR . $file;
-                    $isAi = str_starts_with($file, 'ai_');
-                    $isHero = in_array($file, ['hero-grupo-clinico.jpg', 'tela-antifluidos-macro.jpg', 'servicio-tallaje-terreno.jpg']);
-                    
-                    if ($isAi || $isHero) {
-                        $files[] = [
-                            'filename' => $file,
-                            'url' => asset('images/' . $file),
-                            'is_ai' => $isAi,
-                            'title' => $isAi ? 'Generada por IA' : ($file === 'hero-grupo-clinico.jpg' ? 'Equipo Clínico' : ($file === 'tela-antifluidos-macro.jpg' ? 'Tela Antifluido' : 'Tallaje en Terreno')),
-                            'timestamp' => filemtime($fullPath)
-                        ];
-                    }
+                    $files[] = [
+                        'filename' => $file,
+                        'url' => asset('images/' . $file),
+                        'is_ai' => true,
+                        'title' => 'Generación Personalizada B2B',
+                        'category' => 'Generadas',
+                        'timestamp' => filemtime($fullPath)
+                    ];
                 }
             }
         }
 
-        // Ordenar por más recientes primero
+        // Ordenar con las curadas y recientes primero
         usort($files, fn($a, $b) => $b['timestamp'] <=> $a['timestamp']);
 
         return response()->json([
             'success' => true,
-            'images' => array_slice($files, 0, 24)
+            'images' => array_slice($files, 0, 30)
         ]);
     }
 
     private function getSuggestedCopyForTheme(string $theme, string $color): array
     {
         switch ($theme) {
+            case 'convenio':
+                return [
+                    'campaign_name' => 'Propuesta Convenio Institucional & Adquisiciones Clínicas',
+                    'subject' => '🏥 [Convenio Corporativo] Dotación clínica de alto desempeño para su institución de salud | Suitable Chile',
+                    'preheader' => 'Garantía oficial de 6 meses directa de fábrica, precios preferenciales por volumen y servicio de tallaje en dependencias de su clínica.',
+                    'hero_title' => 'Alianza estratégica y dotación clínica corporativa para instituciones de salud de alta exigencia',
+                    'hero_desc' => 'Estimado/a <strong>{{ contact.NOMBRE | default: "Director/a o Encargado/a de Compras y Adquisiciones" }}</strong> de <strong>{{ contact.EMPRESA | default: "su prestigiosa institución médica" }}</strong>: En <strong>Suitable</strong> entendemos que gestionar la dotación médica de decenas o cientos de profesionales exige un proveedor nacional confiable, ágil y de excelencia. Confeccionamos en Chile con telas técnicas certificadas, garantizamos 6 meses cada prenda y llevamos nuestras muestras directamente a sus dependencias para un tallaje sin errores.',
+                    'hero_cta_text' => 'Agendar Reunión con Ejecutivo B2B →',
+                    'pilar1_title' => '📑 Precios Preferenciales por Volumen y Facturación B2B',
+                    'pilar1_desc' => 'Escalas de precios mayoristas escalonados para compras de departamentos, clínicas y redes asistenciales con pago a 30 días.',
+                    'pilar2_title' => '📏 Sesiones de Tallaje en su Propia Clínica',
+                    'pilar2_desc' => 'Nuestro equipo acude con percheros móviles a sus instalaciones para que cada profesional pruebe su talle exacto.',
+                    'pilar3_title' => '🛡️ 6 Meses de Garantía Directa de Fábrica Chilena',
+                    'pilar3_desc' => 'Respaldamos la confección, costuras y cierres de cada uniforme durante medio año con reposición inmediata.',
+                ];
             case 'tela':
                 return [
                     'campaign_name' => 'Propuesta Bioseguridad Textil Antifluido Flex',
