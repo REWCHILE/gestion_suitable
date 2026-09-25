@@ -39,8 +39,7 @@ class Client extends Model
 
     public function groups(): BelongsToMany
     {
-        return $this->belongsToMany(ContactGroup::class, 'group_members', 'client_id', 'group_id')
-            ->withTimestamps();
+        return $this->belongsToMany(ContactGroup::class, 'group_members', 'client_id', 'group_id');
     }
 
     public function assignedTo(): BelongsTo

@@ -23,8 +23,7 @@ class ContactGroup extends Model
 
     public function clients(): BelongsToMany
     {
-        return $this->belongsToMany(Client::class, 'group_members', 'group_id', 'client_id')
-            ->withTimestamps();
+        return $this->belongsToMany(Client::class, 'group_members', 'group_id', 'client_id');
     }
 
     public function campaigns(): HasMany

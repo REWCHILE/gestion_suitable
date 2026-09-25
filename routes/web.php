@@ -67,7 +67,7 @@ Route::middleware(EnsureUserIsAuthenticated::class)->group(function () {
     Route::post('/import', [ImportController::class, 'process'])->name('import.process');
 
     // Analytics & Metrics (Desactivado temporalmente por solicitud)
-    Route::get('/analytics', fn() => redirect()->route('dashboard'))->name('analytics.index');
+    Route::redirect('/analytics', '/')->name('analytics.index');
 
     // Cerebro Suitable (ML & Inteligencia de Negocio & Pensamientos AI)
     Route::get('/ml-brain', [MlBrainController::class, 'index'])->name('ml_brain.index');

@@ -135,7 +135,17 @@
                 ${{ number_format($ro->total_amount, 0, ',', '.') }}
               </td>
               <td style="font-size: 11px; color: #64748B;">
-                {{ \Carbon\Carbon::parse($ro->date_created)->format('d/m/Y') }}
+                @php
+                  $orderDate = 'Reciente';
+                  if (!empty($ro->date_created)) {
+                    try {
+                      $orderDate = \Carbon\Carbon::parse($ro->date_created)->format('d/m/Y');
+                    } catch (\Throwable $de) {
+                      $orderDate = substr((string)$ro->date_created, 0, 10);
+                    }
+                  }
+                @endphp
+                {{ $orderDate }}
               </td>
             </tr>
           @endforeach

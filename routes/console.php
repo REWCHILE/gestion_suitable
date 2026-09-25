@@ -136,3 +136,33 @@ Artisan::command('woocommerce:connect-wp', function () {
     }
 })->purpose('Auto-detecta credenciales de WordPress y sincroniza pedidos reales de WooCommerce');
 
+Artisan::command('log:error', function () {
+    $logPath = storage_path('logs/laravel.log');
+    if (!file_exists($logPath)) {
+        $this->info("No existe archivo laravel.log en storage/logs/");
+        return 0;
+    }
+    $lines = file($logPath);
+    $lastLines = array_slice($lines, -50);
+    $this->info("=== ÚLTIMOS ERRORES EN LARAVEL.LOG ===");
+    $this->line(implode("", $lastLines));
+    return 0;
+})->purpose('Muestra los últimos 50 registros de error en laravel.log');
+
+Artisan::command('debug:dashboard', function () {
+    $this->info("🧪 PROBANDO CARGA DE DASHBOARD...");
+    try {
+        $ctrl = app(\App\Http\Controllers\DashboardController::class);
+        $view = $ctrl->index();
+        $this->info("✅ DashboardController@index ejecutado con éxito.");
+        $html = $view->render();
+        $this->info("✅ Blade view 'dashboard' renderizada correctamente (" . strlen($html) . " bytes).");
+        return 0;
+    } catch (\Throwable $e) {
+        $this->error("❌ ERROR: " . $e->getMessage());
+        $this->line("   Archivo: " . $e->getFile() . ":" . $e->getLine());
+        $this->line($e->getTraceAsString());
+        return 1;
+    }
+})->purpose('Diagnostica la ejecución del Dashboard y detecta posibles fallos');
+
