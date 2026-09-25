@@ -67,7 +67,7 @@ CREATE TABLE `campaigns` (
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `campaigns` (`id`, `name`, `group_id`, `template_id`, `preset_template`, `subject`, `preheader`, `hero_title`, `hero_desc`, `hero_image`, `pilar1_title`, `pilar1_desc`, `pilar2_title`, `pilar2_desc`, `pilar3_title`, `pilar3_desc`, `split_content`, `gallery_json`, `ai_provider`, `ai_prompt`, `status`, `sent_count`, `total_count`, `user_id`, `created_at`, `updated_at`) VALUES
 ('1', 'Campaña Clínicas B2B - 24/09/2026', '0', '2', 'split', '[Convenio Clínico] Uniformes médicos con 6 meses de garantía directa de fábrica y servicio de tallaje', 'Somos fabricantes chilenos de uniformes clínicos antifluidos. Servicio exclusivo de tallaje en su clínica y 6 meses de garantía.', 'Confort y Protección en Pabellón', 'Confección chilena directa con 6 meses de garantía.', 'tela-antifluidos-macro.jpg', 'Tecnología Flex 4-Way Antifluido', 'Barrera repelente de líquidos con máxima elasticidad.', 'Telas Flex Antifluidos', 'Tecnología 4-Way repelente a líquidos.', 'Tallaje en Terreno', 'Percheros móviles sin costo en la clínica.', 'Nuestras telas repelen fluidos biológicos y ofrecen suavidad ergonómica para turnos de 24 horas.', NULL, 'groq', '```json\n{\n  \"subject\": \"Renueve el uniforme clínico de su centro con garantía y tecnología chilena\",\n  \"preheader\": \"Uniformes 100% Made in Chile, antifluidos Flex 4‑Way y 6 meses de garantía directa.\",\n  \"hero_title\": \"Uniformes clínicos que cuidan a su equipo y su presupuesto\",\n  \"hero_desc\": \"En SUITABLE diseñamos y fabricamos uniformes 100 % chilenos, sin intermediarios, con telas Flex 4‑Way antifluidos y una garantía de 6 meses. Además, llevamos el servicio de tallaje directamente a su clínica, asegurando ajuste perfecto y rapidez en la entrega.\",\n  \"pilar1_title\": \"Fabricación 100 % chilena, sin intermediarios\",\n  \"pilar1_desc\": \"Control total de la cadena productiva: desde la selección de la fibra hasta la confección final. Esto nos permite ofrecer precios competitivos y tiempos de entrega más cortos, garantizando calidad y trazabilidad completa.\",\n  \"pilar2_title\": \"Telas antifluidos Flex 4‑Way con tecnología avanzada\",\n  \"pilar2_desc\": \"Nuestros tejidos combinan elasticidad en cuatro direcciones, resistencia a fluidos y transpirabilidad. Protegen al personal de derrames y contaminantes mientras ofrecen comodidad durante largas jornadas.\",\n  \"pilar3_title\": \"Garantía de 6 meses y tallaje en terreno\",\n  \"pilar3_desc\": \"Confíe en la durabilidad de nuestros productos con una garantía directa de fábrica de medio año. Nuestro equipo visita su clínica con percheros móviles para tomar medidas exactas y entregar uniformes al instante, eliminando esperas y devoluciones.\"\n}\n```', 'enviada', '540', '540', NULL, '2026-09-24 12:30:39', NULL),
@@ -95,7 +95,7 @@ CREATE TABLE `clients` (
   PRIMARY KEY (`id`),
   KEY `idx_email` (`email`),
   KEY `idx_estado` (`estado`)
-) ENGINE=InnoDB AUTO_INCREMENT=542 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=542 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `clients` (`id`, `empresa`, `contacto_nombre`, `email`, `telefono`, `cargo`, `region_comuna`, `tamano_equipo`, `estado`, `notas`, `fecha_tallaje`, `monto_cotizacion`, `ultimo_envio_tipo`, `ultimo_envio_fecha`, `asignado_a`, `created_at`, `updated_at`) VALUES
 ('1', 'Clínica Las Condes', 'Dra. Marcela Contreras', 'mcontreras@clc.cl', '+56991234567', 'Jefa de Enfermería y Pabellón', 'Las Condes, RM', '45', 'tallaje_agendado', 'Interesados en dotación de 45 equipos color Caribbean y Azul Marino con bordado institucional. Se coordinó visita con muestrario y tallero completo en piso 3.', '2026-09-26', '2450000.00', 'plantilla_2', '2026-09-22 21:19:38', NULL, '2026-09-23 21:19:38', '2026-09-23 21:19:38'),
@@ -647,7 +647,7 @@ CREATE TABLE `contact_groups` (
   `color` varchar(50) DEFAULT '#1E8888',
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `contact_groups` (`id`, `name`, `description`, `color`, `created_at`) VALUES
 ('1', 'Clínicas & Hospitales RM', 'Instituciones de alta complejidad en la Región Metropolitana con equipos sobre 30 profesionales.', '#1E8888', '2026-09-23 21:24:40'),
@@ -672,7 +672,7 @@ CREATE TABLE `email_logs` (
   `sent_at` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `idx_recip` (`recipient_email`)
-) ENGINE=InnoDB AUTO_INCREMENT=3241 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3241 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `email_logs` (`id`, `client_id`, `campaign_id`, `user_id`, `template_id`, `recipient_email`, `subject`, `status`, `details`, `sent_at`) VALUES
 ('1', '1', '1', NULL, '2', 'mcontreras@clc.cl', '[Convenio Clínico] Uniformes médicos con 6 meses de garantía directa de fábrica y servicio de tallaje', 'simulado', 'Disparo de campaña en modo SIMULACION', '2026-09-24 15:59:28'),
@@ -3926,7 +3926,7 @@ CREATE TABLE `group_members` (
   KEY `idx_client` (`client_id`),
   CONSTRAINT `fk_gm_client` FOREIGN KEY (`client_id`) REFERENCES `clients` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_gm_group` FOREIGN KEY (`group_id`) REFERENCES `contact_groups` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `group_members` (`group_id`, `client_id`, `created_at`, `updated_at`) VALUES
 ('1', '1', '2026-09-23 21:24:40', '2026-09-24 01:22:47'),
@@ -4512,7 +4512,7 @@ CREATE TABLE `order_items` (
   `price` decimal(12,2) NOT NULL,
   `subtotal` decimal(12,2) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=196 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=196 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `order_items` (`id`, `order_id`, `product_name`, `category`, `variation_color`, `variation_size`, `quantity`, `price`, `subtotal`) VALUES
 ('1', '1', 'Pantalón Clínico Hombre Flex', 'Pantalón Hombre', 'Gris Claro', 'L', '3', '27990.00', '83970.00'),
@@ -4726,7 +4726,7 @@ CREATE TABLE `orders` (
   `date_created` datetime NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `wc_order_id` (`wc_order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=126 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=126 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `orders` (`id`, `wc_order_id`, `customer_name`, `customer_email`, `customer_city`, `total_amount`, `shipping_amount`, `status`, `payment_method`, `items_count`, `date_created`) VALUES
 ('1', '24100', 'Enf. Rodrigo Silva', 'rsilva@hospitaldetrabajador.cl', 'Providencia', '533970.00', '0.00', 'completed', 'Transbank Webpay', '2', '2026-02-12 17:35:16'),
@@ -4866,7 +4866,7 @@ CREATE TABLE `search_trends` (
   `intent_level` varchar(100) DEFAULT 'Alta Intención de Compra',
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `search_trends` (`id`, `keyword`, `search_volume`, `growth_rate`, `category`, `period_type`, `intent_level`, `updated_at`) VALUES
 ('1', 'uniformes clinicos antifluidos', '14200', '38.40', 'Antifluidos', 'monthly', 'Muy Alta Intención de Compra', '2026-09-23 00:00:00'),
@@ -4883,7 +4883,7 @@ CREATE TABLE `settings` (
   `key` varchar(191) NOT NULL,
   `value` longtext,
   PRIMARY KEY (`key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `settings` (`key`, `value`) VALUES
 ('active_ai_provider', 'groq'),
@@ -4931,7 +4931,7 @@ CREATE TABLE `traffic_metrics` (
   `cvr` decimal(5,2) DEFAULT '0.00',
   `aov` decimal(12,2) DEFAULT '0.00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `traffic_metrics` (`id`, `period_type`, `period_date`, `sessions`, `visitors`, `orders_count`, `revenue`, `ad_spend`, `ctr`, `cpa`, `cvr`, `aov`) VALUES
 ('1', 'day', '2026-08-24', '1198', '982', '28', '1345932.00', '41549.00', '3.20', '1484.00', '2.34', '48069.00'),
@@ -4976,7 +4976,7 @@ CREATE TABLE `users` (
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `users` (`id`, `name`, `email`, `password_hash`, `role`, `created_at`) VALUES
 ('1', 'Administrador Suitable', 'admin@suitable.cl', '$2y$10$32y2u00l8gnStBqLAY.Gx.IIO7yrz.UnUpnKw2GcxvrjUcWHLl1hG', 'admin', '2026-09-23 21:19:38'),
