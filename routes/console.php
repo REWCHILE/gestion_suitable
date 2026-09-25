@@ -94,7 +94,41 @@ Artisan::command('woocommerce:connect-wp', function () {
 
     if (!empty($data['success'])) {
         $this->info("🎉 " . $data['message']);
-        $this->info("💰 Facturación importada: " . ($data['formatted_revenue'] ?? '$0'));
+        
+        $totalOrders = \App\Models\Order::count();
+        $totalRev = (float)\App\Models\Order::sum('total_amount');
+        $aov = $totalOrders > 0 ? ($totalRev / $totalOrders) : 0;
+        $totalItems = (int)\App\Models\OrderItem::sum('quantity');
+
+        $this->newLine();
+        $this->info("📊 RESUMEN DE VENTAS SUITABLE.CL:");
+        $this->line("   - Órdenes Sincronizadas: {$totalOrders}");
+        $this->line("   - Total Facturado: $" . number_format($totalRev, 0, ',', '.') . " CLP");
+        $this->line("   - Ticket Promedio (AOV): $" . number_format($aov, 0, ',', '.') . " CLP");
+        $this->line("   - Total Prendas / Ítems: {$totalItems}");
+        
+        $this->newLine();
+        $this->info("📋 MUESTRA DE PEDIDOS RECIENTES:");
+        $recent = \App\Models\Order::orderBy('date_created', 'desc')->take(10)->get();
+        $rows = [];
+        foreach ($recent as $o) {
+            $rows[] = [
+                '#' . $o->wc_order_id,
+                $o->customer_name,
+                $o->customer_email,
+                $o->customer_city,
+                '$' . number_format($o->total_amount, 0, ',', '.'),
+                $o->items_count . ' un.',
+                $o->status
+            ];
+        }
+        $this->table(['Orden', 'Cliente', 'Email', 'Ciudad', 'Total (CLP)', 'Prendas', 'Estado'], $rows);
+
+        // Limpiar cachés de vistas para que el frontend se actualice inmediatamente
+        \Illuminate\Support\Facades\Artisan::call('view:clear');
+        \Illuminate\Support\Facades\Artisan::call('cache:clear');
+        $this->info("🧹 Cachés de vistas y aplicación limpiadas.");
+
         return 0;
     } else {
         $this->error("❌ " . ($data['message'] ?? 'Error desconocido'));

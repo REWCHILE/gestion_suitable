@@ -213,54 +213,25 @@
         </tr>
       </thead>
       <tbody id="orders-tbody">
-        @foreach($orders as $ord)
-          <tr>
-            <td>
-              <strong style="color: #1E8888;">#{{ $ord->wc_order_id }}</strong>
-            </td>
-            <td>
-              <div style="font-weight: 700; color: #0F172A;">{{ $ord->customer_name }}</div>
-              <div style="font-size: 11px; color: #64748B;">{{ $ord->customer_email }}</div>
-            </td>
-            <td>
-              <span style="font-size: 12px; color: #475569;">{{ $ord->customer_city ?: 'Santiago' }}</span>
-            </td>
-            <td style="font-weight: 800; color: #059669; font-size: 13.5px;">
-              ${{ number_format($ord->total_amount, 0, ',', '.') }}
-            </td>
-            <td>
-              <span class="badge" style="background: #F1F5F9; color: #334155; font-size: 11px;">
-                {{ $ord->items_count }} {{ $ord->items_count == 1 ? 'prenda' : 'prendas' }}
-              </span>
-            </td>
-            <td style="font-size: 11.5px; color: #64748B;">
-              {{ $ord->payment_method ?: 'Webpay Plus' }}
-            </td>
-            <td>
-              @php
-                $st = strtolower($ord->status);
-                $badgeStyle = match($st) {
-                  'completed' => 'background:#ECFDF5; color:#059669;',
-                  'processing' => 'background:#EFF6FF; color:#1D4ED8;',
-                  'on-hold', 'pending' => 'background:#FEF3C7; color:#B45309;',
-                  'cancelled', 'failed' => 'background:#FEE2E2; color:#B91C1C;',
-                  default => 'background:#F1F5F9; color:#475569;'
-                };
-              @endphp
-              <span class="badge" style="{{ $badgeStyle }} font-weight: 700; text-transform: capitalize;">
-                {{ $ord->status }}
-              </span>
-            </td>
-            <td style="font-size: 12px; color: #64748B; white-space: nowrap;">
-              {{ \Carbon\Carbon::parse($ord->date_created)->format('d/m/Y H:i') }}
-            </td>
-          </tr>
-        @endforeach
+        @include('woocommerce._order_rows', ['orders' => $orders])
       </tbody>
     </table>
 
-    <div style="margin-top: 20px;">
-      {{ $orders->links() }}
+    <!-- Infinite Scroll Status & Sentinel -->
+    <div id="infinite-scroll-container" style="margin-top: 24px; text-align: center;">
+      <!-- Loading Spinner -->
+      <div id="infinite-scroll-loading" style="display: none; padding: 18px 0; color: #1E8888; font-weight: 700; font-size: 13px;">
+        <span class="infinite-spinner" style="display: inline-block; width: 22px; height: 22px; border: 3px solid rgba(30,136,136,0.2); border-top-color: #1E8888; border-radius: 50%; animation: inf-spin 0.8s linear infinite; vertical-align: middle; margin-right: 10px;"></span>
+        Cargando más pedidos reales automáticamente...
+      </div>
+
+      <!-- End of Results Badge -->
+      <div id="infinite-scroll-end" style="{{ $orders->hasMorePages() ? 'display: none;' : '' }} padding: 16px 20px; background: #F8FAFC; border: 1px dashed #CBD5E1; border-radius: 10px; font-size: 13px; color: #475569; font-weight: 600;">
+        ✨ Has llegado al final • Mostrando todas las <strong id="orders-current-count">{{ $orders->total() }}</strong> órdenes reales sincronizadas de Suitable.cl
+      </div>
+
+      <!-- Sentinel Element observed by IntersectionObserver -->
+      <div id="infinite-scroll-sentinel" style="height: 30px; width: 100%;"></div>
     </div>
   @else
     <!-- EMPTY STATE -->
@@ -509,5 +480,80 @@
       showToast('Error al purgar data', 'error');
     }
   }
+
+  // --- INFINITE SCROLL NATIVO CON INTERSECTION OBSERVER ---
+  document.addEventListener('DOMContentLoaded', () => {
+    let nextPage = {{ $orders->hasMorePages() ? 2 : 'null' }};
+    let isLoading = false;
+    let totalOrders = {{ $orders->total() }};
+    let currentCount = {{ $orders->count() }};
+
+    const sentinel = document.getElementById('infinite-scroll-sentinel');
+    const loadingIndicator = document.getElementById('infinite-scroll-loading');
+    const endIndicator = document.getElementById('infinite-scroll-end');
+    const tbody = document.getElementById('orders-tbody');
+    const currentCountEl = document.getElementById('orders-current-count');
+
+    if (sentinel && nextPage) {
+      const observer = new IntersectionObserver(async (entries) => {
+        const entry = entries[0];
+        if (entry.isIntersecting && !isLoading && nextPage) {
+          isLoading = true;
+          if (loadingIndicator) loadingIndicator.style.display = 'block';
+
+          try {
+            const url = new URL("{{ route('woocommerce.index') }}", window.location.origin);
+            url.searchParams.set('page', nextPage);
+
+            const res = await fetch(url.toString(), {
+              headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-Infinite-Scroll': 'true',
+                'Accept': 'application/json'
+              }
+            });
+
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            const data = await res.json();
+
+            if (data.success && data.html) {
+              tbody.insertAdjacentHTML('beforeend', data.html);
+              currentCount += data.count;
+              if (currentCountEl) currentCountEl.textContent = currentCount;
+
+              if (data.has_more && data.next_page) {
+                nextPage = data.next_page;
+              } else {
+                nextPage = null;
+                if (endIndicator) endIndicator.style.display = 'block';
+                observer.disconnect();
+              }
+            } else {
+              nextPage = null;
+              if (endIndicator) endIndicator.style.display = 'block';
+              observer.disconnect();
+            }
+          } catch (err) {
+            console.error('Error cargando pedidos en Infinite Scroll:', err);
+          } finally {
+            isLoading = false;
+            if (loadingIndicator) loadingIndicator.style.display = 'none';
+          }
+        }
+      }, {
+        rootMargin: '250px',
+        threshold: 0.1
+      });
+
+      observer.observe(sentinel);
+    }
+  });
 </script>
+
+<style>
+@keyframes inf-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
 @endsection
