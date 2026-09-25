@@ -13,12 +13,55 @@ use App\Http\Controllers\WooCommerceController;
 use App\Http\Controllers\SettingController;
 use App\Http\Middleware\EnsureUserIsAuthenticated;
 
-// Rutas Públicas de Autenticación
+// Rutas Públicas de Autenticación y Diagnóstico
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::match(['get', 'post'], '/logout', [AuthController::class, 'logout'])->name('logout');
-Route::get('/login.php', fn() => redirect()->route('login'));
-Route::get('/logout.php', fn() => redirect()->route('logout'));
+Route::redirect('/login.php', '/login');
+Route::redirect('/logout.php', '/logout');
+
+// Diagnóstico público del sistema para identificar de inmediato cualquier incidencia
+Route::get('/debug-system', function () {
+    $report = [];
+    $report['status'] = 'running';
+    $report['php_version'] = PHP_VERSION;
+    $report['laravel_version'] = app()->version();
+    
+    // DB Test
+    try {
+        \Illuminate\Support\Facades\DB::connection()->getPdo();
+        $dbName = config('database.connections.mysql.database');
+        $report['database'] = "CONECTADO A '{$dbName}'";
+    } catch (\Throwable $e) {
+        $report['database'] = 'ERROR: ' . $e->getMessage();
+    }
+
+    // Counts
+    try { $report['clients_count'] = \App\Models\Client::count(); } catch (\Throwable $e) { $report['clients_count'] = $e->getMessage(); }
+    try { $report['groups_count'] = \App\Models\ContactGroup::count(); } catch (\Throwable $e) { $report['groups_count'] = $e->getMessage(); }
+    try { $report['orders_count'] = \App\Models\Order::count(); } catch (\Throwable $e) { $report['orders_count'] = $e->getMessage(); }
+
+    // Dashboard Execution Test
+    try {
+        $ctrl = app(\App\Http\Controllers\DashboardController::class);
+        $v = $ctrl->index();
+        $report['dashboard_controller'] = 'OK';
+        $report['dashboard_rendered_bytes'] = strlen($v->render());
+    } catch (\Throwable $e) {
+        $report['dashboard_controller'] = 'ERROR: ' . $e->getMessage() . ' (' . $e->getFile() . ':' . $e->getLine() . ')';
+    }
+
+    // Recent Log Errors
+    $logPath = storage_path('logs/laravel.log');
+    if (file_exists($logPath)) {
+        $lines = file($logPath);
+        $report['last_log_snippet'] = array_slice($lines, -30);
+    } else {
+        $report['last_log_snippet'] = 'laravel.log no encontrado';
+    }
+
+    return response()->json($report, 200, [], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+});
 
 // Rutas Protegidas de la Intranet (Requieren Sesión)
 Route::middleware(EnsureUserIsAuthenticated::class)->group(function () {
