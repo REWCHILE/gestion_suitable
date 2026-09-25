@@ -38,7 +38,7 @@ class WooCommerceController extends Controller
         $storeUrl = Setting::get('wc_store_url', 'https://suitable.cl');
         $consumerKey = Setting::get('wc_consumer_key', '');
         $consumerSecret = Setting::get('wc_consumer_secret', '');
-        $lastSync = Setting::get('wc_last_sync', null);
+        $lastSync = Setting::get('wc_last_sync', '');
 
         // Verificamos si existe wp-config.php en el servidor para alertar que está disponible auto-detección
         $wpConfigPath = $this->findWpConfigFile();
@@ -458,13 +458,18 @@ class WooCommerceController extends Controller
             base_path('../public_html/wp-config.php'),
             '/home/suitable/public_html/wp-config.php',
             dirname(base_path()) . '/public_html/wp-config.php',
-            $_SERVER['DOCUMENT_ROOT'] . '/../public_html/wp-config.php',
+            isset($_SERVER['DOCUMENT_ROOT']) ? dirname($_SERVER['DOCUMENT_ROOT']) . '/public_html/wp-config.php' : null,
             'c:/laragon/www/public_html/wp-config.php'
         ];
 
         foreach ($possiblePaths as $path) {
-            if (file_exists($path)) {
-                return $path;
+            if (!$path) continue;
+            try {
+                if (@file_exists($path) && @is_readable($path)) {
+                    return $path;
+                }
+            } catch (\Throwable $e) {
+                // Silently skip any restricted paths
             }
         }
 

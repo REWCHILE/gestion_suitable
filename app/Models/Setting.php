@@ -14,7 +14,7 @@ class Setting extends Model
 
     protected $fillable = ['key', 'value'];
 
-    public static function get(string $key, string $default = ''): string
+    public static function get(string $key, ?string $default = ''): ?string
     {
         $setting = static::find($key);
         return $setting ? (string)$setting->value : $default;
