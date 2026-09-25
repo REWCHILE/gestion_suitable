@@ -59,7 +59,7 @@
       <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-left: 4px solid {{ $g->color ?: '#1E8888' }}; border-radius: 8px; padding: 14px; display: flex; justify-content: space-between; align-items: center;">
         <div>
           <div style="font-size: 14px; font-weight: 800; color: #0F172A;">{{ $g->name }}</div>
-          <div style="font-size: 11px; color: #64748B; margin-top: 2px;">{{ Str::limit($g->description, 45) }}</div>
+          <div style="font-size: 11px; color: #64748B; margin-top: 2px;">{{ strlen($g->description ?? '') > 45 ? substr($g->description, 0, 42) . '...' : ($g->description ?? '') }}</div>
         </div>
         <div style="text-align: right;">
           <span class="badge" style="background-color: #E6F4F4; color: #146161; font-weight: 800; font-size: 12px;">{{ $g->clients_count }}</span>

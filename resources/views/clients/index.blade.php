@@ -113,7 +113,7 @@
               {{ $cli->region_comuna }}
             </td>
             <td style="font-size: 11px; color: #64748B; max-width: 220px;">
-              {{ Str::limit($cli->notas, 50) }}
+              {{ strlen($cli->notas ?? '') > 50 ? substr($cli->notas, 0, 47) . '...' : ($cli->notas ?? '') }}
             </td>
           </tr>
         @empty

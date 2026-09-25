@@ -113,7 +113,7 @@
                 {{ $camp->subject }}
               </div>
               <div style="font-size:11px; color:#64748B; max-width: 210px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                {{ Str::limit($camp->preheader, 45) }}
+                {{ strlen($camp->preheader ?? '') > 45 ? substr($camp->preheader, 0, 42) . '...' : ($camp->preheader ?? '') }}
               </div>
             </td>
             <td>
