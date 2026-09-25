@@ -140,24 +140,24 @@
         <label class="form-label" style="font-weight: 700; font-size: 12.5px; color: #1E8888; margin-bottom: 6px; display: block;">
           Prefijo de Tablas
         </label>
-        <input type="text" id="table_prefix" name="table_prefix" class="form-control" value="{{ $tablePrefix }}" style="border-color: #1E8888; font-weight: 700;" placeholder="wp8q_" required>
-        <span style="font-size: 11px; color: #1E8888; font-weight: 600;">Confirmado en phpMyAdmin: <code>wp8q_</code></span>
+        <input type="text" id="table_prefix" name="table_prefix" class="form-control" value="{{ ($tablePrefix === 'wp_' || empty($tablePrefix)) ? 'wp8q_' : $tablePrefix }}" style="border-color: #1E8888; font-weight: 700;" placeholder="wp8q_" required>
+        <span style="font-size: 11px; color: #1E8888; font-weight: 600;">Confirmado en tu phpMyAdmin: <code>wp8q_</code></span>
       </div>
 
       <div>
         <label class="form-label" style="font-weight: 700; font-size: 12.5px; color: #334155; margin-bottom: 6px; display: block;">
           Usuario MySQL
         </label>
-        <input type="text" id="db_user" name="db_user" class="form-control" value="{{ $mysqlUser }}" placeholder="suitable_intranetuser" required>
-        <span style="font-size: 11px; color: #94A3B8;">Usuario con permisos en cPanel</span>
+        <input type="text" id="db_user" name="db_user" class="form-control" value="{{ $mysqlUser ?: 'suitable_intranetuser' }}" placeholder="suitable_intranetuser" required>
+        <span style="font-size: 11px; color: #64748B;">Usuario asignado en cPanel</span>
       </div>
 
       <div>
         <label class="form-label" style="font-weight: 700; font-size: 12.5px; color: #334155; margin-bottom: 6px; display: block;">
           Contraseña MySQL
         </label>
-        <input type="password" id="db_pass" name="db_pass" class="form-control" value="{{ $mysqlPass }}" placeholder="Contraseña de la BD">
-        <span style="font-size: 11px; color: #94A3B8;">Si no la cambiaste, usa la de la intranet o wp-config</span>
+        <input type="password" id="db_pass" name="db_pass" class="form-control" value="{{ $mysqlPass }}" placeholder="Dejar en blanco para usar la de la intranet">
+        <span style="font-size: 11px; color: #64748B;">Si se deja en blanco, usa automáticamente la clave MySQL del .env</span>
       </div>
     </div>
 
@@ -351,27 +351,36 @@
         },
         body: JSON.stringify(payload)
       });
-      const data = await res.json();
+      
+      let data;
+      try {
+        data = await res.json();
+      } catch (jsonErr) {
+        throw new Error('Respuesta inesperada del servidor (HTTP ' + res.status + ')');
+      }
 
       if (data.success) {
+        if (data.prefix) {
+          document.getElementById('table_prefix').value = data.prefix;
+        }
         resultBox.style.background = '#F0FDF4';
         resultBox.style.border = '1px solid #BBF7D0';
         resultBox.style.color = '#166534';
-        resultBox.innerHTML = `<strong>✅ ${data.message}</strong><br><span style="font-size: 12px;">Tablas encontradas: ${data.tables_count} | Pedidos listos para importar: <strong>${data.orders_found}</strong></span>`;
-        showToast('Conexión con WooCommerce exitosa', 'success');
+        resultBox.innerHTML = `<strong>✅ ${data.message}</strong><br><span style="font-size: 12px;">Base: <code>${data.database}</code> | Prefijo: <code>${data.prefix}</code> | Pedidos listos para importar: <strong>${data.orders_found}</strong></span>`;
+        showToast('Conexión con WooCommerce exitosa (' + data.orders_found + ' pedidos)', 'success');
       } else {
         resultBox.style.background = '#FEF2F2';
         resultBox.style.border = '1px solid #FECACA';
         resultBox.style.color = '#991B1B';
         resultBox.innerHTML = `<strong>❌ Error:</strong> ${data.message}`;
-        showToast('Fallo en la prueba de conexión', 'error');
+        showToast(data.message, 'error');
       }
     } catch (e) {
       resultBox.style.background = '#FEF2F2';
       resultBox.style.border = '1px solid #FECACA';
       resultBox.style.color = '#991B1B';
-      resultBox.innerHTML = `<strong>❌ Error inesperado:</strong> ${e.message}`;
-      showToast('Error de red o servidor', 'error');
+      resultBox.innerHTML = `<strong>❌ Error:</strong> ${e.message}`;
+      showToast('Error de conexión: ' + e.message, 'error');
     } finally {
       btn.disabled = false;
       btn.innerText = '🧪 Probar Conexión';
@@ -443,9 +452,18 @@
         },
         body: JSON.stringify(payload)
       });
-      const data = await res.json();
+      
+      let data;
+      try {
+        data = await res.json();
+      } catch (jsonErr) {
+        throw new Error('Respuesta inesperada del servidor (HTTP ' + res.status + ')');
+      }
 
       if (data.success) {
+        if (data.prefix) {
+          document.getElementById('table_prefix').value = data.prefix;
+        }
         showToast(data.message, 'success');
         setTimeout(() => {
           window.location.reload();

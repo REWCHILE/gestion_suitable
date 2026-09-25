@@ -10,7 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\DB;
 use PDO;
-use Exception;
+use Throwable;
 
 class WooCommerceController extends Controller
 {
@@ -25,20 +25,24 @@ class WooCommerceController extends Controller
 
         $totalOrders = Order::count();
         $totalRevenue = Order::sum('total_amount');
-        $uniqueCustomers = Order::distinct('customer_email')->count('customer_email');
+        $uniqueCustomers = Order::distinct()->count('customer_email');
 
-        // Configuración guardada (con valores por defecto basados en Suitable.cl y suitable_wp372)
-        $mysqlHost = Setting::get('wc_mysql_host', 'localhost');
-        $mysqlPort = Setting::get('wc_mysql_port', '3306');
-        $mysqlDb = Setting::get('wc_mysql_db', 'suitable_wp372');
-        $mysqlUser = Setting::get('wc_mysql_user', 'suitable_intranetuser');
-        $mysqlPass = Setting::get('wc_mysql_pass', '');
-        $tablePrefix = Setting::get('wc_active_prefix', 'wp8q_');
+        // Configuración guardada (priorizando suitable_wp372 y wp8q_)
+        $mysqlHost = Setting::get('wc_mysql_host') ?: 'localhost';
+        $mysqlPort = Setting::get('wc_mysql_port') ?: '3306';
+        $mysqlDb = Setting::get('wc_mysql_db') ?: 'suitable_wp372';
+        $mysqlUser = Setting::get('wc_mysql_user') ?: env('DB_USERNAME', 'suitable_intranetuser');
+        $mysqlPass = Setting::get('wc_mysql_pass') ?: '';
+        
+        $tablePrefix = Setting::get('wc_active_prefix') ?: 'wp8q_';
+        if ($tablePrefix === 'wp_') {
+            $tablePrefix = 'wp8q_';
+        }
 
-        $storeUrl = Setting::get('wc_store_url', 'https://suitable.cl');
-        $consumerKey = Setting::get('wc_consumer_key', '');
-        $consumerSecret = Setting::get('wc_consumer_secret', '');
-        $lastSync = Setting::get('wc_last_sync', '');
+        $storeUrl = Setting::get('wc_store_url') ?: 'https://suitable.cl';
+        $consumerKey = Setting::get('wc_consumer_key') ?: '';
+        $consumerSecret = Setting::get('wc_consumer_secret') ?: '';
+        $lastSync = Setting::get('wc_last_sync') ?: '';
 
         // Verificamos si existe wp-config.php en el servidor para alertar que está disponible auto-detección
         $wpConfigPath = $this->findWpConfigFile();
@@ -111,7 +115,7 @@ class WooCommerceController extends Controller
                 'db_prefix' => $tablePrefix ?: 'wp8q_',
                 'message' => '¡Configuración de WordPress detectada con éxito en public_html!'
             ]);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Error al leer wp-config.php: ' . $e->getMessage()
@@ -124,26 +128,24 @@ class WooCommerceController extends Controller
      */
     public function testConnection(Request $request): JsonResponse
     {
-        $host = $request->input('db_host') ?: Setting::get('wc_mysql_host', 'localhost');
-        $port = $request->input('db_port') ?: Setting::get('wc_mysql_port', '3306');
-        $database = $request->input('db_name') ?: Setting::get('wc_mysql_db', 'suitable_wp372');
-        $user = $request->input('db_user') ?: Setting::get('wc_mysql_user', 'suitable_intranetuser');
-        $pass = $request->has('db_pass') ? $request->input('db_pass') : Setting::get('wc_mysql_pass', '');
-        $prefix = $request->input('table_prefix') ?: Setting::get('wc_active_prefix', 'wp8q_');
-
         try {
+            $host = $request->input('db_host') ?: Setting::get('wc_mysql_host', 'localhost');
+            $port = $request->input('db_port') ?: Setting::get('wc_mysql_port', '3306');
+            $database = $request->input('db_name') ?: Setting::get('wc_mysql_db', 'suitable_wp372');
+            $user = $request->input('db_user') ?: Setting::get('wc_mysql_user', env('DB_USERNAME', 'suitable_intranetuser'));
+            $pass = $request->input('db_pass');
+            $prefix = $request->input('table_prefix') ?: Setting::get('wc_active_prefix', 'wp8q_');
+
+            if ($prefix === 'wp_') {
+                $prefix = 'wp8q_';
+            }
+
             $pdo = $this->getPdoConnection($host, $port, $database, $user, $pass);
 
-            // Verificar si existen tablas con el prefijo indicado
-            $stmt = $pdo->prepare("SHOW TABLES LIKE :pattern");
-            $stmt->execute(['pattern' => $prefix . '%']);
-            $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
-
-            if (empty($tables)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => "Conexión a MySQL exitosa, pero no se encontraron tablas con el prefijo '{$prefix}' en la base de datos '{$database}'. Revisa el prefijo (por ejemplo 'wp8q_')."
-                ]);
+            // Auto-detectar prefijo si no coincide
+            $detectedPrefix = $this->autoDetectPrefix($pdo, $prefix, $database);
+            if ($detectedPrefix !== $prefix) {
+                $prefix = $detectedPrefix;
             }
 
             // Probar existencia de tablas de órdenes (HPOS o Classic)
@@ -151,26 +153,55 @@ class WooCommerceController extends Controller
             $hposTable = $prefix . 'wc_orders';
             $postsTable = $prefix . 'posts';
 
-            if (in_array($hposTable, $tables)) {
+            $checkHpos = $pdo->prepare("SHOW TABLES LIKE :p1");
+            $checkHpos->execute(['p1' => $hposTable]);
+            $hasHpos = (bool)$checkHpos->fetch();
+
+            $checkPosts = $pdo->prepare("SHOW TABLES LIKE :p2");
+            $checkPosts->execute(['p2' => $postsTable]);
+            $hasPosts = (bool)$checkPosts->fetch();
+
+            if ($hasHpos) {
                 $countStmt = $pdo->query("SELECT COUNT(*) FROM `{$hposTable}` WHERE `type` = 'shop_order'");
                 $ordersFound = (int)$countStmt->fetchColumn();
-            } elseif (in_array($postsTable, $tables)) {
+            } elseif ($hasPosts) {
                 $countStmt = $pdo->query("SELECT COUNT(*) FROM `{$postsTable}` WHERE `post_type` IN ('shop_order', 'shop_order_placehold') AND `post_status` NOT IN ('trash', 'auto-draft')");
                 $ordersFound = (int)$countStmt->fetchColumn();
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Conexión a MySQL exitosa a '{$database}', pero no se encontraron las tablas `{$postsTable}` ni `{$hposTable}`. Verifica el prefijo de tablas."
+                ]);
             }
+
+            // Guardar configuración validada
+            Setting::set('wc_mysql_host', $host);
+            Setting::set('wc_mysql_port', $port);
+            Setting::set('wc_mysql_db', $database);
+            Setting::set('wc_mysql_user', $user);
+            if (!empty($pass)) {
+                Setting::set('wc_mysql_pass', $pass);
+            }
+            Setting::set('wc_active_prefix', $prefix);
 
             return response()->json([
                 'success' => true,
                 'database' => $database,
                 'prefix' => $prefix,
-                'tables_count' => count($tables),
                 'orders_found' => $ordersFound,
-                'message' => "¡Conexión establecida con éxito! Base de datos '{$database}', prefijo '{$prefix}'. Se detectaron {$ordersFound} pedidos en tu tienda WooCommerce."
+                'message' => "¡Conexión establecida con éxito! Base de datos '{$database}', prefijo '{$prefix}'. Se detectaron {$ordersFound} pedidos reales en Suitable.cl."
             ]);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
+            $msg = $e->getMessage();
+            $hint = "";
+            if (str_contains($msg, '1045') || str_contains($msg, 'Access denied')) {
+                $hint = " Recuerda que en cPanel -> Bases de datos MySQL debes agregar el usuario a la base de datos `{$database}` con permisos de lectura (SELECT).";
+            } elseif (str_contains($msg, '1049') || str_contains($msg, 'Unknown database')) {
+                $hint = " La base de datos `{$database}` no existe en este servidor MySQL.";
+            }
             return response()->json([
                 'success' => false,
-                'message' => 'Error de conexión MySQL: ' . $e->getMessage() . '. Si el usuario no tiene permisos sobre ' . $database . ', asígnalos en cPanel -> Bases de Datos MySQL.'
+                'message' => "Error de conexión MySQL: {$msg}.{$hint}"
             ]);
         }
     }
@@ -181,15 +212,19 @@ class WooCommerceController extends Controller
     public function saveSettings(Request $request): JsonResponse
     {
         $fields = [
-            'wc_mysql_host' => $request->input('db_host', 'localhost'),
-            'wc_mysql_port' => $request->input('db_port', '3306'),
-            'wc_mysql_db' => $request->input('db_name', 'suitable_wp372'),
-            'wc_mysql_user' => $request->input('db_user', 'suitable_intranetuser'),
-            'wc_active_prefix' => $request->input('table_prefix', 'wp8q_'),
-            'wc_store_url' => $request->input('store_url', 'https://suitable.cl'),
-            'wc_consumer_key' => $request->input('consumer_key', ''),
-            'wc_consumer_secret' => $request->input('consumer_secret', '')
+            'wc_mysql_host' => $request->input('db_host') ?: 'localhost',
+            'wc_mysql_port' => $request->input('db_port') ?: '3306',
+            'wc_mysql_db' => $request->input('db_name') ?: 'suitable_wp372',
+            'wc_mysql_user' => $request->input('db_user') ?: env('DB_USERNAME', 'suitable_intranetuser'),
+            'wc_active_prefix' => $request->input('table_prefix') ?: 'wp8q_',
+            'wc_store_url' => $request->input('store_url') ?: 'https://suitable.cl',
+            'wc_consumer_key' => $request->input('consumer_key') ?: '',
+            'wc_consumer_secret' => $request->input('consumer_secret') ?: ''
         ];
+
+        if ($fields['wc_active_prefix'] === 'wp_') {
+            $fields['wc_active_prefix'] = 'wp8q_';
+        }
 
         if ($request->filled('db_pass')) {
             $fields['wc_mysql_pass'] = $request->input('db_pass');
@@ -210,25 +245,25 @@ class WooCommerceController extends Controller
      */
     public function sync(Request $request): JsonResponse
     {
-        // Guardar parámetros si vienen en la petición
-        if ($request->filled('db_name')) {
-            $this->saveSettings($request);
-        }
-
-        $host = Setting::get('wc_mysql_host', 'localhost');
-        $port = Setting::get('wc_mysql_port', '3306');
-        $database = Setting::get('wc_mysql_db', 'suitable_wp372');
-        $user = Setting::get('wc_mysql_user', 'suitable_intranetuser');
-        $pass = Setting::get('wc_mysql_pass', '');
-        $prefix = Setting::get('wc_active_prefix', 'wp8q_');
-
         try {
+            $host = $request->input('db_host') ?: Setting::get('wc_mysql_host', 'localhost');
+            $port = $request->input('db_port') ?: Setting::get('wc_mysql_port', '3306');
+            $database = $request->input('db_name') ?: Setting::get('wc_mysql_db', 'suitable_wp372');
+            $user = $request->input('db_user') ?: Setting::get('wc_mysql_user', env('DB_USERNAME', 'suitable_intranetuser'));
+            $pass = $request->input('db_pass');
+            $prefix = $request->input('table_prefix') ?: Setting::get('wc_active_prefix', 'wp8q_');
+
+            if ($prefix === 'wp_') {
+                $prefix = 'wp8q_';
+            }
+
             $pdo = $this->getPdoConnection($host, $port, $database, $user, $pass);
 
-            // Verificar tablas
-            $stmt = $pdo->prepare("SHOW TABLES LIKE :pattern");
-            $stmt->execute(['pattern' => $prefix . '%']);
-            $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
+            // Auto-detectar prefijo si no coincide
+            $detectedPrefix = $this->autoDetectPrefix($pdo, $prefix, $database);
+            if ($detectedPrefix !== $prefix) {
+                $prefix = $detectedPrefix;
+            }
 
             $postsTable = $prefix . 'posts';
             $postmetaTable = $prefix . 'postmeta';
@@ -236,11 +271,27 @@ class WooCommerceController extends Controller
             $orderItemsTable = $prefix . 'woocommerce_order_items';
             $orderItemMetaTable = $prefix . 'woocommerce_order_itemmeta';
 
+            $checkHpos = $pdo->prepare("SHOW TABLES LIKE :p1");
+            $checkHpos->execute(['p1' => $hposTable]);
+            $hasHpos = (bool)$checkHpos->fetch();
+
+            $checkPosts = $pdo->prepare("SHOW TABLES LIKE :p2");
+            $checkPosts->execute(['p2' => $postsTable]);
+            $hasPosts = (bool)$checkPosts->fetch();
+
+            $checkItems = $pdo->prepare("SHOW TABLES LIKE :p3");
+            $checkItems->execute(['p3' => $orderItemsTable]);
+            $hasOrderItems = (bool)$checkItems->fetch();
+
+            $checkItemMeta = $pdo->prepare("SHOW TABLES LIKE :p4");
+            $checkItemMeta->execute(['p4' => $orderItemMetaTable]);
+            $hasOrderItemMeta = (bool)$checkItemMeta->fetch();
+
             $syncedOrders = 0;
             $totalRevenue = 0;
 
             // 1. MODO HPOS (High-Performance Order Storage WooCommerce 8+)
-            if (in_array($hposTable, $tables)) {
+            if ($hasHpos) {
                 $ordersStmt = $pdo->query("
                     SELECT 
                         o.id as wc_order_id,
@@ -257,7 +308,7 @@ class WooCommerceController extends Controller
                     LEFT JOIN `{$prefix}wc_order_operational_data` op ON o.id = op.order_id
                     WHERE o.type = 'shop_order'
                     ORDER BY o.id DESC
-                    LIMIT 300
+                    LIMIT 400
                 ");
                 $ordersData = $ordersStmt->fetchAll();
 
@@ -282,14 +333,14 @@ class WooCommerceController extends Controller
                 }
             } 
             // 2. MODO CLÁSICO WORDPRESS (wp8q_posts + wp8q_postmeta)
-            elseif (in_array($postsTable, $tables) && in_array($postmetaTable, $tables)) {
+            elseif ($hasPosts) {
                 $postsStmt = $pdo->query("
                     SELECT ID, post_status, post_date
                     FROM `{$postsTable}`
                     WHERE post_type IN ('shop_order', 'shop_order_placehold')
                       AND post_status NOT IN ('trash', 'auto-draft')
                     ORDER BY ID DESC
-                    LIMIT 300
+                    LIMIT 400
                 ");
                 $rawPosts = $postsStmt->fetchAll();
 
@@ -320,7 +371,7 @@ class WooCommerceController extends Controller
 
                     // Contar ítems reales si existe la tabla
                     $itemsCount = 1;
-                    if (in_array($orderItemsTable, $tables)) {
+                    if ($hasOrderItems) {
                         $itemsCountStmt = $pdo->prepare("SELECT COUNT(*) FROM `{$orderItemsTable}` WHERE order_id = :order_id AND order_item_type = 'line_item'");
                         $itemsCountStmt->execute(['order_id' => $orderId]);
                         $itemsCount = max(1, (int)$itemsCountStmt->fetchColumn());
@@ -342,7 +393,7 @@ class WooCommerceController extends Controller
                     );
 
                     // Sincronizar ítems de la orden si existen
-                    if (in_array($orderItemsTable, $tables) && in_array($orderItemMetaTable, $tables)) {
+                    if ($hasOrderItems && $hasOrderItemMeta) {
                         $itemsStmt = $pdo->prepare("
                             SELECT order_item_id, order_item_name 
                             FROM `{$orderItemsTable}` 
@@ -352,7 +403,6 @@ class WooCommerceController extends Controller
                         $items = $itemsStmt->fetchAll();
 
                         if (!empty($items)) {
-                            // Limpiar ítems anteriores de esta orden para evitar duplicidad
                             OrderItem::where('order_id', $order->id)->delete();
 
                             foreach ($items as $it) {
@@ -392,20 +442,30 @@ class WooCommerceController extends Controller
             } else {
                 return response()->json([
                     'success' => false,
-                    'message' => "No se encontraron las tablas de pedidos de WooCommerce (`{$prefix}posts` o `{$prefix}wc_orders`) en la base de datos '{$database}'."
+                    'message' => "No se encontraron las tablas de pedidos de WooCommerce (`{$postsTable}` o `{$hposTable}`) en la base de datos '{$database}'."
                 ]);
             }
 
+            // Guardar configuración confirmada
+            Setting::set('wc_mysql_host', $host);
+            Setting::set('wc_mysql_port', $port);
+            Setting::set('wc_mysql_db', $database);
+            Setting::set('wc_mysql_user', $user);
+            if (!empty($pass)) {
+                Setting::set('wc_mysql_pass', $pass);
+            }
+            Setting::set('wc_active_prefix', $prefix);
             Setting::set('wc_last_sync', now()->toDateTimeString());
 
             return response()->json([
                 'success' => true,
                 'synced_count' => $syncedOrders,
                 'total_revenue' => $totalRevenue,
+                'prefix' => $prefix,
                 'formatted_revenue' => '$' . number_format($totalRevenue, 0, ',', '.'),
-                'message' => "¡Sincronización exitosa! Se importaron {$syncedOrders} pedidos reales de Suitable.cl desde la base de datos '{$database}'."
+                'message' => "¡Sincronización exitosa! Se importaron {$syncedOrders} pedidos reales de Suitable.cl desde la base de datos '{$database}' (prefijo {$prefix})."
             ]);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Error durante la sincronización: ' . $e->getMessage()
@@ -428,7 +488,7 @@ class WooCommerceController extends Controller
                 'success' => true,
                 'message' => 'Toda la data demo de pedidos e ítems ha sido eliminada con éxito. La plataforma está 100% limpia.'
             ]);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Error al purgar datos: ' . $e->getMessage()
@@ -437,15 +497,75 @@ class WooCommerceController extends Controller
     }
 
     /**
+     * Auto-detecta el prefijo de tablas en la base de datos conectada
+     */
+    private function autoDetectPrefix(PDO $pdo, string $prefix, string $database): string
+    {
+        // 1. Probar el prefijo actual
+        $stmt = $pdo->prepare("SHOW TABLES LIKE :p1");
+        $stmt->execute(['p1' => $prefix . 'posts']);
+        if ($stmt->fetch()) {
+            return $prefix;
+        }
+
+        $stmt = $pdo->prepare("SHOW TABLES LIKE :p2");
+        $stmt->execute(['p2' => $prefix . 'wc_orders']);
+        if ($stmt->fetch()) {
+            return $prefix;
+        }
+
+        // 2. Si no existe, buscar en information_schema qué tabla termina en 'posts' o 'wc_orders'
+        try {
+            $search = $pdo->prepare("
+                SELECT TABLE_NAME 
+                FROM information_schema.TABLES 
+                WHERE TABLE_SCHEMA = :db 
+                  AND (TABLE_NAME LIKE '%posts' OR TABLE_NAME LIKE '%wc_orders')
+                ORDER BY CASE WHEN TABLE_NAME LIKE '%posts' THEN 1 ELSE 2 END
+                LIMIT 1
+            ");
+            $search->execute(['db' => $database]);
+            $table = $search->fetchColumn();
+
+            if ($table) {
+                if (preg_match('/^(.*)posts$/', $table, $m)) {
+                    return $m[1];
+                }
+                if (preg_match('/^(.*)wc_orders$/', $table, $m)) {
+                    return $m[1];
+                }
+            }
+        } catch (Throwable $e) {
+            // Silencioso
+        }
+
+        // 3. Fallback por defecto verificado en phpMyAdmin: wp8q_
+        return 'wp8q_';
+    }
+
+    /**
      * Conexión PDO con timeout y UTF-8
      */
-    private function getPdoConnection(string $host, string $port, string $database, string $user, string $pass): PDO
+    private function getPdoConnection(string $host, string $port, string $database, string $user, ?string $pass): PDO
     {
+        $host = trim($host) ?: 'localhost';
+        $port = trim($port) ?: '3306';
+        $database = trim($database) ?: 'suitable_wp372';
+        $user = trim($user) ?: env('DB_USERNAME', 'suitable_intranetuser');
+
+        // Si el usuario no especificó password en el wizard, reutilizamos la del .env de la intranet
+        if ($pass === '' || $pass === null) {
+            $pass = (string)Setting::get('wc_mysql_pass', '');
+            if ($pass === '') {
+                $pass = (string)env('DB_PASSWORD', '');
+            }
+        }
+
         $dsn = "mysql:host={$host};port={$port};dbname={$database};charset=utf8mb4";
         return new PDO($dsn, $user, $pass, [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_TIMEOUT => 6,
+            PDO::ATTR_TIMEOUT => 8,
         ]);
     }
 
@@ -468,8 +588,8 @@ class WooCommerceController extends Controller
                 if (@file_exists($path) && @is_readable($path)) {
                     return $path;
                 }
-            } catch (\Throwable $e) {
-                // Silently skip any restricted paths
+            } catch (Throwable $e) {
+                // Silencioso
             }
         }
 
