@@ -48,6 +48,31 @@ class WooCommerceController extends Controller
         $wpConfigPath = $this->findWpConfigFile();
         $wpConfigFound = !empty($wpConfigPath);
 
+        if ($wpConfigFound) {
+            try {
+                $wpContent = @file_get_contents($wpConfigPath);
+                if ($wpContent) {
+                    if (preg_match("/define\s*\(\s*['\"]DB_NAME['\"]\s*,\s*['\"]([^'\"]+)['\"]\s*\)/i", $wpContent, $m)) {
+                        $mysqlDb = $m[1];
+                    }
+                    if (preg_match("/define\s*\(\s*['\"]DB_USER['\"]\s*,\s*['\"]([^'\"]+)['\"]\s*\)/i", $wpContent, $m)) {
+                        $mysqlUser = $m[1];
+                    }
+                    if (preg_match("/define\s*\(\s*['\"]DB_PASSWORD['\"]\s*,\s*['\"]([^'\"]+)['\"]\s*\)/i", $wpContent, $m)) {
+                        $mysqlPass = $m[1];
+                    }
+                    if (preg_match("/define\s*\(\s*['\"]DB_HOST['\"]\s*,\s*['\"]([^'\"]+)['\"]\s*\)/i", $wpContent, $m)) {
+                        $mysqlHost = $m[1];
+                    }
+                    if (preg_match("/\\\$table_prefix\s*=\s*['\"]([^'\"]+)['\"]\s*;/i", $wpContent, $m)) {
+                        $tablePrefix = $m[1];
+                    }
+                }
+            } catch (Throwable $e) {
+                // Silencioso
+            }
+        }
+
         return view('woocommerce.index', compact(
             'orders',
             'totalOrders',
