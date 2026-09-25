@@ -35,6 +35,7 @@ Route::middleware(EnsureUserIsAuthenticated::class)->group(function () {
     // Groups & Segments
     Route::get('/groups', [GroupController::class, 'index'])->name('groups.index');
     Route::post('/groups', [GroupController::class, 'store'])->name('groups.store');
+    Route::post('/groups/{group}/add-wc-clients', [GroupController::class, 'addWcClients'])->name('groups.add_wc_clients');
     Route::delete('/groups/{group}', [GroupController::class, 'destroy'])->name('groups.destroy');
 
     // Campaigns & AI Studio
@@ -65,8 +66,8 @@ Route::middleware(EnsureUserIsAuthenticated::class)->group(function () {
     Route::get('/import/export', [ImportController::class, 'exportClients'])->name('import.export');
     Route::post('/import', [ImportController::class, 'process'])->name('import.process');
 
-    // Analytics & Metrics
-    Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
+    // Analytics & Metrics (Desactivado temporalmente por solicitud)
+    Route::get('/analytics', fn() => redirect()->route('dashboard'))->name('analytics.index');
 
     // Cerebro Suitable (ML & Inteligencia de Negocio & Pensamientos AI)
     Route::get('/ml-brain', [MlBrainController::class, 'index'])->name('ml_brain.index');
