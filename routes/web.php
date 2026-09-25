@@ -78,9 +78,13 @@ Route::middleware(EnsureUserIsAuthenticated::class)->group(function () {
     Route::post('/ml-brain/conversations/{id}/messages', [MlBrainController::class, 'sendMessage'])->name('ml_brain.send_message');
     Route::delete('/ml-brain/conversations/{id}', [MlBrainController::class, 'deleteConversation'])->name('ml_brain.delete_conversation');
 
-    // WooCommerce Sync
+    // WooCommerce Sync & Database Connection Wizard
     Route::get('/woocommerce', [WooCommerceController::class, 'index'])->name('woocommerce.index');
+    Route::post('/woocommerce/detect-wp', [WooCommerceController::class, 'detectWpConfig'])->name('woocommerce.detect_wp');
+    Route::post('/woocommerce/test-connection', [WooCommerceController::class, 'testConnection'])->name('woocommerce.test_connection');
+    Route::post('/woocommerce/save-settings', [WooCommerceController::class, 'saveSettings'])->name('woocommerce.save_settings');
     Route::post('/woocommerce/sync', [WooCommerceController::class, 'sync'])->name('woocommerce.sync');
+    Route::post('/woocommerce/purge-demo', [WooCommerceController::class, 'purgeDemo'])->name('woocommerce.purge_demo');
 
     // Settings & SMTP
     Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');

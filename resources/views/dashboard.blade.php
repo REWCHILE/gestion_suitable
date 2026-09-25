@@ -30,8 +30,15 @@
 
   <div class="table-card" style="padding: 18px;">
     <div style="font-size: 12px; font-weight: 700; color: #64748B; text-transform: uppercase;">Ventas WooCommerce</div>
-    <div style="font-size: 28px; font-weight: 800; color: #059669; margin: 4px 0;">${{ number_format($totalRevenue, 0, ',', '.') }}</div>
-    <div style="font-size: 12px; color: #059669; font-weight: 600;">🛍️ {{ $totalOrders }} órdenes registradas</div>
+    @if($totalOrders > 0)
+      <div style="font-size: 28px; font-weight: 800; color: #059669; margin: 4px 0;">${{ number_format($totalRevenue, 0, ',', '.') }}</div>
+      <div style="font-size: 12px; color: #059669; font-weight: 600;">🛍️ {{ $totalOrders }} órdenes sincronizadas</div>
+    @else
+      <div style="font-size: 28px; font-weight: 800; color: #94A3B8; margin: 4px 0;">$0</div>
+      <div style="font-size: 11.5px; color: #D97706; font-weight: 600;">
+        ⚠️ Sin sincronizar • <a href="{{ route('woocommerce.index') }}" style="color: #1E8888; text-decoration: underline;">Conectar tienda</a>
+      </div>
+    @endif
   </div>
 
   <div class="table-card" style="padding: 18px;">
@@ -105,33 +112,47 @@
   <div class="table-card" style="padding: 20px;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
       <h3 style="font-size: 15px; font-weight: 800; margin: 0; color: #0F172A;">Órdenes WooCommerce</h3>
-      <a href="{{ route('woocommerce.index') }}" style="font-size: 12px; color: #1E8888; font-weight: 700; text-decoration: none;">Ver Catálogo →</a>
+      <a href="{{ route('woocommerce.index') }}" style="font-size: 12px; color: #1E8888; font-weight: 700; text-decoration: none;">Ver Catálogo / Asistente →</a>
     </div>
-    <table class="crm-table" style="font-size: 12.5px;">
-      <thead>
-        <tr>
-          <th>Cliente</th>
-          <th>Monto</th>
-          <th>Fecha</th>
-        </tr>
-      </thead>
-      <tbody>
-        @foreach($recentOrders as $ro)
+
+    @if($recentOrders->count() > 0)
+      <table class="crm-table" style="font-size: 12.5px;">
+        <thead>
           <tr>
-            <td>
-              <strong>{{ $ro->customer_name }}</strong>
-              <div style="font-size: 11px; color: #64748B;">#{{ $ro->wc_order_id }} ({{ $ro->customer_city }})</div>
-            </td>
-            <td style="font-weight: 700; color: #059669;">
-              ${{ number_format($ro->total_amount, 0, ',', '.') }}
-            </td>
-            <td style="font-size: 11px; color: #64748B;">
-              {{ \Carbon\Carbon::parse($ro->date_created)->format('d/m/Y') }}
-            </td>
+            <th>Cliente</th>
+            <th>Monto</th>
+            <th>Fecha</th>
           </tr>
-        @endforeach
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          @foreach($recentOrders as $ro)
+            <tr>
+              <td>
+                <strong>{{ $ro->customer_name }}</strong>
+                <div style="font-size: 11px; color: #64748B;">#{{ $ro->wc_order_id }} ({{ $ro->customer_city }})</div>
+              </td>
+              <td style="font-weight: 700; color: #059669;">
+                ${{ number_format($ro->total_amount, 0, ',', '.') }}
+              </td>
+              <td style="font-size: 11px; color: #64748B;">
+                {{ \Carbon\Carbon::parse($ro->date_created)->format('d/m/Y') }}
+              </td>
+            </tr>
+          @endforeach
+        </tbody>
+      </table>
+    @else
+      <div style="text-align: center; padding: 28px 16px; background: #F8FAFC; border-radius: 8px; border: 1px dashed #CBD5E1;">
+        <div style="font-size: 32px; margin-bottom: 8px;">🛍️</div>
+        <div style="font-size: 13.5px; font-weight: 800; color: #0F172A; margin-bottom: 4px;">Tienda sin sincronizar</div>
+        <p style="font-size: 12px; color: #64748B; margin: 0 0 14px 0; line-height: 1.4;">
+          Conecta la base de datos <code>suitable_wp372</code> en <code>public_html</code> para visualizar tus órdenes reales aquí.
+        </p>
+        <a href="{{ route('woocommerce.index') }}" class="btn btn-primary btn-sm" style="font-size: 12px;">
+          🚀 Conectar WooCommerce
+        </a>
+      </div>
+    @endif
   </div>
 </div>
 @endsection
